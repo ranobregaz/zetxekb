@@ -36,7 +36,7 @@ void apt_adc_irqhandler(csp_adc_t *ptAdcBase)
 	uint8_t i;
 	uint32_t wIntStat = csp_adc_get_sr(ptAdcBase) & csp_adc_get_isr(ptAdcBase);
 	
-	//adc CMP interrupt
+	//ADC CMP interrupt
 	switch(wIntStat & 0xf0)
 	{
 		case ADC_INTSRC_CMP0H:
@@ -53,11 +53,11 @@ void apt_adc_irqhandler(csp_adc_t *ptAdcBase)
 			break;
 	}
 	
-	//adc SEQ_END interrupt
+	//ADC SEQ_END interrupt
 	switch(g_tAdcSamp.hwSampCnt)				
 	{
-		case 1:
-			for(i = 0; i < g_tAdcSamp.byChnlNum; i++)
+		case 1:																		
+			for(i = 0; i < g_tAdcSamp.byChnlNum; i++)						//data length(length = 1)  of channel 	
 			{
 				if(wIntStat & ADC12_SEQ(i))									//sequence channel sample complete?
 				{
@@ -69,8 +69,8 @@ void apt_adc_irqhandler(csp_adc_t *ptAdcBase)
 			g_tAdcSamp.byConvStat = ADC_STATE_DONE;							//sequence	sample complete
 			
 			break;
-		default:
-			if(g_tAdcSamp.hwChnlDep)
+		default:			
+			if(g_tAdcSamp.hwChnlDep)										//data length(length > 1)  of channel 			
 			{
 				for(i = 0; i < g_tAdcSamp.byChnlNum; i++)
 				{
@@ -209,6 +209,26 @@ csi_error_t csi_adc_stop(csp_adc_t *ptAdcBase)
 		ret = CSI_ERROR; 
 	
 	return ret;
+}
+/** \brief set adc conversion mode, continue/one shot
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] eConvMode: conversion mode, continuous/one shot
+ *  \return none
+ */
+void csi_adc_conv_mode(csp_adc_t *ptAdcBase, csi_adc_conv_mode_e eConvMode)
+{
+	csp_adc_set_conv_mode(ptAdcBase, eConvMode);
+}
+/** \brief set adc conversion sequence priority
+ * 
+ *  \param[in] ptAdcBase: pointer of adc register structure
+ *  \param[in] byPri: conversion priority
+ *  \return none
+ */
+void csi_adc_conv_pri(csp_adc_t *ptAdcBase, uint8_t byPri)
+{
+	csp_adc_set_pri(ptAdcBase, byPri);
 }
 /** \brief get adc value of sequence channel
  * 
