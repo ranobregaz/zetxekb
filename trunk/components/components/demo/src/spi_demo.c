@@ -30,27 +30,35 @@
  */
  csi_error_t spi_sync_sendbuff(void)
 {
-	int tRet = 0;
-	uint8_t send_data[8] = {1,2,3,4,5,6,7,8};
+	int iRet = 0;
+	uint8_t byData[8] = {1,2,3,4,5,6,7,8};
+	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
 	
-#ifdef SPI_MASTER_SEL	//spi master mode	
-	tRet = csi_spi_init(SPI0);			
-	if(tRet < 0)
+	t_SpiConfig.eSpiMode = SPI_MASTER;						//作为主机
+	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA1; //clk空闲电平为0，相位为在第二个边沿采集数据
+	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
+	t_SpiConfig.dwSpiBaud = 12000000; 						//通讯速率12兆			
+    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
+	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断
+
+	iRet = csi_spi_init(SPI0,&t_SpiConfig);			
+	if(iRet < 0)
 	{
 		return -1;
 	}	
-	my_printf("the spi sync send count is:%d!\n",tRet);
+	my_printf("the spi sync send count is:%d!\n",8);
 	mdelay(500);
-#endif
+
 	while(1)
 	{
 		SPICS_CLR;
-		tRet = csi_spi_send(SPI0, (void *)send_data, 8, 1);//send first
+		//csi_spi_send(SPI0,byData,8,1);
+		spi_buff_send(SPI0,byData,8);
 		SPICS_SET;
 		mdelay(100);
 		nop;
 	}
-	return tRet;
+	return iRet;
 }
 
 /** \brief spi async mode send buff
@@ -61,10 +69,16 @@
  csi_error_t spi_async_sendbuff(void)
 {
 	int tRet = 0;
-	uint8_t send_data[8] = {9,10,11,12,13,14,15,16};
+	uint8_t bySendData[8] = {9,10,11,12,13,14,15,16};
+	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
 	
-#ifdef SPI_MASTER_SEL	//spi master mode
-	tRet = csi_spi_init(SPI0);			
+	t_SpiConfig.eSpiMode = SPI_MASTER;						//作为主机
+	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA1; //clk空闲电平为0，相位为在第二个边沿采集数据
+	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
+	t_SpiConfig.dwSpiBaud = 12000000; 						//通讯速率12兆			
+    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
+	t_SpiConfig.byInter = (uint8_t)SPI_TXIM_INT;			//发送使用中断	  	
+	tRet = csi_spi_init(SPI0,&t_SpiConfig);	
 	if(tRet < 0)
 	{
 		return -1;
@@ -72,47 +86,16 @@
 	
 	my_printf("the spi async send count is:%d!\n",8);	
 	mdelay(500);	
-#endif
+
 	while(1)
 	{
 		SPICS_CLR;
-		tRet = csi_spi_send_async(SPI0, (void *)send_data, 8);//send first
-		SPICS_SET;
+		tRet = csi_spi_send_async(SPI0, (void *) bySendData, 8);//send first
+		//SPICS_SET;  //SPICS_SET when send interrupt complete
 		mdelay(100);		
 		nop;
 	}
 	return tRet;
-}
-
-/** \brief spi nss test
- * 
- *  \param[in] none
- *  \return error code
- */
-csi_error_t spi_sync_nss_test(void)
-{
-	int iRet = 0;
-	uint8_t send_data[10] = {9,10,11,12,13,14,15,16,17,18};
-	uint8_t rece_data[10] = {0};
-#ifdef SPI_MASTER_SEL	//spi master mode	
-	iRet = csi_spi_init(SPI0);			
-	if(iRet < 0)
-	{
-		return -1;
-	}	
-	my_printf("the spi nss_test send end!\n");	
-	mdelay(500);	
-#endif
-
-	while(1)
-	{
-		SPICS_CLR;
-		csi_spi_send_receive(SPI0, (void*)send_data, (void *)rece_data, 10, 1);//265.18 us
-		SPICS_SET;
-		mdelay(100);
-		nop;
-	}
-	return iRet;
 }
 
 /** \brief spi speed test
@@ -123,38 +106,44 @@ csi_error_t spi_sync_nss_test(void)
 csi_error_t spi_sync_test_speed(void)
 {
 	int iRet = 0;
-	uint8_t send_data[17] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
-	uint8_t rece_data[17] = {0};
-#ifdef SPI_MASTER_SEL	//spi master mode	
-	iRet = csi_spi_init(SPI0);			
+	uint8_t bySendData[17] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
+	uint8_t byReceData[17] = {0};
+	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
+	
+	t_SpiConfig.eSpiMode = SPI_MASTER;						//作为主机
+	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA1; //clk空闲电平为0，相位为在第二个边沿采集数据
+	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
+	t_SpiConfig.dwSpiBaud = 12000000; 						//通讯速率12兆			
+    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个	 
+	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断 
+	iRet = csi_spi_init(SPI0,&t_SpiConfig);				
 	if(iRet < 0)
 	{
 		return -1;
 	}	
 	my_printf("the spi test speed end!\n");		
 	mdelay(500);
-#endif
 
 	while(1)
 	{
 		SPICS_CLR;
-		csi_spi_send_receive_x8(SPI0,send_data,rece_data,7);//65.78us, use for is 82.28us
+		csi_spi_send_receive_x8(SPI0,bySendData,byReceData,7);//23.38us
 		SPICS_SET;
 		
 		SPICS_CLR;
-		csi_spi_send_receive(SPI0, (void*)send_data, (void *)rece_data, 7, 1);//265.18 us
+		csi_spi_send_receive(SPI0, (void*)bySendData, (void *)byReceData, 7, 1);//53.72 us
 		SPICS_SET;
 		
 		SPICS_CLR;
-		csi_spi_send_receive_d8(SPI0,send_data,rece_data,7);//(61.66 us #if 1)
+		csi_spi_send_receive_d8(SPI0,bySendData,byReceData,7);//(29.08 us #if 1)
 		SPICS_SET;
 		
 		SPICS_CLR;
-		csi_spi_send_receive(SPI0, (void*)send_data, (void *)rece_data, 17, 1);//539.94 us
+		csi_spi_send_receive(SPI0, (void*)bySendData, (void *)byReceData, 17, 1);//117.74 us
 		SPICS_SET;
 		
 		SPICS_CLR;
-		csi_spi_send_receive_d8(SPI0,send_data,rece_data,17);//(outside 99  inside 63us #if 1) (166.7   111.6us #if 0)
+		csi_spi_send_receive_d8(SPI0,bySendData,byReceData,17);//(40.22)
 		SPICS_SET;
 		mdelay(100);
 		nop;
@@ -177,10 +166,21 @@ csi_error_t spi_sync_test_speed(void)
  csi_error_t spi_sync_async_master_slave(void)
 {
 	int iRet = 0;
-	uint8_t send_data[17] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
-	uint8_t rece_data[17] = {0};
+	uint8_t bySendData[17] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
+	uint8_t byReceData[17] = {0};
+	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
 	
-	iRet = csi_spi_init(SPI0);			
+	#ifdef SPI_MASTER_SEL
+		t_SpiConfig.eSpiMode = SPI_MASTER;					//作为主机
+	#else
+		t_SpiConfig.eSpiMode = SPI_SLAVE;					//作为从机
+	#endif
+	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA1; //clk空闲电平为0，相位为在第二个边沿采集数据
+	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
+	t_SpiConfig.dwSpiBaud = 2000000; 						//通讯速率2兆			
+    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
+	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断	
+	iRet = csi_spi_init(SPI0,&t_SpiConfig);				
 	if(iRet < 0)
 	{
 		return -1;
@@ -193,7 +193,7 @@ csi_error_t spi_sync_test_speed(void)
 		while(1)
 		{
 			SPICS_CLR;
-			csi_spi_send_receive(SPI0, send_data, rece_data, 16, 1);//265.18 us
+			csi_spi_send_receive(SPI0, bySendData, byReceData, 16, 1);//265.18 us
 			SPICS_SET;
 			mdelay(100);
 			nop;
@@ -202,12 +202,12 @@ csi_error_t spi_sync_test_speed(void)
 		while(1)
 		{
 			SPICS_CLR;
-			csi_spi_send(SPI0, send_data, 16, 1);//265.18 us
-			//csi_spi_send_async(SPI0, send_data, 16);
-			//csi_spi_send_receive_async(SPI0, send_data, rece_data, 16);
-			//udelay(300);
-			SPICS_SET;
-			
+			if(SPI_NONE_INT == t_SpiConfig.byInter)
+				csi_spi_send(SPI0, bySendData, 16, 1);//265.18 us
+			else if(SPI_TXIM_INT == t_SpiConfig.byInter)
+				csi_spi_send_async(SPI0, bySendData, 16);
+			else if( (SPI_TXIM_INT | SPI_RXIM_INT) == t_SpiConfig.byInter)
+				csi_spi_send_receive_async(SPI0, bySendData,byReceData,16);
 			mdelay(100);
 			nop;
 		}	
@@ -219,10 +219,8 @@ csi_error_t spi_sync_test_speed(void)
 		{
 			while( (uint32_t)(SPI0->SR) & SPI_RNE )	
 			{
-				//rece_data[0] = SPI0->DR; 
-				//SPI0->DR = rece_data[0];
-				rece_data[0] = csi_spi_receive_slave(SPI0);
-				csi_spi_send_slave(SPI0, rece_data[0]);
+				byReceData[0] = csi_spi_receive_slave(SPI0);
+				csi_spi_send_slave(SPI0, byReceData[0]);
 			}
 			nop;
 		}
@@ -357,7 +355,7 @@ uint32_t SPI_flash_read_id(void)
 	
 	SPICS_CLR; 
 	csi_spi_send_receive(SPI0, (void *)bySend, NULL, 4, 2);	//send read id cmd and three bytes addr	
-	csi_spi_send_receive(SPI0, NULL, (void *)byRecv, 2, 2);	//read id value; id value = 0xef13
+	csi_spi_send_receive(SPI0, NULL, (void *)byRecv, 2, 2);	//read id value; id value = 0xef14
 	hwId = ((byRecv[0] << 8) |  byRecv[1]);
 	SPICS_SET;
    
@@ -439,39 +437,38 @@ void SPI_flash_write_bytes(uint8_t *pbyBuf, uint32_t wAddr, uint16_t hwNum)
 csi_error_t spi_w25q16jvsiq_write_read(void)
 {
 	int iRet = 0;	
-#ifdef SPI_MASTER_SEL	//spi master mode
-	#ifdef SPI_SYNC_SEL	//spi sync mode
-		iRet = csi_spi_init(SPI0);			
-		if(iRet < 0)
-		{
-			return -1;
-		}
+	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
+	
+	t_SpiConfig.eSpiMode = SPI_MASTER;						//作为主机
+	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA0; //clk空闲电平为0，相位为在第二个边沿采集数据
+	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
+	t_SpiConfig.dwSpiBaud = 12000000; 						//通讯速率12兆			
+    t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
+	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断	  
+	iRet = csi_spi_init(SPI0,&t_SpiConfig);							
+	if(iRet < 0)
+	{
+		return -1;
+	}
+	my_printf("the spi w25q16 test!\n");	
+	mdelay(200);
+	iRet = SPI_flash_read_id();					//read chip id, chip id = 0xef14
+	
+	if(iRet == 0xef14)
+	{
+	
+		//iRet = SPI_flash_read_status();		//read status reg
+		
+		SPI_flash_sector_erase(0x1000);			//erase sector 1; start addr = 0x1000
+
+		SPI_flash_read_bytes((uint8_t *)byRdBuf, 0x1000, 16);	//read data = 0xff
+	
+		SPI_flash_write_bytes(byWrBuf,0x1000,16);				//write 16 bytes 
+		
+		SPI_flash_read_bytes((uint8_t *)byRdBuf, 0x1000, 16);	//read 16 bytes, read bytes = write bytes
 		
 		iRet = SPI_flash_read_id();					//read chip id, chip id = 0xef14
-		
-		if(iRet == 0xef14)
-		{
-		
-			//iRet = SPI_flash_read_status();		//read status reg
-			
-			SPI_flash_sector_erase(0x1000);			//erase sector 1; start addr = 0x1000
-	
-			SPI_flash_read_bytes((uint8_t *)byRdBuf, 0x1000, 16);	//read data = 0xff
-		
-			SPI_flash_write_bytes(byWrBuf,0x1000,16);				//write 16 bytes 
-			
-			SPI_flash_read_bytes((uint8_t *)byRdBuf, 0x1000, 16);	//read 16 bytes, read bytes = write bytes
-			
-			iRet = SPI_flash_read_id();					//read chip id, chip id = 0xef13
-		}
-		
-	#else				//spi async mode
-	
-	#endif
-
-#else					//spi slave mode	
-
-#endif
+	}
 	while(1)
 	{
 		nop;
