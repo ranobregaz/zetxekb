@@ -275,7 +275,7 @@ csi_error_t csi_adc_read_seqx(csp_adc_t *ptAdcBase)
 	switch(g_tAdcSamp.hwSampCnt)
 	{
 		case 1:
-			for(i = 0; i < g_tAdcSamp.byChnlNum; i ++)
+			for(i = 0; i < g_tAdcSamp.byChnlNum; i ++)								//data length(length = 1) of channel
 			{
 				while(!(csp_adc_get_sr(ptAdcBase) & ADC12_SEQ(i)) && wTimeOut--);	//channel of sequence sample complete?
 				
@@ -293,7 +293,7 @@ csi_error_t csi_adc_read_seqx(csp_adc_t *ptAdcBase)
 		default:
 			while(g_tAdcSamp.hwChnlDep)
 			{
-				for(i = 0; i < g_tAdcSamp.byChnlNum; i++)
+				for(i = 0; i < g_tAdcSamp.byChnlNum; i++)								//data length(length > 1) of channel
 				{
 					while(!(csp_adc_get_sr(ptAdcBase) & ADC12_SEQ(i)) && wTimeOut--);	//channel of sequence sample complete?
 					
@@ -317,12 +317,11 @@ csi_error_t csi_adc_read_seqx(csp_adc_t *ptAdcBase)
  * 
  *  \param[in] adc: ADC handle to operate
  *  \param[in] adc_vref: source of adc reference voltage
- *  \return error code \ref csi_error_t
+ *  \return none
  */  
-csi_error_t csi_adc_set_vref(csp_adc_t *ptAdcBase, csi_adc_vref_e eVrefSrc)
+void csi_adc_set_vref(csp_adc_t *ptAdcBase, csi_adc_vref_e eVrefSrc)
 {
 	csp_adc_set_vref(ptAdcBase,(adc_vref_e)eVrefSrc);
-	return CSI_OK;
 }
 /** \brief set adc clk,;adc clk = pclk/div
  * 
@@ -334,6 +333,9 @@ uint32_t csi_adc_freq_div(csp_adc_t *ptAdcBase, uint8_t byDiv)
 {
 	if(0 == byDiv)
 		byDiv = 1;
+	else if(byDiv > 62)
+		byDiv = 62;
+		
 	csp_adc_set_clk_div(ptAdcBase,byDiv);	
 	return  soc_get_pclk_freq()/byDiv;		
 }
@@ -344,8 +346,12 @@ uint32_t csi_adc_freq_div(csp_adc_t *ptAdcBase, uint8_t byDiv)
  */
 uint32_t csi_adc_get_freq(csp_adc_t *ptAdcBase)
 {
-    uint32_t byDiv = csp_adc_get_clk_div(ptAdcBase);
-	return  soc_get_pclk_freq()/(byDiv + 1);
+    uint8_t byDiv = csp_adc_get_clk_div(ptAdcBase);
+	
+	if(0 == byDiv)
+		return  soc_get_pclk_freq();
+	else
+		return  soc_get_pclk_freq()/(byDiv << 1);
 }
  /** \brief adc cmp0 config
  * 
