@@ -89,6 +89,16 @@ void csi_bt_stop(csp_bt_t *ptBtBase)
 void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc, bool bEnable)
 {
 	csp_bt_int_enable(ptBtBase, eIntSrc, bEnable);	
+	
+	if (bEnable) {
+		csi_irq_enable(ptBtBase);
+	}
+	else {
+		if (eIntSrc == csp_bt_get_isr(ptBtBase)) {
+			csi_irq_disable(ptBtBase);
+		}
+	}
+		
 }
 /** \brief get bt remaining value
  * 
