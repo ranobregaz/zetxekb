@@ -39,7 +39,7 @@ int ept_demo(void)
 //	csi_pin_set_mux(PA07,PA07_EPI0);
 	csi_pin_set_mux(PA013,PA013_EPI1);
 	csi_pin_set_mux(PB03, PB03_EPI2);
-	csi_pin_set_mux(PB02, PB02_EPI3);
+//	csi_pin_set_mux(PB02, PB02_EPI3);
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_ept_config_t tPwmCfg;								  
 	tPwmCfg.byWorkmod       = EPT_WAVE;                        //WAVE or CAPTURE    //计数或捕获	
@@ -69,7 +69,7 @@ int ept_demo(void)
 	tPwmCfg.byCgsrc   = EPT_CGSRC_TIOA;                           //CHAX作为CG的输入源
 	tPwmCfg.byCgflt   = EPT_CGFLT_2;                              //门控输入数字滤波控制
 		
-//	tPwmCfg.byInter 		 = EPTINT_CAPLD3;                      //interrupt
+	tPwmCfg.byInter 		 = EPT_INT_TRGEV0;                      //interrupt
 	csi_ept_config_init(EPT0, &tPwmCfg);
 
 //------------------------------------------------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ int ept_demo(void)
 	csi_ept_channel_config(EPT0, &tEptchannelCfg,  EPT_CHANNEL_C);
 	csi_ept_channel_config(EPT0, &tEptchannelCfg,  EPT_CHANNEL_D);
 	
-  //  csp_ept_set_aqtscr(EPT0,EPT_T1,EP0);//波形输出T事件选择
+    //csp_ept_set_aqtscr(EPT0,EPT_T1,EP1);//波形输出T事件选择
 //------------------------------------------------------------------------------------------------------------------------	
 
 	csi_ept_dbldrload_config(EPT0,DBCR,EPT_SHDW_IMMEDIATE,EPT_LD_ZRO);
@@ -100,8 +100,8 @@ int ept_demo(void)
 	csi_ept_deadzone_config_t  tEptDeadZoneTime;
 	tEptDeadZoneTime.byDcksel               = EPT_DB_DPSC;     //
 	tEptDeadZoneTime.hwDpsc                 =  0;              //FDBCLK = FHCLK / (DPSC+1)
-	tEptDeadZoneTime.hwRisingEdgereGister = 12;                //NS/(1/(24000000/(DPSC+1))*10^9) // 500NS/(1000/24) = 12;
-	tEptDeadZoneTime.hwFallingEdgereGister= 12;                //下降沿
+	tEptDeadZoneTime.hwRisingEdgereGister = 24;                //NS/(1/(48000000/(DPSC+1))*10^9) // 500NS/(1000/48) = 24;
+	tEptDeadZoneTime.hwFallingEdgereGister= 24;                //下降沿
 	tEptDeadZoneTime.byChaDedb             = DB_AR_BF;         //不使用死区双沿
 	tEptDeadZoneTime.byChbDedb             = DB_AR_BF;
 	tEptDeadZoneTime.byChcDedb             = DB_AR_BF;
@@ -118,12 +118,12 @@ int ept_demo(void)
 	csi_ept_Chopper_config_t  tEptChopperOutCfg;
 	tEptChopperOutCfg.byOspwth             =3 ;                 //首脉冲的宽度可以配置为载波周期的整数倍。当该控制位设为零时，
 														        //所有脉冲宽度均由byCdiv和byCduty配置.Twidth = Tchop x byOspwth （Tchop为一个载波的周期时间）
-	tEptChopperOutCfg.byCdiv               =0 ;                 //载波频率设置。载波的频率设置基于PCLK的8倍分频进行设置 Fchop = PCLK / ((byCdiv+1) x 8)
+	tEptChopperOutCfg.byCdiv               =9 ;                 //载波频率设置。载波的频率设置基于PCLK的8倍分频进行设置 Fchop = PCLK / ((byCdiv+1) x 8)
 	tEptChopperOutCfg.byCduty              =EPT_CDUTY_4_8 ;     //载波的占空比设置  0h：禁止载波;   1h：Duty = 7/8------7h：Duty = 1/8
 	tEptChopperOutCfg.byCasel              =EPT_CPSRC_IN ;      //载波信号源选择控制位: 0h：EPT内部产生载波;  1h：TIN的输入
 	csi_ept_choppercpcr_config(EPT0,&tEptChopperOutCfg);
 
-	csi_ept_chopper_config(EPT0,EPTCHAX,DISABLE);                //斩波输出使能控制位   0b：禁止当前通道斩波输出    1b：开启当前通道斩波输出
+	csi_ept_chopper_config(EPT0,EPTCHAX,ENABLE);                //斩波输出使能控制位   0b：禁止当前通道斩波输出    1b：开启当前通道斩波输出
 	csi_ept_chopper_config(EPT0,EPTCHAY,DISABLE);
 	csi_ept_chopper_config(EPT0,EPTCHBX,DISABLE);
 	csi_ept_chopper_config(EPT0,EPTCHBY,DISABLE);
@@ -131,27 +131,25 @@ int ept_demo(void)
 	csi_ept_chopper_config(EPT0,EPTCHCY,DISABLE);
 			
 //------------------------------------------------------------------------------------------------------------------------
-
     csi_ept_emergency_config_t   tEptEmergencyCfg;           //紧急状态输入
     tEptEmergencyCfg.byEpxInt    = EBI1 ;                    //EPx选择外部IO端口（EBI0~EBI4）
     tEptEmergencyCfg.byPolEbix   = EBI_POL_H;                //EBIx的输入有效极性选择控制
 	tEptEmergencyCfg.byEpx       = EP1;                      //使能EPx
-	tEptEmergencyCfg.byEpxLckmd  = EP_DIS;                  //
+	tEptEmergencyCfg.byEpxLckmd  = EP_HLCK;                   //使能 锁
     tEptEmergencyCfg.byFltpace0  = EPFLT0_2P;                 //EP0、EP1、EP2和EP3的数字去抖滤波检查周期数
 	tEptEmergencyCfg.byFltpace1  = EPFLT1_2P;                 //EP4、EP5、EP6和EP7的数字去抖滤波检查周期数
 	if(tEptEmergencyCfg.byEpxInt ==ORL0){tEptEmergencyCfg.byOrl0 = ORLx_EP0 |ORLx_EP1|ORLx_EP2;}
 	if(tEptEmergencyCfg.byEpxInt ==ORL1){tEptEmergencyCfg.byOrl1 = ORLx_EP4 |ORLx_EP5|ORLx_EP6;}
-	csi_ept_emergency_config(EPT0,&tEptEmergencyCfg);
+	csi_ept_emergency_cfg(EPT0,&tEptEmergencyCfg);
 	
 	csi_ept_emergency_pinxout(EPT0,EMCOAX,EM_OUT_L);
 	csi_ept_emergency_pinxout(EPT0,EMCOBX,EM_OUT_L);
-	csi_ept_emergency_pinxout(EPT0,EMCOBX,EM_OUT_L);
+	csi_ept_emergency_pinxout(EPT0,EMCOCX,EM_OUT_L);
 	csi_ept_emergency_pinxout(EPT0,EMCOAY,EM_OUT_L);
 	csi_ept_emergency_pinxout(EPT0,EMCOBY,EM_OUT_L);
 	csi_ept_emergency_pinxout(EPT0,EMCOCY,EM_OUT_L);
 	
-//	csi_ept_emergency_interruption_en(EPT0,EPT_INT_EP7);      //紧急状态输入中断使能
-	
+	csi_ept_emergency_interruption_en(EPT0,EPT_INT_EP1);      //紧急状态输入中断使能
 //------------------------------------------------------------------------------------------------------------------------	
 
 //------------------------------------------------------------------------------------------------------------------------
@@ -160,22 +158,20 @@ int ept_demo(void)
 	Globaldemo.bGlden    =   DISABLE;                           //全局的Shadow到Active寄存器载入控制使能
 	Globaldemo.byGldmd   =   EPT_LDGLD_ZRO_PRD_LD_SYNC;         //全局载入触发事件选择
 	Globaldemo.bOstmd    =   EPT_LDMD_ANYTIME;                  //One Shot 载入模式使能控制位
-	Globaldemo.bGldprd   =   0 ;                                //全局载入触发周期选择。可以选择N次触发条件满足后，才进行一次全局载入。	
-
-//  Globaldemo.osrearm =  ENABLE;                           //重置ONE SHOT模式。ONE SHOT模式下，一次触发后，需要重置模式才允许再次触发
-//	Globaldemo.gfrcld  =  ENABLE;                             //软件产生一次GLD触发
+	Globaldemo.bGldprd   =   0 ;                                //全局载入触发周期选择。可以选择N次触发条件满足后，才进行一次全局载入。	                       
 	csi_ept_global_config(EPT0,&Globaldemo);
+	csi_ept_global_rearm(EPT0) ;                                //重置ONE SHOT模式。ONE SHOT模式下，一次触发后，需要重置模式才允许再次触发
+	csi_ept_global_sw(EPT0) ;                                   //软件产生一次GLD触发
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_ept_start(EPT0);//start  timer
-//	iRet=csp_ept_get_emSdlck(EPT0);
-//  iRet=csp_ept_get_emHdlck(EPT0);
     while(1){
-		    if((csp_ept_get_emHdlck(EPT0)&EPT_INT_EP7)==EPT_INT_EP7)
+		    if((csp_ept_get_emHdlck(EPT0)&EPT_INT_EP1)==EPT_INT_EP1)
 				{
-					csp_ept_clr_emHdlck(EPT0,EP7);
+					mdelay(10);
+					csp_ept_clr_emHdlck(EPT0,EP1);
 				}
 //            csp_ept_evtrg_soft(EPT0,0);			
-		    csi_ept_change_ch_duty(EPT0,EPT_CH_A, 25);		      
+//		    csi_ept_change_ch_duty(EPT0,EPT_CH_A, 25);		      
 		    mdelay(200);                        
 			//csi_ept_Continuous_software_waveform(EPT0,EPT_CHANNEL_A,EM_AQCSF_L);//
 			//mdelay(200);
@@ -185,6 +181,9 @@ int ept_demo(void)
 	}			
 	return iRet;
 };
+
+
+
 int ept_demo1(void)
 {
 	int iRet = 0;	
@@ -199,7 +198,7 @@ int ept_demo1(void)
 //	csi_pin_set_mux(PA07,PA07_EPI0);
 	csi_pin_set_mux(PA013,PA013_EPI1);
 	csi_pin_set_mux(PB03, PB03_EPI2);
-	csi_pin_set_mux(PB02, PB02_EPI3);
+//	csi_pin_set_mux(PB02, PB02_EPI3);
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_ept_captureconfig_t tPwmCfg;								  
 		tPwmCfg.byWorkmod       = EPT_CAPTURE;                     //WAVE or CAPTURE    //计数或捕获	
@@ -207,27 +206,36 @@ int ept_demo1(void)
 		tPwmCfg.byOneshotMode   = EPT_OP_CONT;                     //OPM    //单次或连续(工作方式)
 		tPwmCfg.byStartSrc      = EPT_SYNC_START;				   //软件使能同步触发使能控制（RSSR中START控制位）//启动方式
 	    tPwmCfg.byPscld         = EPT_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值	
-//		tPwmCfg.byCaptureCapLden = true ;                         //CMPA和CMPB在捕捉事件载入使能
-//		tPwmCfg.byCaptureRearm   = true ;                         //1:重置捕捉计数器
-		tPwmCfg.byCaptureCapmd   = 0;                             //0:连续捕捉模式    1h：一次性捕捉模式
-		tPwmCfg.byCaptureStopWrap=4-1;                            //Capture模式下，捕获事件计数器周期设置值
-		tPwmCfg.byCaptureLdaret  =0;                              //CMPA捕捉载入后，计数器值计数状态控制位(1h：CMPA触发后，计数器值进行重置;0h：CMPA触发后，计数器值不进行重置)
+		tPwmCfg.byCaptureCapmd   = 0;                              //0:连续捕捉模式    1h：一次性捕捉模式
+		tPwmCfg.byCaptureStopWrap=4-1;                             //Capture模式下，捕获事件计数器周期设置值
+		tPwmCfg.byCaptureLdaret  =0;                               //CMPA捕捉载入后，计数器值计数状态控制位(1h：CMPA触发后，计数器值进行重置;0h：CMPA触发后，计数器值不进行重置)
 		tPwmCfg.byCaptureLdbret  =0;                              
 		tPwmCfg.byCaptureLdcret  =0;                              
-		tPwmCfg.byCaptureLddret  =0;                              
-	
-	tPwmCfg.byInter 		 = EPTINT_CAPLD3;                      //interrupt
+		tPwmCfg.byCaptureLddret  =0;                              	
+	    tPwmCfg.byInter 		 =EPTINT_CAPLD3;                 //interrupt
 	csi_ept_capture_init(EPT0, &tPwmCfg);
 
 //------------------------------------------------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------------------------------------------------	
-	
+	csi_ept_emergency_config_t   tEptEmergencyCfg;           //紧急状态输入
+    tEptEmergencyCfg.byEpxInt    = EBI1 ;                    //EPx选择外部IO端口（EBI0~EBI4）
+    tEptEmergencyCfg.byPolEbix   = EBI_POL_H;                //EBIx的输入有效极性选择控制
+	tEptEmergencyCfg.byEpx       = EP1;                      //使能EPx
+	tEptEmergencyCfg.byEpxLckmd  = EP_DIS;                   //
+    tEptEmergencyCfg.byFltpace0  = EPFLT0_2P;                 //EP0、EP1、EP2和EP3的数字去抖滤波检查周期数
+	tEptEmergencyCfg.byFltpace1  = EPFLT1_2P;                 //EP4、EP5、EP6和EP7的数字去抖滤波检查周期数
+	if(tEptEmergencyCfg.byEpxInt ==ORL0){tEptEmergencyCfg.byOrl0 = ORLx_EP0 |ORLx_EP1|ORLx_EP2;}
+	if(tEptEmergencyCfg.byEpxInt ==ORL1){tEptEmergencyCfg.byOrl1 = ORLx_EP4 |ORLx_EP5|ORLx_EP6;}
+	csi_ept_emergency_cfg(EPT0,&tEptEmergencyCfg);		
+//	csi_ept_emergency_interruption_en(EPT0,EPT_INT_EP7);      //紧急状态输入中断使能
+//    csi_ept_set_evtrg(EPT0, EPT_TRG_OUT0, EPT_TRGSRC_PE1, 1); //EP1用trg0输出，经过ETCB  触发sync2 捕获
+	csi_ept_set_sync (EPT0, EPT_TRGIN_SYNCEN2, EPT_TRG_CONTINU,EPT_AUTO_REARM_ZRO);
+//------------------------------------------------------------------------------------------------------------------------
+	csi_ept_int_enable(EPT0, EPT_INT_TRGEV0,true);	
 	csi_ept_start(EPT0);//start  timer
     while(1){		
-		    csi_ept_change_ch_duty(EPT0,EPT_CH_A, 25);		      
+		  		      
 		    mdelay(200);                        
-		    csi_ept_change_ch_duty(EPT0,EPT_CH_A, 50);	
+		    	
 		    mdelay(200);
 	}			
 	return iRet;
@@ -286,70 +294,6 @@ csi_ept_pwmconfig_t tPwmCfg;
 	}
 	return iRet;
 }
-//   csi_ept_syncr_config_t   syncrdemo;  
-//   syncrdemo.syncen0   =   ENABLE;                           //外部Sync事件            //SYNCENx 使能
-//   syncrdemo.syncen1   =   DISABLE;                          //Load触发
-//   syncrdemo.syncen2   =   ENABLE;                           //Capture触发事件
-//   syncrdemo.syncen3   =   DISABLE;                          //CNT增减一拍触发事件
-//   syncrdemo.syncen4   =   DISABLE;                          //外部COS事件T1（用于PWM波形输出控制）
-//   syncrdemo.syncen5   =   DISABLE;                          //外部COS事件T2（用于PWM波形输出控制）
-//   
-//   syncrdemo.ostmd0    =   EPT_OSTMD_CONT;                          //同步触发模式选择(0h：连续触发模式;;;1h：一次性触发模式)
-//   syncrdemo.ostmd1    =   EPT_OSTMD_OS; 
-//   syncrdemo.ostmd2    =   EPT_OSTMD_CONT; 
-//   syncrdemo.ostmd3    =   EPT_OSTMD_OS; 
-//   syncrdemo.ostmd4    =   EPT_OSTMD_OS; 
-//   syncrdemo.ostmd5    =   EPT_OSTMD_OS; 
-//   if( syncrdemo.ostmd0 )syncrdemo.rearm0    =   ENABLE;            //在一次性同步触发模式下，软件重置当前通道状态控制位
-//   if( syncrdemo.ostmd1 )syncrdemo.rearm1    =   ENABLE; 
-//   if( syncrdemo.ostmd2 )syncrdemo.rearm2    =   ENABLE; 
-//   if( syncrdemo.ostmd3 )syncrdemo.rearm3    =   ENABLE; 
-//   if( syncrdemo.ostmd4 )syncrdemo.rearm4    =   ENABLE; 
-//   if( syncrdemo.ostmd5 )syncrdemo.rearm5    =   ENABLE;
-//   syncrdemo.arearm     =EPT_AREARM_ZRO;                            //在一次性同步触发模式下,硬件自动REARM控制位
-//   
-//   syncrdemo.Tx_rearm0  =EPT_TXREARM0_DIS; //禁止Tx硬件自动REARM    //T1或T2 触发SYNCIN0的REARM
-//   
-//   syncrdemo.trgo0sel   =SYNCIN2;          //输入触发通道直通作为TRGSRC0的ExtSync条件的选择。只有当EVTRG寄存器中TRGSRC0控制位选择为ExtSync条件时有效
-//   syncrdemo.trgo1sel   =SYNCIN2;
-//   
-//   csi_ept_syncr_config_init(EPT0, &syncrdemo);	
-//	
-//------------------------------------------------------------------------------------------------------------------------	  
-//	csi_ept_event_trigger_config_t  EVT_DEMO;
-//	EVT_DEMO.trg0en       =   EPT_EVTRG_Enable;               //TRGOUTx使能
-//	EVT_DEMO.trg1en       =   EPT_EVTRG_Disable;
-//	EVT_DEMO.trg2en       =   EPT_EVTRG_Disable;
-//	EVT_DEMO.trg3en       =   EPT_EVTRG_Disable;
-//	EVT_DEMO.trg0sel      =   EPT_TRG01_PE0;                  //TRGEVx事件的触发源选择。
-//	EVT_DEMO.trg1sel      =   EPT_TRG01_DIS;
-//	EVT_DEMO.trg2sel      =   EPT_TRG23_DIS;
-//	EVT_DEMO.trg3sel      =   EPT_TRG23_DIS;
-//			
-//	EVT_DEMO.cnt0initen    =   EPT_EVTRG_Disable;             //RGEVxCNT寄存器计数更新使能
-//	EVT_DEMO.cnt1initen    =   EPT_EVTRG_Disable;
-//	EVT_DEMO.cnt2initen    =   EPT_EVTRG_Disable;
-//	EVT_DEMO.cnt3initen    =   EPT_EVTRG_Disable;
-//	EVT_DEMO.trg0prd    =  0;                                //TRGEV0事件计数的周期设置
-//	EVT_DEMO.trg1prd     =  1;
-//	EVT_DEMO.trg2prd     =  2;
-//	EVT_DEMO.trg3prd     =  3;
-//	EVT_DEMO.cnt0init   = 0;                                 //RGEVxCNT计数器的初始化值设置
-//	EVT_DEMO.cnt1init   = 1;
-//	EVT_DEMO.cnt2init   = 2;
-//	EVT_DEMO.cnt3init   = 3;
-//	EVT_DEMO.cnt0initfrc   =   EPT_EVTRG_trigger_Disable;     //TRGEVxCNT软件触发更新标志位
-//	EVT_DEMO.cnt1initfrc   =   EPT_EVTRG_trigger_Disable;
-//	EVT_DEMO.cnt2initfrc   =   EPT_EVTRG_trigger_Disable;
-//	EVT_DEMO.cnt3initfrc   =   EPT_EVTRG_trigger_Disable;
-//	
-//	EVT_DEMO.fltipscld     =   ENABLE;                        //数字滤波器时钟分频使能
-//	EVT_DEMO.fltckprs      =   1;                             //数字滤波器的时钟频率为PCLK/( FLTCKPRS+1)
-//	EVT_DEMO.srcsel       =   1;                              //0h：禁止滤波;/1h：使能SYNCIN0滤波;/2h：使能SYNCIN1滤波;/3h：使能SYNCIN2滤波/;
-//															  //4h：使能SYNCIN3滤波;/5h：使能SYNCIN4滤波;/6h：使能SYNCIN5滤波;/7h：保留
-//	EVT_DEMO.blkinv        =   0;                             //窗口使能反转控制(0h：窗口不反转;;1h：窗口反转)
-//	EVT_DEMO.alignmd       =   0;                             //窗口对齐模式选择(0h：CNT=ZRO;/1h：CNT=PRD;/2h：CNT=PRDorCNT=ZRO;/3h：T1事件;)
-//	EVT_DEMO.crossmd       =   0;                             //滤波窗跨越窗口对齐点(0h：禁止对齐点跨窗口;;1h：允许对齐点跨窗口)
-//	EVT_DEMO.offset        =  32768;                          //滤波窗的OFFSET设置;
-//	EVT_DEMO.window        =  65535;                          //滤波窗的宽度设置
-//	csi_ept_evtrg_config(EPT0,&EVT_DEMO);
+
+
+
