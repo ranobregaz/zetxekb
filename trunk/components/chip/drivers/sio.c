@@ -206,12 +206,12 @@ csi_error_t csi_sio_timeout_rst(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEna
 /** \brief sio transfer mode set,send(tx)/receive(rx)
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
- *  \param[in] eTransMd: sio transfer mode, send(tx)/receive(rx)
+ *  \param[in] eWorkMd: sio working mode, send(tx)/receive(rx)
  *  \return none
 */
-void csi_sio_set_mode(csp_sio_t *ptSioBase, csi_sio_mode_e eTransMd)
+void csi_sio_set_mode(csp_sio_t *ptSioBase, csi_sio_mode_e eWorkMd)
 {
-	csp_sio_set_mode(ptSioBase, eTransMd);
+	csp_sio_set_mode(ptSioBase, eWorkMd);
 }
 /** \brief enable/disable sio interrupt 
  * 
@@ -255,7 +255,7 @@ int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSi
 		case SIO_TX_MODE_INT:
 			return CSI_UNSUPPORTED;										//sio send interrupt mode, unsupport
 		default:
-			return 0;
+			return CSI_UNSUPPORTED;
 	}
 }
 
@@ -333,7 +333,7 @@ int32_t csi_sio_receive(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwLen)
 			case SIO_RX_MODE_POLL:	
 				return CSI_UNSUPPORTED;;			//sio receive polling mode, unsupport
 		default:
-			return 0;
+			return CSI_UNSUPPORTED;;
 	}
 }
 /** \brief get the status of sio receive 

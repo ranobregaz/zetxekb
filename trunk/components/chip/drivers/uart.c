@@ -218,7 +218,7 @@ uint8_t csi_uart_getc(csp_uart_t *ptUartBase)
  *  \param[in] wTimeOut: the timeout between bytes(ms), unit: ms 
  *  \return  the num of data which is send successfully or CSI_ERROR/CSI_OK
  */
-int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize)
+int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize)
 {
 	int32_t i; 
 	uint8_t *pbySend = (uint8_t *)pData;
@@ -294,7 +294,7 @@ csi_error_t csi_uart_send_async(csp_uart_t *ptUartBase, const void *pData, uint1
  *  \param[in] wTimeOut: the timeout between bytes(ms), unit: ms 
  *  \return  the num of data which is receive successfully
  */
-int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, uint32_t wTimeOut)
+uint16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, uint32_t wTimeOut)
 {
 	uint8_t *pbyRecv = (uint8_t *)pData;
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
