@@ -44,6 +44,7 @@ typedef struct {
 	int tm_wday;			/// weekday		  [1-7]	     
     int tm_yday;            ///< Days in year.[0-365]     !NOTE:January 1st = 0
 	int tm_isdst;			/// Non-0 if daylight savings time is in effect
+	int tm_pm;				///< PM.		  [0/1]
 } csi_rtc_time_t;
 
 /****** definition for rtc *****/

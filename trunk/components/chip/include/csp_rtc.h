@@ -392,6 +392,7 @@ static inline bool csp_rtc_is_running(csp_rtc_t *ptRtcBase)
 	return (!(ptRtcBase->CR & RTC_INIT));
 }
 
+
 static inline void csp_rtc_set_time_hour(csp_rtc_t *ptRtcBase, bool bPm, uint8_t byVal)
 {
 	ptRtcBase->TIMR = (ptRtcBase->TIMR  & (~RTC_HOR_MSK) & (~RTC_PM_MSK)) |(byVal << RTC_HORU_POS) | (bPm << RTC_PM_POS);
@@ -455,6 +456,11 @@ static inline uint8_t csp_rtc_read_wday(csp_rtc_t *ptRtcBase)
 static inline uint8_t csp_rtc_read_hour(csp_rtc_t *ptRtcBase)
 {
 	return (  ((ptRtcBase->TIMR & RTC_HORT_MSK) >> RTC_HORT_POS) * 10 + ((ptRtcBase->TIMR & RTC_HORU_MSK) >> RTC_HORU_POS)  );
+}
+
+static inline uint8_t csp_rtc_read_pm(csp_rtc_t *ptRtcBase)
+{
+	return (  ((ptRtcBase->TIMR & RTC_PM_MSK) >> RTC_PM_POS));
 }
 
 static inline uint8_t csp_rtc_read_min(csp_rtc_t *ptRtcBase)

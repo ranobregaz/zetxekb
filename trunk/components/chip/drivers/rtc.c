@@ -15,7 +15,7 @@
 #include "rtc_alg.h"
 #include "irq.h"
 #include "soc.h"
-
+#include "board_config.h"
 
 /* externs function--------------------------------------------------------*/
 /* private function--------------------------------------------------------*/
@@ -40,7 +40,7 @@ csp_rtc_time_t tRtcAlarmTime;
 void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 {
     uint8_t byDiva = 0;
-	uint16_t byDivs = 0;
+	uint16_t hwDivs = 0;
 	
 	soc_clk_enable(RTC_SYS_CLK);
 		
@@ -49,47 +49,49 @@ void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig)
 	switch (tConfig->byClkSrc)
 	{ 
 		case (RTC_ISOSC):
-			
+			csi_isosc_enable();
 			byDiva = 49;
-			byDivs = 134;
+			hwDivs = 134;
 			break;
 		case (RTC_EMOSC):
-			byDiva = 63;
-			byDivs = 31;
+			csi_emosc_enable(EMOSC_VALUE);
+			byDiva = 3;
+			hwDivs = 2047;
 			break;
 		case (RTC_IMOSC_DIV4):
 			switch(csp_get_imosc_fre(SYSCON))
 			{
 				case (0):	//5.556MHz
 					byDiva = 124;
-					byDivs = 2777;
+					hwDivs = 2777;
 					break;
 				case (1):	//4.194MHz
 					byDiva = 124;
-					byDivs = 2096;
+					hwDivs = 2096;
 					break;
 				case (2):	//2.097MHz
 					byDiva = 124;
-					byDivs = 1047;
+					hwDivs = 1047;
 					break;
 				case (3):	//131.072KHz
 					byDiva = 124;
-					byDivs = 127;
+					hwDivs = 127;
 					break;
 				default:
 					break;
 			}			
 			break;
 		case (RTC_EMOSC_DIV4):
+			csi_emosc_enable(EMOSC_VALUE);
 			byDiva = 63;
-			byDivs = 31;
+			hwDivs = 31;
 			break;
 		default:
 			break;
 	}
 	
 	ptRtc->KEY = 0xCA53;
-	ptRtc->CCR = (ptRtc->CCR & (~RTC_CLKSRC_MSK) & (~RTC_DIVA_MSK)& (~RTC_DIVS_MSK)) | (tConfig->byClkSrc << RTC_CLKSRC_POS)|(byDiva << RTC_DIVA_POS)| (byDivs << RTC_DIVS_POS) | RTC_CLKEN;
+	ptRtc->CCR = (ptRtc->CCR & (~RTC_CLKSRC_MSK) & (~RTC_DIVA_MSK)& (~RTC_DIVS_MSK)) | (tConfig->byClkSrc << RTC_CLKSRC_POS)|(byDiva << RTC_DIVA_POS)| (hwDivs << RTC_DIVS_POS) | (RTC_CLKEN);
 	ptRtc->KEY = 0x0;
 	while((ptRtc->CCR & RTC_CLK_STABLE) == 0);
 	
@@ -163,10 +165,10 @@ csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *rtctime)
     csi_error_t ret = CSI_OK;
 		
 	do {
-		if (csp_rtc_get_fmt(ptRtc) == RTC_12FMT && rtctime->tm_hour>12) {
-			ret = CSI_ERROR;
-			break;
-		}
+//		if (csp_rtc_get_fmt(ptRtc) == RTC_12FMT && rtctime->tm_hour>12) {
+//			ret = CSI_ERROR;
+//			break;
+//		}
 		
 		ret = (csi_error_t) clock_check_tm_ok((const struct tm *)rtctime);
         if (ret < CSI_OK) {
@@ -175,18 +177,20 @@ csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *rtctime)
         }
 		csp_rtc_stop(ptRtc);
 		
+	
 		
 		rtctime->tm_wday = get_week_by_date((struct tm *)rtctime);
 		
 		
 		apt_rtc_set_date(ptRtc, rtctime->tm_year, rtctime->tm_mon, rtctime->tm_wday, rtctime->tm_mday);
 		
-		if (rtctime->tm_hour > 12 && csp_rtc_get_fmt(ptRtc) == RTC_12FMT)
-			ret =  apt_rtc_set_time(ptRtc, RTC_PM, rtctime->tm_hour-12, rtctime->tm_min,rtctime->tm_sec);
-		else
-			ret =  apt_rtc_set_time(ptRtc, RTC_AM, rtctime->tm_hour, rtctime->tm_min,rtctime->tm_sec);
-		
 	
+		if ((rtctime->tm_hour == 12) && (csp_rtc_get_fmt(ptRtc) == RTC_24FMT))
+			ret =  apt_rtc_set_time(ptRtc, RTC_PM, rtctime->tm_hour, rtctime->tm_min,rtctime->tm_sec);
+		else
+			ret =  apt_rtc_set_time(ptRtc, rtctime->tm_pm, rtctime->tm_hour, rtctime->tm_min,rtctime->tm_sec);
+		
+		
 		if (ret < CSI_OK) {
             break;
         }
@@ -352,6 +356,7 @@ void csi_rtc_get_time(csp_rtc_t *ptRtc, csi_rtc_time_t *rtctime)
 	rtctime->tm_hour = csp_rtc_read_hour(ptRtc);
 	rtctime->tm_min = csp_rtc_read_min(ptRtc);
 	rtctime->tm_sec = csp_rtc_read_sec(ptRtc);
+	rtctime->tm_pm = csp_rtc_read_pm(ptRtc);
 }
 
 /**
