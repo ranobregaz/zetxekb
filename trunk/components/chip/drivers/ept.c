@@ -747,4 +747,75 @@ csi_error_t csi_ept_continuous_software_waveform(csp_ept_t *ptEptBase, csi_ept_c
 	return CSI_OK;
 }
 
+/** \brief ept sync input evtrg config  
+ * 
+ *  \param[in] ptEptBase: pointer of ept register structure
+ *  \param[in] eTrgin: ept sync evtrg input channel(0~5)
+ *  \param[in] eTrgMode: ept sync evtrg mode, continuous/once
+ *  \param[in] eAutoRearm: refer to csi_ept_arearm_e 
+ *  \return none
+ */
+void csi_ept_set_sync(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, csi_ept_trgmode_e eTrgMode, csi_ept_arearm_e eAutoRearm)
+{
+	csp_ept_set_sync_mode(ptEptBase, eTrgIn, eTrgMode);
+	csp_ept_set_auto_rearm(ptEptBase, eAutoRearm);
+	csp_ept_sync_enable(ptEptBase, eTrgIn, ENABLE);
+}
+
+/** \brief rearm ept sync evtrg  
+ * 
+ *  \param[in] ptBtBase: pointer of ept register structure
+ *  \param[in] eTrgin: ept sync evtrg input channel(0~5)
+ *  \return none
+ */
+void csi_ept_rearm_sync(csp_ept_t *ptEptBase,csi_ept_trgin_e eTrgin)
+{
+	csp_ept_rearm_sync(ptEptBase, eTrgin);
+}
+/** \brief ept evtrg output config
+ * 
+ *  \param[in] ptBtBase:pointer of ept register structure
+ *  \param[in] byTrgOut: evtrg out port(0~3)
+ *  \param[in] eTrgSrc: evtrg source(1~15) 
+ *  \param[in] byTrgCnt: evtrg count 
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_trgsrc_e eTrgSrc, uint8_t byTrgCnt)
+{
+	switch (byTrgOut)
+	{
+		case EPT_TRG_OUT0:
+		case EPT_TRG_OUT1: 
+			if(eTrgSrc == EPT_TRGSRC_PEND)
+				return CSI_ERROR;
+			if(eTrgSrc == EPT_TRGSRC_DIS)								
+			{
+				csp_ept_trg_xoe_enable(ptEptBase, byTrgOut, DISABLE);	//disable evtrg source out
+				return CSI_OK;
+			}
+			csp_ept_set_trgsrc01(ptEptBase, byTrgOut, eTrgSrc);
+			break;
+		case EPT_TRG_OUT2:
+		case EPT_TRG_OUT3: 
+			if(eTrgSrc == EPT_TRGSRC_EX)
+				return CSI_ERROR;
+			if(eTrgSrc == EPT_TRGSRC_DIS)								
+			{
+				csp_ept_trg_xoe_enable(ptEptBase, byTrgOut, DISABLE);	//disable evtrg source out
+				return CSI_OK;
+			}
+			if (eTrgSrc == EPT_TRGSRC_PEND)
+				eTrgSrc = 12;
+			csp_ept_set_trgsrc23(ptEptBase, byTrgOut, eTrgSrc);
+			break;
+		default: 
+			return CSI_ERROR;
+	}
+	
+	csp_ept_set_trgprd(ptEptBase, byTrgOut, byTrgCnt - 1);				//evtrg count
+	csp_ept_trg_xoe_enable(ptEptBase, byTrgOut, ENABLE);				//evtrg out enable
+	
+	return CSI_OK;
+}
+
 
