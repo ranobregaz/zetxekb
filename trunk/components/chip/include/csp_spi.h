@@ -1,11 +1,12 @@
 /***********************************************************************//** 
  * \file  csp_spi.h
  * \brief  SPI description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2021 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-8-27 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2021-1-12 <td>V0.1  <td>ZJY   <td>macro definition style, modify
+ * <tr><td> 2021-5-31 <td>V0.2  <td>LQ    <td>macro definition style, modify
  * </table>
  * *********************************************************************
 */
@@ -206,7 +207,7 @@ typedef enum
 typedef enum
 {
 	SPI_ROTIM_INT		= (0x01ul << 0), 		//Receive Overrun Interrupt              
-	SPI_RTIM_INT    	= (0x01ul << 1), 		//Receive Timeout InterrupT          
+	SPI_RTIM_INT    	= (0x01ul << 1), 		//Receive Timeout Interrupt          
 	SPI_RXIM_INT   		= (0x01ul << 2),		//Receive FIFO Interrupt           
 	SPI_TXIM_INT		= (0x01ul << 3),   		//Transmit FIFO interrupt              
 }spi_int_e;
@@ -215,19 +216,19 @@ typedef enum
 /******************************************************************************
 ********************** SPI External Functions Declaration *********************
 ******************************************************************************/
-extern void csp_spi_default_init(csp_spi_t *ptSpiBase);
-extern void csp_spi_set_int(csp_spi_t *ptSpiBase,spi_int_e eSpiInt,bool bEnable);
-extern void csp_spi_set_clk_div(csp_spi_t *ptSpiBase,uint8_t wScr,uint8_t wCpsdvsr);
-extern void csp_spi_set_slave(csp_spi_t *ptSpiBase,spi_data_size_e eSize,spi_spo_h_e eSph, spi_rxifl_e eRxfifo, spi_sod_e eSod);
-extern void csp_spi_set_master(csp_spi_t *ptSpiBase,spi_data_size_e eSize,spi_spo_h_e eSpoH, spi_rxifl_e eRxfifo, spi_lbm_e eLbm);
-extern void csp_spi_write_byte(csp_spi_t *ptSpiBase,uint16_t hwData);
+//extern void csp_spi_default_init(csp_spi_t *ptSpiBase);
+//extern void csp_spi_set_int(csp_spi_t *ptSpiBase,spi_int_e eSpiInt,bool bEnable);
+//extern void csp_spi_set_clk_div(csp_spi_t *ptSpiBase,uint8_t wScr,uint8_t wCpsdvsr);
+//extern void csp_spi_set_slave(csp_spi_t *ptSpiBase,spi_data_size_e eSize,spi_spo_h_e eSph, spi_rxifl_e eRxfifo, spi_sod_e eSod);
+//extern void csp_spi_set_master(csp_spi_t *ptSpiBase,spi_data_size_e eSize,spi_spo_h_e eSpoH, spi_rxifl_e eRxfifo, spi_lbm_e eLbm);
+//extern void csp_spi_write_byte(csp_spi_t *ptSpiBase,uint16_t hwData);
 
-extern uint16_t csp_spi_read_byte(csp_spi_t *ptSpiBase,uint16_t hwWdata);
-extern int16_t  csp_spi_read_write_byte(csp_spi_t *ptSpiBase,uint16_t hwWdata);
+//extern uint16_t csp_spi_read_byte(csp_spi_t *ptSpiBase,uint16_t hwWdata);
+//extern int16_t  csp_spi_read_write_byte(csp_spi_t *ptSpiBase,uint16_t hwWdata);
 
-extern uint8_t  csp_spi_busy(csp_spi_t *ptSpiBase);
-extern uint8_t  csp_spi_read_ready(csp_spi_t *ptSpiBase);
-extern uint8_t  csp_spi_write_ready(csp_spi_t *ptSpiBase);
+//extern uint8_t  csp_spi_busy(csp_spi_t *ptSpiBase);
+//extern uint8_t  csp_spi_read_ready(csp_spi_t *ptSpiBase);
+//extern uint8_t  csp_spi_write_ready(csp_spi_t *ptSpiBase);
 
 /******************************************************************************
 ********************* SPI inline Functions Declaration **********************
@@ -313,5 +314,57 @@ static inline void csp_spi_wakeup_dis(void)
 	NVIC_ClearWakeupIRQ(SPI_IRQn);
 }
 
+//lin add
+static inline void csp_spi_set_clk_div(csp_spi_t *ptSpiBase,uint8_t wScr,uint8_t wCpsdvsr)
+{
+	ptSpiBase->CR0 = (ptSpiBase->CR0 & (~SPI_SCR_MSK)) | SPI_SCR(wScr);
+	ptSpiBase->CPSR  = wCpsdvsr;	
+}
+
+static inline uint8_t csp_spi_write_ready(csp_spi_t *ptSpiBase)
+{	
+	if(csp_spi_get_sr(ptSpiBase) & SPI_TNF)
+		return TRUE;			//no full
+	else
+		return FALSE;			//full
+}
+
+static inline uint8_t csp_spi_busy(csp_spi_t *ptSpiBase)
+{
+	if(csp_spi_get_sr(ptSpiBase) & SPI_BSY)
+		return TRUE;			//busy
+	else
+		return FALSE;			//idle
+}
+
+static inline void csp_spi_default_init(csp_spi_t *ptSpiBase)
+{
+	ptSpiBase->CR0	 = SPI_CR0_RST;
+    ptSpiBase->CR1   = SPI_CR1_RST;
+    //ptSpiBase->DR    = SPI_DR_RST;
+    //ptSpiBase->SR    = SPI_SR_RST;
+    ptSpiBase->CPSR  = SPI_CPSR_RST;
+    ptSpiBase->IMSCR = SPI_IMSCR_RST;
+   //ptSpiBase->RISR  = SPI_RISR_RST;
+    //ptSpiBase->MISR  = SPI_MISR_RST;
+    ptSpiBase->ICR	 = SPI_ICR_RST; 
+}
+
+static inline void csp_spi_set_int(csp_spi_t *ptSpiBase,spi_int_e eSpiInt,bool bEnable)
+{
+	if(bEnable)
+		ptSpiBase->IMSCR |= eSpiInt;
+	else
+		ptSpiBase->IMSCR &= ~eSpiInt;
+
+}
+
+static inline uint8_t csp_spi_read_ready(csp_spi_t *ptSpiBase)
+{
+	if(csp_spi_get_sr(ptSpiBase) & SPI_RNE)
+		return TRUE;			//no empty
+	else
+		return FALSE;			//empty
+}
 #endif
 

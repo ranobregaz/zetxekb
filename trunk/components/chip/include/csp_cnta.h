@@ -1,11 +1,12 @@
 /***********************************************************************//** 
  * \file  csp_cnta.h
  * \brief CNTA description and static inline functions at register level 
- * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * \copyright Copyright (C) 2015-2021 @ APTCHIP
  * <table>
- * <tr><th> Date  <th>Version  <th>Author  <th>Description
- * <tr><td> 2020-9-10 <td>V0.0  <td>ZJY   <td>initial
- * <tr><td> 2021-1-9 <td>V0.0  <td>ZJY   <td>modify
+ * <tr><th> Date  <th>Version   <th>Author  <th>Description
+ * <tr><td> 2020-9-10 <td>V0.0  <td>ZJY     <td>initial
+ * <tr><td> 2021-1-9 <td>V0.1   <td>ZJY     <td>modify
+ * <tr><td> 2021-5-27 <td>V0.2  <td>LQ      <td>modify
  * </table>
  * *********************************************************************
 */
@@ -149,15 +150,15 @@ typedef enum
 /******************************************************************************
 ********************** CNTA External Functions Declaration ********************
 ******************************************************************************/
-extern void csp_cnta_def_init(csp_cnta_t *ptCntaBase);
-extern void csp_cnta_set_int(csp_cnta_t *ptCntaBase, cnta_int_e eBtInt,bool bEnable);
-extern void csp_cnta_cadata_update(csp_cnta_t *ptCntaBase, uint16_t hwDataH, uint16_t hwDataL);
-extern void csp_cnta_set_cadata(csp_cnta_t *ptCntaBase, uint16_t hwDataH, uint16_t hwDataL);
-extern void csp_cnta_set_carrier_fre(csp_cnta_t *ptCntaBase, uint32_t wFreq, uint8_t byDutyCycle);
-extern void csp_cnta_set_carrier(csp_cnta_t *ptCntaBase, cnta_carrier_e eCarCtrl, cnta_envelope_e eEnvelope, 
-								cnta_remstat_e eRemsta, cnta_osp_e eOsp);
-extern void csp_cnta_set_sync(csp_cnta_t *ptCntaBase, cnta_pendrem_e eTcPend, cnta_matchrem_e eTcMatch, cnta_hwstrobe_e eHstrobe);
-extern void csp_cnta_init(csp_cnta_t *ptCntaBase, cnta_ckdiv_e eClkDiv, cnta_mode_e eMode);
+//extern void csp_cnta_def_init(csp_cnta_t *ptCntaBase);
+//extern void csp_cnta_set_int(csp_cnta_t *ptCntaBase, cnta_int_e eBtInt,bool bEnable);
+//extern void csp_cnta_cadata_update(csp_cnta_t *ptCntaBase, uint16_t hwDataH, uint16_t hwDataL);
+//extern void csp_cnta_set_cadata(csp_cnta_t *ptCntaBase, uint16_t hwDataH, uint16_t hwDataL);
+//extern void csp_cnta_set_carrier_fre(csp_cnta_t *ptCntaBase, uint32_t wFreq, uint8_t byDutyCycle);
+//extern void csp_cnta_set_carrier(csp_cnta_t *ptCntaBase, cnta_carrier_e eCarCtrl, cnta_envelope_e eEnvelope, 
+//								cnta_remstat_e eRemsta, cnta_osp_e eOsp);
+//extern void csp_cnta_set_sync(csp_cnta_t *ptCntaBase, cnta_pendrem_e eTcPend, cnta_matchrem_e eTcMatch, cnta_hwstrobe_e eHstrobe);
+//extern void csp_cnta_init(csp_cnta_t *ptCntaBase, cnta_ckdiv_e eClkDiv, cnta_mode_e eMode);
 
 
 /******************************************************************************
@@ -197,4 +198,44 @@ static inline void csp_cnta_vic_irq_en(void)
 	NVIC_EnableIRQ(CNTA_IRQn);
 }
 
+//lin add
+static inline void csp_cnta_set_ckdiv(csp_cnta_t *ptCntaBase,cnta_ckdiv_e eClkDiv, cnta_mode_e eMode)
+{
+	ptCntaBase->CACON = (ptCntaBase->CACON & ~(CNTA_CKDIV_MSK | CNTA_MODE_MSK));
+	ptCntaBase->CACON |= (eClkDiv << CNTA_CKDIV_POS) | (eMode << CNTA_MODE_POS);
+}
+
+static inline void csp_cnta_soft_rst(csp_cnta_t *ptCntaBase)
+{
+	ptCntaBase->CADATAH = CNTA_RESET_VALUE;             //default init valu
+    ptCntaBase->CADATAL = CNTA_RESET_VALUE;				//default init valu
+    ptCntaBase->CACON   = CNTA_RESET_VALUE;				//default init valu
+    ptCntaBase->INTMASK = CNTA_RESET_VALUE;				//default init valu
+}
+
+static inline void csp_cnta_set_int(csp_cnta_t *ptCntaBase, cnta_int_e eBtInt,bool bEnable)
+{
+	if(bEnable)
+		ptCntaBase->INTMASK |= eBtInt; 
+	else
+		ptCntaBase->INTMASK  &= ~eBtInt; 
+}
+
+static inline void csp_cnta_set_carrier(csp_cnta_t *ptCntaBase, cnta_carrier_e eCarCtrl, cnta_envelope_e eEnvelope, 
+						cnta_remstat_e eRemsta, cnta_osp_e eOsp)
+{
+	ptCntaBase->CACON = (ptCntaBase->CACON & ~(CNTA_CARRIER_MSK | CNTA_ENVELOPE_MSK | CNTA_REMSTAT_MSK | CNTA_OSP_MSK));
+	ptCntaBase->CACON |= (eCarCtrl << CNTA_CARRIER_POS) | (eEnvelope << CNTA_ENVELOPE_POS) | (eRemsta << CNTA_REMSTAT_POS) | (eOsp << CNTA_OSP_POS);
+}
+
+static inline void csp_cnta_soft_updata(csp_cnta_t *ptCntaBase)
+{
+	ptCntaBase->CACON |= (CNTA_SW_STROBE << CNTA_SW_STROBE_POS);	
+}
+
+static inline void csp_cnta_set_sync(csp_cnta_t *ptCntaBase, cnta_pendrem_e eTcPend, cnta_matchrem_e eTcMatch, cnta_hwstrobe_e eHwstrobe)
+{
+	ptCntaBase->CACON = (ptCntaBase->CACON & ~(CNTA_PEND_REM_MSK | CNTA_MATCH_REM_MSK | CNTA_HW_STROBE_MSK));
+	ptCntaBase->CACON |= (eTcPend << CNTA_PEND_REM_POS) | (eTcMatch << CNTA_MATCH_REM_POS) | (eHwstrobe << CNTA_HW_STROBE_POS);
+}
 #endif
