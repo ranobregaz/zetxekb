@@ -21,7 +21,7 @@
 #include "csp.h"
 #include "csp_i2c.h"
 
-#define BUFSIZE             20//32
+
 
 
 #ifdef __cplusplus
@@ -35,7 +35,8 @@ struct csi_iic_slave_config {
 	uint8_t		bySpeedMode;			//IIC Speed mode
 	uint8_t		byAddrMode;				//IIC ADDR mode 7/10 bit
 	uint16_t	hwInterrput;			//IIC INTERRPUT SET
-	
+	uint32_t	wSdaTimeout;			//IIC SDA timeout SET
+	uint32_t	wSclTimeout;			//IIC SCL timeout SET
 };
 
 typedef struct csi_iic_master_config csi_iic_master_config_t;
@@ -45,8 +46,22 @@ struct csi_iic_master_config {
 	uint8_t		byAddrMode;				//IIC ADDR mode 7/10 bit
 	uint8_t		byReStart;				//IIC restart enable/disable
 	uint16_t	hwInterrput;			//IIC INTERRPUT SET
-	
+	uint32_t	wSdaTimeout;			//IIC SDA timeout SET
+	uint32_t	wSclTimeout;            //IIC SCL timeout SET
 };
+
+
+typedef struct {
+	
+	volatile uint8_t			*pbySlaveRxBuf;			//slave  receive buffer
+	volatile uint8_t			*pbySlaveTxBuf;			//slave  send buffer
+	uint16_t        hwRxSize;				//receive buffer size
+	uint16_t        hwTxSize;				//send buffer size	
+} csi_iic_slave_t;
+
+extern csi_iic_slave_t g_tSlave;	
+
+ 
 
 /**
   \enum        csi_iic_speed_t
@@ -167,6 +182,15 @@ void csi_iic_read_nbyte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wReadAd
 void csi_iic_slave_receive_send(csp_i2c_t *ptIicBase);
 
 
+/** \brief  iic  master  read n byte data
+ * 
+ * 	\param[in] pbyIicRxBuf: pointer of iic RX data buffer
+ *  \param[in] hwIicRxSize: Rx buffer size
+ * 	\param[in] pbyIicTxBuf: pointer of iic TX data buffer
+ * 	\param[in] hwIicTxSize: Tx buffer size
+ *  \return none
+ */ 
+void csi_iic_set_slave_buffer(volatile uint8_t *pbyIicRxBuf,uint16_t hwIicRxSize,volatile uint8_t *pbyIicTxBuf,uint16_t hwIicTxSize);
 
 
 #ifdef __cplusplus
