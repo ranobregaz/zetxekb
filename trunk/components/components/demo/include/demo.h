@@ -61,6 +61,11 @@ int adc_samp_continuous_int_demo(void);
 int sio_led_rgb_demo(void);
 int sio_led_rgb_recv_rxfull_demo(void);
 int sio_led_rgb_recv_rxdone_demo(void);
+//hdq
+int sio_hdq_send_demo(void);
+int sio_hdq_recv_wrcmd_demo(void);
+int sio_hdq_send_recv_demo(void);
+int sio_hdq_recv_rdcmd_demo(void);
 
 //lpt demo
 extern int lpt_timer_demo(void);
