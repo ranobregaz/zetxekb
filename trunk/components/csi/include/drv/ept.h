@@ -513,6 +513,18 @@ typedef enum{
 	EPT_FILT_SYNCIN5,			//filter input syncin5		
 }csi_ept_filter_insrc_e;
 
+
+/**
+ * \enum	csi_ept_cntinit_e
+ * \brief   ept filter input signal source
+ */
+typedef enum{
+	EPT_CNT0INIT		= 0,	//filter input syncin0
+	EPT_CNT1INIT,				//filter input syncin1	
+	EPT_CNT2INIT,				//filter input syncin2
+	EPT_CNT3INIT,				//filter input syncin3	
+}csi_ept_cntinit_e;
+
 typedef enum{
 	EPT_EVTRG_Disable 	= 0,
 	EPT_EVTRG_Enable
@@ -594,15 +606,51 @@ uint8_t csi_ept_get_hdlck_st(csp_ept_t *ptEp);
 */
 void csp_ept_clr_hdlck(csp_ept_t *ptEp, csi_ept_ebi_e eEbi);
 
+/** 
+  \brief 	   ept sync input evtrg config  
+  \param[in]   ptEptBase	pointer of ept register structure
+  \param[in]   eTrgin		ept sync evtrg input channel(0~5)
+  \param[in]   eTrgMode		ept sync evtrg mode, continuous/once
+  \param[in]   eAutoRearm	refer to csi_ept_arearm_e 
+  \return 	   none
+ */
+void csi_ept_set_sync(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, csi_ept_trgmode_e eTrgMode, csi_ept_arearm_e eAutoRearm);
 
-/**
-  \brief   config ept out trigger 
-  \param   ptEpt       EPT handle to operate
-  \param 	eCh			0/1/2/3
-  \param 	eSrc	
-  \param   byTime		output trigger when event happens the 'byTime'th time.
-*/
-csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEpt,uint8_t eCh,csi_ept_trgsrc_e eSrc, uint8_t byTime);
+/** 
+  \brief 	   ept sync input filter config  
+  \param[in]   ptEptBase	pointer of ept register structure
+  \param[in]   ptFilter		pointer of sync input filter parameter config structure
+  \return 	   error code \ref csi_error_t
+ */
+csi_error_t csi_ept_set_sync_filter(csp_ept_t *ptEptBase, csi_ept_filter_config_t *ptFilter);
+
+/** 
+  \brief 	   rearm ept sync evtrg  
+  \param[in]   ptEptBase	pointer of ept register structure
+  \param[in]   eTrgin		ept sync evtrg input channel(0~5)
+  \return 	   none
+ */
+void csi_ept_rearm_sync(csp_ept_t *ptEptBase,csi_ept_trgin_e eTrgin);
+
+/** 
+  \brief 	   ept evtrg output config
+  \param[in]   ptEptBase	pointer of ept register structure
+  \param[in]   byTrgOut		evtrg out port(0~3)
+  \param[in]   eTrgSrc		evtrg source(1~15) 
+  \param[in]   byTrgCnt		evtrg count value
+  \return	   error code \ref csi_error_t
+ */
+csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_trgsrc_e eTrgSrc, uint8_t byTrgCnt);
+
+/** 
+  \brief 	   ept evtrg cntxinit control
+  \param[in]   ptEptBase	pointer of ept register structure
+  \param[in]   eCntxInit	evtrg countinit channel(0~3)
+  \param[in]   byCntInitVal	evtrg cntxinit value
+  \param[in]   bEnable		cntxiniten enable/disable
+  \return 	   error code \ref csi_error_t
+ */
+csi_error_t csi_ept_set_evcntinit(csp_ept_t *ptEptBase, csi_ept_cntinit_e eCntxInit, uint8_t byCntInitVal, bool bEnable);
 
 /**
   \brief   enable/disable ept out trigger 
@@ -610,7 +658,7 @@ csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEpt,uint8_t eCh,csi_ept_trgsrc_e eSrc
   \param 	eCh			0/1/2/3
   \param   bEnable		ENABLE/DISABLE
 */
-csi_error_t csi_ept_evtrg_enable(csp_ept_t *ptEpt, uint8_t byCh, bool bEnable);
+//csi_error_t csi_ept_evtrg_enable(csp_ept_t *ptEpt, uint8_t byCh, bool bEnable);
 
 /**
    \brief   set ept sync
