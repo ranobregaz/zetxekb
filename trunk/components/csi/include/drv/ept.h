@@ -535,16 +535,6 @@ typedef enum{
 	EPT_Enable_trigger_start
 }csi_ept_evtrg_trigger_e;
 
-uint16_t csi_ept_get_prd(csp_ept_t *ptEpt);
-
-
-/**
- \brief config pwm dual channel output mode. 
-  * CHnX active Low ,ChnY active Low
-*/
-csi_error_t csi_ept_set_ch_dualout_md2(csp_ept_t *ptEpt, csi_ept_chtype_e eCh,  uint32_t wDutyCycle, uint32_t wT1ns, uint32_t wT2ns);
-
-
 
 /**
  \brief change ept output dutycycle. 
@@ -552,25 +542,6 @@ csi_error_t csi_ept_set_ch_dualout_md2(csp_ept_t *ptEpt, csi_ept_chtype_e eCh,  
  \param wActiveTime cmpx data
 */
 csi_error_t csi_ept_change_ch_duty(csp_ept_t *ptEpt, csi_ept_chtype_e eCh, uint32_t wActiveTime);
-
-
-
-/**
- \brief config pwm single output mode1
-
-  * ChnX    		  _____
-  *           _______|    |_______
-  * 	
-  * \param ptEpt 	EPT handle to operate
-  * \param eCh		EPT output channel(EPT_CH_A/B/C/D)
-  * \param wDutyCycle output dutycycle (40 means 40%)
-  * \return tRet   
-*/
-
-csi_error_t csi_ept_set_singleout_md1(csp_ept_t *ptEpt, csi_ept_chtype_e eCh, uint32_t wDutyCycle);
-
-
-
 
 /**
  \brief chopper configuration
@@ -581,16 +552,6 @@ csi_error_t csi_ept_set_singleout_md1(csp_ept_t *ptEpt, csi_ept_chtype_e eCh, ui
  \return none 
 */
 void csi_ept_set_cp(csp_ept_t *ptEpt, uint8_t byCdiv, uint8_t byCduty, uint8_t byFirstWidth);
-
-/**
- \brief channeln chopper output enable 
- \param ptEpt    ept handle to operate
- \param bEnableX/Y  ENABLE/DISABLE
- \return none
-*/
-void csi_ept_cpa_enable(csp_ept_t *ptEpt, bool bEnableX, bool bEnableY);
-void csi_ept_cpb_enable(csp_ept_t *ptEpt, bool bEnableX, bool bEnableY);
-void csi_ept_cpc_enable(csp_ept_t *ptEpt, bool bEnableX, bool bEnableY);
 
 /**
  \brief get harklock status
@@ -667,39 +628,147 @@ csi_error_t csi_ept_set_evcntinit(csp_ept_t *ptEptBase, uint8_t byCntChx, uint8_
   \param 	eCh			0/1/2/3
   \param   bEnable		ENABLE/DISABLE
 */
-//csi_error_t csi_ept_evtrg_enable(csp_ept_t *ptEpt, uint8_t byCh, bool bEnable);
+csi_error_t csi_ept_evtrg_enable(csp_ept_t *ptEpt, uint8_t byCh, bool bEnable);
 
-/**
-   \brief   set ept sync
-   \param   ptEpt       EPT handle to operate
-   \param   bySync    sync select: 0/1/2/3
-   \param   csi_ept_syncmode_t  EPT_SYNC_CONT/EPT_SYNC_OS
-   \param   bARearmEnable auto rearm enable/disable
-   \return  csi_error_t   
-*/
-
+/** \brief start ept
+ *  \param pteptBase:  pointer of bt register structure
+ *  \return error code \ref csi_error_t
+ */ 
 csi_error_t csi_ept_start(csp_ept_t *ptBtBase);
+
+ /**
+ \brief  Basic configuration
+ \param  ptEptBase    	ept handle to operate 
+ \param  pteptPwmCfg   	refer to csi_ept_config_t
+ \return CSI_OK/CSI_ERROR
+*/
 csi_error_t csi_ept_config_init(csp_ept_t *ptBtBase, csi_ept_config_t *ptBtPwmCfg);
+ /**
+ \brief  Channel configuration
+ \param  ptEptBase    	ept handle to operate 
+ \param  tPwmCfg   	    refer to csi_ept_pwmchannel_config_t
+ \param  channel        Channel label
+ \return CSI_OK /CSI_ERROR
+*/
 csi_error_t csi_ept_channel_config(csp_ept_t *pteptBase, csi_ept_pwmchannel_config_t *tPwmCfg, csi_ept_channel_e changl);
+ /**
+ \brief  DeadZoneTime configuration 
+ \param  ptEptBase    	ept handle to operate 
+ \param  byVal         refer to csi_ept_dbdldr_e
+ \param  byWod         refer to csp_ept_shdw_e
+ \param  byWod2	       refer to csp_ept_lddb_e
+ \return CSI_OK /CSI_ERROR
+*/
 csi_error_t csi_ept_dbcr_config(csp_ept_t *ptEptBase, csi_ept_deadzone_config_t *tCfg);
+/**
+ \brief  Carrier output parameter configuration 
+ \param  ptEptBase    	ept handle to operate 
+ \param  tCfg         refer to csi_ept_Chopper_config_t
+ \return CSI_OK /CSI_ERROR
+*/
 csi_error_t csi_ept_choppercpcr_config(csp_ept_t *ptEptBase, csi_ept_Chopper_config_t *tCfg);
-csi_error_t  csi_ept_evtrg_config(csp_ept_t *ptEptBase, csi_ept_Event_trigger_config_t *tCfg);
+
+/** \brief ept sync input evtrg config  
+ * 
+ *  \param[in] ptEptBase: pointer of ept register structure
+ *  \param[in] eTrgin: ept sync evtrg input channel(0~5)
+ *  \param[in] eTrgMode: ept sync evtrg mode, continuous/once
+ *  \param[in] eAutoRearm: refer to csi_ept_arearm_e 
+ *  \return none
+ */
 void csi_ept_set_sync(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, csi_ept_trgmode_e eTrgMode, csi_ept_arearm_e eAutoRearm);
-
+/** \brief Continuous software waveform control
+ *  \param[in] ptEptBase: pointer of ept register structure
+ *  \param[in] byCh        refer to csi_ept_channel_e
+ *  \param[in] bEnable:    refer to  csp_ept_aqosf_e
+ *  \return  none
+ */
 csi_error_t csi_ept_continuous_software_waveform(csp_ept_t *ptEptBase, csi_ept_channel_e byCh, csp_ept_aqcsf_e bEnable);
+/**
+ \brief  ept configuration Loading
+ \param  ptEptBase    	ept handle to operate 
+ \param  tCfg           refer to csi_ept_Global_load_control_config_t
+ \return CSI_OK /CSI_ERROR
+*/
 csi_error_t csi_ept_global_config(csp_ept_t *ptEptBase,csi_ept_Global_load_control_config_t *Global);
+ /**
+ \brief  wave configuration
+ \param  ptEptBase    	ept handle to operate 
+ \param  pteptPwmCfg   	refer to csi_ept_pwmconfig_t
+ \return CSI_OK /CSI_ERROR
+*/
 csi_error_t  csi_ept_wave_init(csp_ept_t *ptEptBase, csi_ept_pwmconfig_t *pteptPwmCfg);
+ /**
+ \brief  DeadZoneTime configuration loading 
+ \param  ptEptBase    	ept handle to operate 
+ \param  byVal         refer to csi_ept_dbdldr_e
+ \param  byWod         refer to csp_ept_shdw_e
+ \param  byWod2	       refer to csp_ept_lddb_e
+ \return CSI_OK /CSI_ERROR
+*/
 csi_error_t csi_ept_dbldrload_config(csp_ept_t *ptEptBase, csi_ept_dbdldr_e byVal,csp_ept_shdw_e byWod,csp_ept_lddb_e byWod2);
+ /**
+ \brief  channelmode configuration 
+ \param  ptEptBase    	ept handle to operate 
+ \param  tCfg         refer to csi_ept_deadzone_config_t
+ \param  byCh         refer to csi_ept_channel_e
+ \return CSI_OK /CSI_ERROR
+*/
 csi_error_t csi_ept_channelmode_config(csp_ept_t *ptEptBase,csi_ept_deadzone_config_t *tCfg,csi_ept_channel_e byCh);
+/**
+ \brief  rearm  loading
+ \param  ptEptBase    	ept handle to operate 
+ \return CSI_OK
+*/
 csi_error_t csi_ept_global_rearm(csp_ept_t *ptEptBase);
+/**
+ \brief  Software trigger loading
+ \param  ptEptBase    	ept handle to operate 
+ \return CSI_OK
+*/
 csi_error_t csi_ept_global_sw(csp_ept_t *ptEptBase);
+/** \brief Carrier output
+ *  \param[in] ptEptBase: pointer of ept register structure
+ *  \param[in] bEnable:    refer to to csi_ept_chx_e
+ *  \param[in] bEn         ENABLE/DISABLE
+ *  \return  CSI_OK;
+ */
 csi_error_t csi_ept_chopper_config(csp_ept_t *ptEptBase, csi_ept_chx_e byCh, bool bEn);
+ /**
+ \brief  capture configuration
+ \param  ptEptBase    	ept handle to operate 
+ \param  pteptPwmCfg   	refer to csi_ept_captureconfig_t
+ \return CSI_OK /CSI_ERROR
+*/
 csi_error_t csi_ept_capture_init(csp_ept_t *ptEptBase, csi_ept_captureconfig_t *pteptPwmCfg);
+/**
+ \brief  State of emergency configuration 
+ \param  ptEptBase    	ept handle to operate 
+ \param  tCfg           refer to csi_ept_emergency_config_t
+ \return CSI_OK /CSI_ERROR
+*/
 csi_error_t csi_ept_emergency_cfg(csp_ept_t *ptEptBase, csi_ept_emergency_config_t *tCfg);
+/**
+ \brief  State of emergency configuration 
+ \param  ptEptBase    	ept handle to operate 
+ \param  tCfg           refer to csi_ept_emergency_config_t
+ \return CSI_OK /CSI_ERROR
+*/
 csi_error_t csi_ept_emergency_pinxout(csp_ept_t *ptEptBase,csi_ept_osrchx_e  byCh ,csp_ept_emout_e byCh2);
+/**
+  \brief       enable/disable ept emergencyinterruption
+  \param[in]   ptEptBase       EPT handle to operate
+  \param[in]   eEbi		       refer to csp_ept_emint_e
+*/
 void csi_ept_emergency_interruption_en(csp_ept_t *ptEptBase, csp_ept_emint_e eEbi);
-
+/** \brief ept  input  config  
+ *  \param[in] ptEptBase: pointer of ept register structure
+ *  \param[in] eInt:     refer to to csp_ept_int_e
+ *  \param[in] bEnable:  ENABLE/DISABLE
+ *  \return CSI_OK;
+ */
 csi_error_t csi_ept_int_enable(csp_ept_t *ptEptBase, csp_ept_int_e eInt, bool bEnable);
+
 #ifdef __cplusplus
 }
 #endif
