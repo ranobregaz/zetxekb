@@ -43,10 +43,10 @@ void csi_lvd_int_enable(clvd_pol_e ePol, clvd_level_e eLvl)
 }
 
 /**
-  \brief       lvd  int disable  
+  \brief       lvd  disable  
   \return      none
 */
-void csi_lvd_int_disable(void)
+void csi_lvd_disable(void)
 {
 	csp_lvd_lvr_enable(SYSCON, DISABLE);
 }
