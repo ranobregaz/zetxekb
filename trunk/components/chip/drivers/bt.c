@@ -94,7 +94,7 @@ void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc, bool bEnable
 		csi_irq_enable((uint32_t *)ptBtBase);
 	}
 	else {
-		if (eIntSrc == csp_bt_get_imcr(ptBtBase)) {
+		if (eIntSrc == csp_bt_get_isr(ptBtBase)) {
 			csi_irq_disable((uint32_t *)ptBtBase);
 		}
 	}
@@ -253,14 +253,14 @@ void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin)
 /** \brief bt evtrg output config
  * 
  *  \param[in] ptBtBase:pointer of bt register structure
- *  \param[in] byEvtrg: trigger event (byEvtrg =  0)
+ *  \param[in] byEvTrg: trigger event (byEvtrg =  0)
  *  \param[in] eTrgSrc: BT evtrg source(1~3) 
  *  \param[in] eTrgPrd: event count period
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byEvtrg, csi_bt_trgsrc_e eTrgSrc, uint8_t eTrgPrd)
+csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byEvTrg, csi_bt_trgsrc_e eTrgSrc, uint8_t eTrgPrd)
 {
-	if (byEvtrg > 0)
+	if (byEvTrg > 0)
 		return CSI_ERROR;
 	
 	if(eTrgSrc == BT_TRGSRC_DIS)
