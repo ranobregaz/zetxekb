@@ -78,9 +78,9 @@ typedef enum {
 } csi_error_t;
 
 typedef struct {
-   uint8_t    byReadAble;
-   uint8_t    byWriteAble;
-   uint8_t    byError;
+   uint8_t    readable;
+   uint8_t    writeable;
+   uint8_t    error;
 } csi_state_t;
 
 typedef struct csi_dev csi_dev_t;
