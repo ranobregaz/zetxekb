@@ -17,6 +17,8 @@
 #include <stdbool.h>
 #include <drv/common.h>
 
+#include "csp.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
