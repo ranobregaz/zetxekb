@@ -398,6 +398,7 @@ int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain
 {
 	csi_error_t ret = CSI_OK;
 	uint32_t wCount = 0U;
+	uint32_t wTimeStart;
 	
 	do{
 		if((g_tSpiTransmit.tState.writeable == 0U) || (g_tSpiTransmit.tState.readable == 0U)) 
@@ -415,7 +416,6 @@ int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain
 		g_tSpiTransmit.pbyRxData = (uint8_t *)pDatain;
 		csp_spi_en(ptSpiBase);													//enable spi
 		
-		uint32_t wTimeStart;
 		while((g_tSpiTransmit.byTxSize > 0U) || (g_tSpiTransmit.byRxSize > 0U))
 		{
 			if(g_tSpiTransmit.byTxSize > 0U)
@@ -450,7 +450,8 @@ int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain
 
 	}while(0);
 	
-	while((csp_spi_get_sr(ptSpiBase) & SPI_BSY));		//wait for transmition finish
+	wTimeStart = SPI_RECV_TIMEOUT;
+	while((csp_spi_get_sr(ptSpiBase) & SPI_BSY) && (wTimeStart --) );		//wait for transmition finish
 	
 	g_tSpiTransmit.tState.writeable = 1U;
     g_tSpiTransmit.tState.readable  = 1U;
@@ -795,17 +796,22 @@ void spi_buff_send(csp_spi_t *ptSpiBase,uint8_t *pbyData,uint8_t bySize)
  *  \param[in] wSize ：length
  *  \return none
  */ 
-void csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, uint8_t *pbyDataOut,uint8_t *pbyDataIn,uint32_t wSize)//小于等于八个的发送接收,这种场景通常适合用来发送指令，读取状态。（大块的数据读取不合适）
+void csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, uint8_t *pbyDataOut,uint8_t *pbyDataIn,uint32_t wSize)//小于八个的发送接收,这种场景通常适合用来发送指令，读取状态。（大块的数据读取不合适）
 {	
 		uint8_t byCount = 0;
+		uint8_t bySize = 0;
 	    uint32_t wTimeStart = SPI_SEND_TIMEOUT;
-		
+		if(wSize > 7)
+			bySize = 7;
+		else
+			bySize = (uint8_t)wSize;
+			
 		csi_spi_clr_rxfifo(ptSpiBase);
 		
 		wTimeStart = SPI_SEND_TIMEOUT;
 		while( ((uint32_t)(ptSpiBase->SR) & SPI_BSY ) && (wTimeStart --) ){;} 
 		ptSpiBase->CR1 &= ~SPI_SSE_MSK;
-		for(byCount = 0;byCount<wSize;byCount++)
+		for(byCount = 0;byCount<bySize;byCount++)
 		{
 			ptSpiBase->DR = pbyDataOut[byCount];
 		}
