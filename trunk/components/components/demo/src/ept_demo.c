@@ -12,7 +12,7 @@
 #include <string.h>
 #include <drv/ept.h>
 #include <drv/pin.h>
-
+#include "drv/etb.h"
 #include "demo.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
@@ -186,7 +186,23 @@ int ept_demo(void)
 
 int ept_demo1(void)
 {
-	int iRet = 0;	
+	int iRet = 0;
+
+	
+	volatile uint8_t ch;
+	csi_etb_config_t tEtbConfig;				//ETB 参数配置结构体	
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
+	tEtbConfig.bySrcIp  = ETB_ETP0_TRGOUT0 ;  	//EPT0 触发输出0作为触发源
+	tEtbConfig.bySrcIp1 = 0xff;      
+	tEtbConfig.bySrcIp2 = 0xff;
+	tEtbConfig.byDstIp =  ETB_EPT0_SYNCIN2;   	//EPT0 同步输入2作为目标事件
+	tEtbConfig.byDstIp1 = 0xff;
+	tEtbConfig.byDstIp2 = 0xff;
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
+	csi_etb_init();
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功
+//	if(ch < 0)return -1;								//ch < 0,则获取通道号失败		
+	iRet = csi_etb_ch_config(ch, &tEtbConfig);	
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_pin_set_mux(PA015, PA015_EPT_CHAX);						//
 	csi_pin_set_mux(PA014, PA014_EPT_CHBX);						//
@@ -254,7 +270,7 @@ int ept_demo12(void)
 //------------------------------------------------------------------------------------------------------------------------		
 csi_ept_pwmconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod        = EPT_WAVE;                        //WAVE  波形模式
-	tPwmCfg.byCountingMode   = EPT_UPCNT;                       //CNYMD  //计数方向
+	tPwmCfg.byCountingMode   = EPT_DNCNT;                       //CNYMD  //计数方向
 	tPwmCfg.byOneshotMode    = EPT_OP_CONT;                     //OPM    //单次或连续(工作方式)
 	tPwmCfg.byStartSrc       = EPT_SYNC_START;					//软件使能同步触发使能控制（RSSR中START控制位）//启动方式
 	tPwmCfg.byPscld          = EPT_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
@@ -268,9 +284,9 @@ csi_ept_pwmconfig_t tPwmCfg;
 //------------------------------------------------------------------------------------------------------------------------	
 	csi_ept_pwmchannel_config_t  channel;
 	channel.byActionZro    =   LO;
-	channel.byActionPrd    =   NA;
-	channel.byActionCau    =   HI;
-	channel.byActionCad    =   LO;
+	channel.byActionPrd    =   HI;
+	channel.byActionCau    =   TG;
+	channel.byActionCad    =   TG;
 	channel.byActionCbu    =   NA;
 	channel.byActionCbd    =   NA;
 	channel.byActionT1u    =   LO;
@@ -281,8 +297,8 @@ csi_ept_pwmconfig_t tPwmCfg;
 	channel.byChoiceCbsel  =   EPT_CMPA;	
 	csi_ept_channel_config(EPT0, &channel,  EPT_CHANNEL_A);//channel
 	csi_ept_channel_config(EPT0, &channel,  EPT_CHANNEL_B);
-	csi_ept_channel_config(EPT0, &channel,  EPT_CHANNEL_C);
-	csi_ept_channel_config(EPT0, &channel,  EPT_CHANNEL_D);
+//	csi_ept_channel_config(EPT0, &channel,  EPT_CHANNEL_C);
+//	csi_ept_channel_config(EPT0, &channel,  EPT_CHANNEL_D);
 	
 //------------------------------------------------------------------------------------------------------------------------		
 	csi_ept_start(EPT0);//start  timer
