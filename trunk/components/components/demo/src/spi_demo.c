@@ -52,8 +52,8 @@
 	while(1)
 	{
 		SPICS_CLR;
-		//csi_spi_send(SPI0,byData,8,1);
-		spi_buff_send(SPI0,byData,8);
+		//csi_spi_send(SPI0,byData,8,1);//17.3us
+		spi_buff_send(SPI0,byData,8);   //9.28us
 		SPICS_SET;
 		mdelay(100);
 		nop;
@@ -127,23 +127,23 @@ int spi_sync_test_speed(void)
 	while(1)
 	{
 		SPICS_CLR;
-		csi_spi_send_receive_x8(SPI0,bySendData,byReceData,7);//23.38us
+		csi_spi_send_receive_x8(SPI0,bySendData,byReceData,7);//16.04us
 		SPICS_SET;
 		
 		SPICS_CLR;
-		csi_spi_send_receive(SPI0, (void*)bySendData, (void *)byReceData, 7, 1);//53.72 us
+		csi_spi_send_receive(SPI0, (void*)bySendData, (void *)byReceData, 7, 1);//30.66 us
 		SPICS_SET;
 		
 		SPICS_CLR;
-		csi_spi_send_receive_d8(SPI0,bySendData,byReceData,7);//(29.08 us #if 1)
+		csi_spi_send_receive_d8(SPI0,bySendData,byReceData,7);//(19.68 us #if 1)
 		SPICS_SET;
 		
 		SPICS_CLR;
-		csi_spi_send_receive(SPI0, (void*)bySendData, (void *)byReceData, 17, 1);//117.74 us
+		csi_spi_send_receive(SPI0, (void*)bySendData, (void *)byReceData, 17, 1);//69.54 us
 		SPICS_SET;
 		
 		SPICS_CLR;
-		csi_spi_send_receive_d8(SPI0,bySendData,byReceData,17);//(40.22)
+		csi_spi_send_receive_d8(SPI0,bySendData,byReceData,17);//(28.62)
 		SPICS_SET;
 		mdelay(100);
 		nop;
