@@ -13,7 +13,6 @@
 #include "csp.h"
 #include "irq.h"
 #include "soc.h"
-#include "csp_ifc.h"
 #include "ifc.h"
 
 /* externs function--------------------------------------------------------*/
@@ -57,9 +56,7 @@ csi_error_t csi_ifc_read(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *data, u
 {
 	
 	uint32_t i, *wDataBuff = (uint32_t *)data;
-	uint8_t bySize = sizeof(data);
-	
-	
+		
 	wDataBuff = (uint32_t *)data;
 	
 	for(i=0; i<wDataNum ; i++)

@@ -91,11 +91,11 @@ void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc, bool bEnable
 	csp_bt_int_enable(ptBtBase, eIntSrc, bEnable);	
 	
 	if (bEnable) {
-		csi_irq_enable(ptBtBase);
+		csi_irq_enable((uint32_t *)ptBtBase);
 	}
 	else {
 		if (eIntSrc == csp_bt_get_imcr(ptBtBase)) {
-			csi_irq_disable(ptBtBase);
+			csi_irq_disable((uint32_t *)ptBtBase);
 		}
 	}
 		
