@@ -47,7 +47,7 @@ int iwdt_irq_demo(void)
 	int iRet = 0;
 
 	csi_iwdt_init(IWDT_TO_1000);					//初始化看门狗，溢出时间为1000ms(系统复位时间)
-	csi_iwdt_irq_enable(IWDT_INT_4_8, ENABLE);		//使能看门狗报警中断，报警时间为4/8溢出时间
+	csi_iwdt_irq_enable(IWDT_ALARMTO_4_8, ENABLE);	//使能看门狗报警中断，报警时间为4/8溢出时间
 	csi_iwdt_open();								//打开看门狗
 //	mdelay(600);
 
