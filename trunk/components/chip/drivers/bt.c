@@ -120,7 +120,7 @@ uint32_t csi_bt_get_load_value(csp_bt_t *ptBtBase)
 {
 	return csp_bt_get_prdr(ptBtBase);
 }
-/** \brief get bt load value
+/** \brief check bt is running
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
  *  \return rue: running; false: stopped
