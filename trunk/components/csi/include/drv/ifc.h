@@ -27,8 +27,8 @@ typedef struct {
 \brief Flash Status
 */
 typedef struct {
-    uint32_t busy  : 1;                   ///< Flash busy flag
-    uint32_t error : 1;                   ///< Read/Program/Erase error flag (cleared on start of next operation)
+    uint8_t busy  : 1;                   ///< Flash busy flag
+    uint8_t error : 1;                   ///< Read/Program/Erase error flag (cleared on start of next operation)
 } csi_ifc_status_t;
 
 

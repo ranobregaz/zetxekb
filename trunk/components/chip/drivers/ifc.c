@@ -52,12 +52,18 @@ void csi_ifc_dflash_paramode_enable(csp_ifc_t *ptIfcBase, bool bEnable)
   \param[in]   wDataNum   Number of data（bytes）to read.
   \return      error code
 */
-csi_error_t csi_ifc_read(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *data, uint32_t wDataNum)
+csi_error_t csi_ifc_read(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *wData, uint32_t wDataNum)
 {
 	
-	uint32_t i, *wDataBuff = (uint32_t *)data;
-		
-	wDataBuff = (uint32_t *)data;
+	uint32_t i, *wDataBuff = (uint32_t *)wData;
+	
+	if ( wAddr%4 !=0 || wAddr <PFLASHBASE || (wAddr > PFLASHLIMIT && wAddr <DFLASHBASE) || (wAddr > PFLASHLIMIT) ) {
+		return CSI_ERROR;
+	}	
+	else if (((wAddr >= PFLASHBASE) && ((wAddr + wDataNum)>PFLASHLIMIT) )|| ((wAddr>PFLASHBASE)&& ((wAddr + wDataNum)> PFLASHSIZE))) {
+		return CSI_ERROR;
+	}
+	wDataBuff = (uint32_t *)wData;
 	
 	for(i=0; i<wDataNum ; i++)
 	{
@@ -83,22 +89,21 @@ csi_error_t csi_ifc_program(csp_ifc_t *ptIfcBase, uint32_t wAddr, uint32_t *pwDa
 	uint32_t *wData = (uint32_t *)pwData;
 	uint32_t i, wFullPageNum, wLen0,wLen1, wPageSize, wFlashType,wOffset;
 	
-	//return error when address is not word alligned, or addr goes beyond memory space
-	if (wAddr % 4 != 0 ||((wAddr > 0x1000) && ((wAddr + wDataNum)>DFLASHLIMIT)))
+	//return error when address is not word alligned, or addr goes beyond DFLASH space
+	if (wAddr % 4 != 0 )
 	{
 		return CSI_ERROR;
 	}	
-	//DO NOT support address across PFLASH and DFLASH
-	if ((wAddr<0x1000)&& (wAddr + wDataNum > 0x1000)) {
-		return CSI_UNSUPPORTED;
+	else if (((wAddr >= PFLASHBASE) && ((wAddr + wDataNum)>PFLASHLIMIT) )|| ((wAddr>PFLASHBASE)&& ((wAddr + wDataNum)> PFLASHSIZE))) {
+		return CSI_ERROR;
 	}
-	
+
 	/*if (wDataNum%4 == 0)
 		wDataNum = wDataNum/4;
 	else
 		wDataNum = wDataNum/4 + 1;*/
 	
-	if (wAddr<0x10000){
+	if (wAddr<PFLASHLIMIT){
 		wPageSize = PFLASH_PAGE_SZ;
 		wFlashType = PFLASH;
 		wOffset = wAddr >> 2;
@@ -229,14 +234,19 @@ static csp_error_t apt_ifc_wr_nword(csp_ifc_t * ptIfcBase, uint8_t bFlashType, u
 	while(!g_bFlashPgmDne);
 	g_bFlashPgmDne = 0;
 	
-	if (bFlashType == PFLASH)
+	if (bFlashType == PFLASH) {
 		bPageSize = PFLASH_PAGE_SZ;
-	else
+		wPageStAddr = wAddr & 0xffffff00;
+	}
+	else {
 		bPageSize = DFLASH_PAGE_SZ;
+		wPageStAddr = wAddr & 0xffffffc0;
+	}
 	
-
-	wPageStAddr = wAddr & 0xffffffc0;
-	wAddr = wAddr >> 2 & 0xf;
+	wAddr -= wPageStAddr;
+	wAddr = wAddr >> 2;
+//	wPageStAddr = wAddr & 0xffffffc0;
+//	wAddr = wAddr >> 2 & 0xf;
 	
 	csp_ifc_clk_enable(ptIfcBase, ENABLE);
 	///step1
