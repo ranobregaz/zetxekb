@@ -206,10 +206,11 @@ typedef enum
 // SPIICR : Interrupt clear register
 typedef enum
 {
+	SPI_NONE_INT		= (0x00ul << 0),   		//none interrupt 
 	SPI_ROTIM_INT		= (0x01ul << 0), 		//Receive Overrun Interrupt              
 	SPI_RTIM_INT    	= (0x01ul << 1), 		//Receive Timeout Interrupt          
 	SPI_RXIM_INT   		= (0x01ul << 2),		//Receive FIFO Interrupt           
-	SPI_TXIM_INT		= (0x01ul << 3),   		//Transmit FIFO interrupt              
+	SPI_TXIM_INT		= (0x01ul << 3),   		//Transmit FIFO interrupt 
 }spi_int_e;
 
 

@@ -142,6 +142,7 @@ typedef enum
 ******************************************************************************/
 typedef enum
 {
+	CNTA_NONE_INT		= (0x00ul << 0),
 	CNTA_PENDL_INT		= (0x01ul << 0),
 	CNTA_PENDH_INT		= (0x01ul << 1),     
 	CNTA_PENDHL_INT		= (0x03ul << 0),
