@@ -148,7 +148,7 @@ csi_error_t csi_sio_tx_init(csp_sio_t *ptSioBase, csi_sio_tx_config_t *ptTxCfg)
 		return CSI_ERROR;
 	
 	//set TX CR0~1 reg
-	csp_sio_set_txcr0(ptSioBase, ptTxCfg->byIdleLev, ptTxCfg->byTxDir, ptTxCfg->byTxBufLen, ptTxCfg->byTxCnt);	
+	csp_sio_set_txcr0(ptSioBase, ptTxCfg->byIdleLev, ptTxCfg->byTxDir, ptTxCfg->byTxBufLen - 1, ptTxCfg->byTxCnt - 1);	
 	csp_sio_set_d0(ptSioBase, ptTxCfg->byD0Len - 1);					//set d0 clk len
 	csp_sio_set_d1(ptSioBase, ptTxCfg->byD1Len - 1);					//set d1 clk len
 	csp_sio_set_dl(ptSioBase, ptTxCfg->byDLLen - 1, ptTxCfg->byDLLsq);	//set dl clk len and lsq
@@ -235,23 +235,22 @@ void csi_sio_timeout_rst(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable)
   \param[in]   val    txbuf value
   \return      error code \ref csi_error_t
 */
-uint8_t csi_sio_send(csp_sio_t *ptSioBase, const void *pData, uint8_t bySize)
+uint8_t csi_sio_send(csp_sio_t *ptSioBase, uint32_t *pwData, uint8_t bySize)
 {
 	uint8_t  i;
-	uint32_t *pwSend = (uint32_t *)pData;
-	uint32_t wTimeout = SIO_TX_TIMEOUT ;
-	
-	if(NULL == pData || 0 == bySize)
-		return 0;
-	
+//	uint32_t wTimeout = SIO_TX_TIMEOUT ;
+//	if(NULL == pData || 0 == bySize)
+//		return 0;
+		
 	for(i = 0; i < bySize; i++)
 	{
-		csp_sio_set_txbuf(ptSioBase,pwSend[i]);
-		while(!(csp_sio_get_risr(ptSioBase) & SIO_TXBUFEMPT) && wTimeout --);
-		if(0 == wTimeout)
-			return i;
-		delay_ums(1);
+		csp_sio_set_txbuf(ptSioBase,pwData[i]);
+		while(!(csp_sio_get_risr(ptSioBase) & SIO_TXBUFEMPT));// && wTimeout --);
+//		if(0 == wTimeout)
+//			return i;
 	}
+	while(!(csp_sio_get_risr(ptSioBase) & SIO_TXDNE));
+	//csp_sio_clr_isr(ptSioBase, SIO_TXDNE);
 	
 	return i;
 }
