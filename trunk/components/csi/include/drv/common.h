@@ -89,18 +89,18 @@ typedef struct csi_dev csi_dev_t;
 typedef enum {
     PM_DEV_SUSPEND,
     PM_DEV_RESUME,
-} csi_pm_dev_action_t;
+} csi_pm_dev_action_e;
 
 typedef enum {
     PM_MODE_RUN                  = 0,   ///< Running mode
 	PM_MODE_SLEEP,
 	PM_MODE_DEEPSLEEP
-} csi_pm_mode_t;
+} csi_pm_mode_e;
 
 
 typedef struct {
     slist_t     next;
-    csi_error_t (*pm_action)(csi_dev_t *dev, csi_pm_dev_action_t action);
+    csi_error_t (*pm_action)(csi_dev_t *dev, csi_pm_dev_action_e action);
     uint32_t    *reten_mem;
     uint32_t    size;
 } csi_pm_dev_t;
