@@ -172,6 +172,23 @@ void csi_uart_stop(csp_uart_t *ptUartBase)
 	s_wCtrlRegBack &= (~UART_TX_MSK | ~UART_RX_MSK);
 	csp_uart_set_ctrl(ptUartBase, s_wCtrlRegBack);		//disable uart rx/tx 
 }
+/** \brief set uart receive buffer and buffer depth 
+ * 
+ *  \param[in] ptUartBase: pointer of uart register structure
+ *  \param[in] ptRingbuf: pointer of receive ringbuf structure
+ *  \param[in] pbyRdBuf: pointer of uart receive buffer
+ *  \param[in] hwLen: uart receive buffer length
+ *  \return error code \ref csi_error_t
+ */ 
+void csi_uart_set_buffer(csp_uart_t *ptUartBase, ringbuffer_t *ptRingbuf, uint8_t *pbyRdBuf,  uint16_t hwLen)
+{
+	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	
+	ptRingbuf->pbyBuf = pbyRdBuf;					//assignment ringbuf = pbyRdBuf  
+	ptRingbuf->hwSize = hwLen;						//assignment ringbuf size = hwLen 
+	g_tUartTran[byIdx].ptRingBuf = ptRingbuf;		//UARTx ringbuf assignment	
+	ringbuffer_reset(g_tUartTran[byIdx].ptRingBuf);	//init UARTx ringbuf
+}
 /** \brief uart send character
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
