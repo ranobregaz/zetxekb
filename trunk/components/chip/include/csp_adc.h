@@ -474,9 +474,9 @@ static inline void csp_adc_set_clk_div(csp_adc_t *ptAdcBase, uint8_t byDiv)
 {
 	ptAdcBase->MR = (ptAdcBase->MR & (~ADC12_PRLVAL_MASK)) | (byDiv >> 1);
 }
-static inline uint32_t csp_adc_get_clk_div(csp_adc_t *ptAdcBase)
+static inline uint8_t csp_adc_get_clk_div(csp_adc_t *ptAdcBase)
 {
-	return ((ptAdcBase->MR & ADC12_PRLVAL_MASK) >> 1);
+	return (uint8_t)(ptAdcBase->MR & ADC12_PRLVAL_MASK);
 }
 static inline void csp_adc_set_vref(csp_adc_t *ptAdcBase, adc_vref_e eVrefSel)
 {
