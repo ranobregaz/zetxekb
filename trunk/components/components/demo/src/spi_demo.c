@@ -1,12 +1,12 @@
 /***********************************************************************//** 
  * \file  SPI_demo.c
  * \brief  SPI示例代码。
- * 互联设备 w25x80 信息：
- * size = 32768 pages; page = 256 bytes; size = 32768 * 256 = 8mbytes
- * sector(扇区) = 16 pages = 4Kbytes; 
- * block(块) = 128 pages = 32kbytes; block(块) = 256pages = 64kbytes
- * size = 2048 setor; size = 256 block(32k); size = 128 block(64k);
- * Device ID: (M7->M0 = 0xEF), (ID7->ID0 = 0x13)
+ * w25q16jvsiq(32 block == 512 sector == 2M Byte)
+ * 1 page = 256 bytes
+ * 1 sector = 16 page (4KB)
+ * 1 block = 16 sector (64KB)
+ * erasable(1sector,1/2block,1block,chip)
+ * Device ID: (M7->M0 = 0xEF), (ID7->ID0 = 0x14)
  * Spi Mode:  MODE0 or MODE3
  * 
  * \copyright Copyright (C) 2015-2021 @ APTCHIP
@@ -167,7 +167,14 @@ csi_error_t spi_sync_test_speed(void)
  *  \param[in] none
  *  \return error code
  */
- csi_error_t spi_sync_master_slave(void)
+//模式一：主机同步发，同步收；  从机同步收发
+//模式二：主机同步发，同步收；  从机异步收发
+//模式三：主机同步发，异步收；  从机同步收发
+//模式四：主机同步发，异步收；  从机异步收发
+//模式五：主机异步发，异步收；  从机同步收发
+//模式六：主机异步发，异步收；  从机异步收发
+//主从机常用模式：模式一，模式四
+ csi_error_t spi_sync_async_master_slave(void)
 {
 	int iRet = 0;
 	uint8_t send_data[17] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
@@ -177,32 +184,54 @@ csi_error_t spi_sync_test_speed(void)
 	if(iRet < 0)
 	{
 		return -1;
-	}	
+	}
 	
 #ifdef SPI_MASTER_SEL	//spi master mode		
 	my_printf("the spi master mode!\n");
 	mdelay(500);
-	while(1)
-	{
-		SPICS_CLR;
-		csi_spi_send_receive(SPI0, send_data, rece_data, 16, 1);//265.18 us
-		SPICS_SET;
-		mdelay(100);
-		nop;
-	}
+	#ifdef SPI_SYNC_SEL
+		while(1)
+		{
+			SPICS_CLR;
+			csi_spi_send_receive(SPI0, send_data, rece_data, 16, 1);//265.18 us
+			SPICS_SET;
+			mdelay(100);
+			nop;
+		}
+	#else
+		while(1)
+		{
+			SPICS_CLR;
+			csi_spi_send(SPI0, send_data, 16, 1);//265.18 us
+			//csi_spi_send_async(SPI0, send_data, 16);
+			//csi_spi_send_receive_async(SPI0, send_data, rece_data, 16);
+			//udelay(300);
+			SPICS_SET;
+			
+			mdelay(100);
+			nop;
+		}	
+	#endif
 #else
 	my_printf("the spi slave mode!\n");
-	while(1)
-	{
-		while( (uint32_t)(SPI0->SR) & SPI_RNE )	
+	#ifdef SPI_SYNC_SEL
+		while(1)
 		{
-			//rece_data[0] = SPI0->DR; 
-			//SPI0->DR = rece_data[0];
-			rece_data[0] = csi_spi_receive_slave(SPI0);
-			csi_spi_send_slave(SPI0, rece_data[0]);
+			while( (uint32_t)(SPI0->SR) & SPI_RNE )	
+			{
+				//rece_data[0] = SPI0->DR; 
+				//SPI0->DR = rece_data[0];
+				rece_data[0] = csi_spi_receive_slave(SPI0);
+				csi_spi_send_slave(SPI0, rece_data[0]);
+			}
+			nop;
 		}
-		nop;
-	}
+	#else
+		while(1)
+		{
+			nop;
+		}
+	#endif
 #endif	
 	return iRet;
 }
@@ -210,12 +239,11 @@ csi_error_t spi_sync_test_speed(void)
 //----------------------------------------------------------------------------------------------
 //w25q16jvsiq(32 block == 512 sector == 2M Byte)
 // 1 page = 256 bytes
-// 1 sector = 16 page
-// 1 block = 16 sector
+// 1 sector = 16 page (4KB)
+// 1 block = 16 sector (64KB)
 
-//erasable(1sector,1block,chip)
-//writeable(page)
-//readable()
+//erasable(1sector,1/2block,1block,chip)
+
 
 #define		PAGE_SIZE				256
 //flash cmd
@@ -419,7 +447,7 @@ csi_error_t spi_w25q16jvsiq_write_read(void)
 			return -1;
 		}
 		
-		iRet = SPI_flash_read_id();					//read chip id, chip id = 0xef13
+		iRet = SPI_flash_read_id();					//read chip id, chip id = 0xef14
 		
 		if(iRet == 0xef14)
 		{
