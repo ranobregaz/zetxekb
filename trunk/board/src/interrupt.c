@@ -18,6 +18,7 @@
 #include <drv/pin.h>
 #include "board_config.h"
 #include "csp.h"
+#include "rtc.h"
 
 /* externs function--------------------------------------------------------*/
 extern void tick_irq_handler(void *arg);		//system coret 
@@ -101,10 +102,31 @@ void GPT0IntHandler(void)
 {
     // ISR content ...
 }
+extern csi_rtc_alm_t tAlmA;
 void RTCIntHandler(void) 
 {
-    // ISR content ...
+    // AlarmB is used to fix a known bug
+	if (csp_rtc_get_int_st(RTC) & (RTC_INT_ALMB)) {
+		csp_rtc_int_clr(RTC, RTC_INT_ALMB);
+		csp_rtc_stop(RTC);
+		csp_rtc_wr_key(RTC);
+		csp_rtc_set_time_hour(RTC, 0, 0x10);
+		csp_rtc_set_time_min(RTC, 0x0);
+		csp_rtc_set_time_sec(RTC, 0x0);
+		csp_rtc_run(RTC);
+	}
+	if (csp_rtc_get_int_st(RTC) & (RTC_INT_ALMA)) {
+		tAlmA.byAlmSt = 1;
+		csp_rtc_int_clr(RTC,RTC_INT_ALMA);
+	}
+	
+	if (csp_rtc_get_int_st(RTC) & RTC_INT_CPRD) {
+		csp_rtc_int_clr(RTC,RTC_INT_CPRD);
+	}
 }
+
+
+
 void UART0IntHandler(void) 
 {
 	// ISR content ...
