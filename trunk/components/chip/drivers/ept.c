@@ -96,6 +96,51 @@ csi_error_t csi_ept_config_init(csp_ept_t *ptEptBase, csi_ept_config_t *pteptPwm
 	
 	return CSI_OK;
 }
+csi_error_t csi_ept_capture_init(csp_ept_t *ptEptBase, csi_ept_captureconfig_t *pteptPwmCfg)
+{
+	uint32_t wClkDiv=0;
+	uint32_t wCrVal;
+	uint32_t wPrdrLoad; 
+			
+	csi_clk_enable((uint32_t *)ptEptBase);								 // clk enable	
+	csp_ept_clken(ptEptBase);
+	csp_ept_wr_key(ptEptBase);                                           //Unlocking
+	csp_ept_reset(ptEptBase);											 // reset 
+	
+			                                                             // clk div value
+	if(wClkDiv == 0){wClkDiv = 1;}
+					
+	wCrVal =pteptPwmCfg->byCountingMode | (pteptPwmCfg->byStartSrc<<EPT_STARTSRC_POS) |
+	        pteptPwmCfg->byOneshotMode<<EPT_OPMD_POS | (pteptPwmCfg->byWorkmod<<EPT_MODE_POS);
+    
+	wCrVal=(wCrVal & ~(EPT_PSCLD_MSK))   |((pteptPwmCfg->byPscld&0x03)   <<EPT_PSCLD_POS);
+	
+	wCrVal=(wCrVal & ~(EPT_CAPMD_MSK))   |((pteptPwmCfg->byCaptureCapmd&0x01)   <<EPT_CAPMD_POS);
+	wCrVal=(wCrVal & ~(EPT_STOPWRAP_MSK))|((pteptPwmCfg->byCaptureStopWrap&0x03)<<EPT_STOPWRAP_POS);
+	wCrVal=(wCrVal & ~(EPT_CMPA_RST_MSK))|((pteptPwmCfg->byCaptureLdaret&0x01)  <<EPT_CMPA_RST_POS);
+	wCrVal=(wCrVal & ~(EPT_CMPB_RST_MSK))|((pteptPwmCfg->byCaptureLdbret&0x01)  <<EPT_CMPB_RST_POS);
+	wCrVal=(wCrVal & ~(EPT_CMPC_RST_MSK))|((pteptPwmCfg->byCaptureLdcret&0x01)  <<EPT_CMPC_RST_POS);
+	wCrVal=(wCrVal & ~(EPT_CMPD_RST_MSK))|((pteptPwmCfg->byCaptureLddret&0x01)  <<EPT_CMPD_RST_POS);
+	
+	wCrVal|=EPT_CAPLD_EN;
+	wCrVal|=EPT_CAPREARM;
+	wPrdrLoad=0xFFFF;
+
+    csp_ept_clken(ptEptBase);                                           // clkEN
+	csp_ept_set_cr(ptEptBase, wCrVal);									// set bt work mode
+	csp_ept_set_pscr(ptEptBase, (uint16_t)wClkDiv - 1);					// clk div
+	csp_ept_set_prdr(ptEptBase, (uint16_t)wPrdrLoad);				    // prdr load value
+	
+	if(pteptPwmCfg->byInter)
+	{
+		csp_ept_int_enable(ptEptBase, pteptPwmCfg->byInter, true);		//enable interrupt
+		csi_irq_enable((uint32_t *)ptEptBase);							//enable  irq
+	}
+	
+	g_ept_prd=wPrdrLoad;
+	
+	return CSI_OK;
+}
 csi_error_t  csi_ept_wave_init(csp_ept_t *ptEptBase, csi_ept_pwmconfig_t *pteptPwmCfg)
 {
     uint32_t wClkDiv;
@@ -142,45 +187,9 @@ csi_error_t  csi_ept_wave_init(csp_ept_t *ptEptBase, csi_ept_pwmconfig_t *pteptP
 	
 	g_ept_prd=wPrdrLoad;
 	
-	return CSI_OK;
-
-
-	
+	return CSI_OK;	
 }
 
-//csi_error_t csi_ept_syncr_config_init(csp_ept_t *ptEptBase,csi_ept_syncr_config_t *tPwmCfg)
-//{  uint32_t w_A_Val;
-//    w_A_Val =0;
-//	w_A_Val =(w_A_Val & ~EPT_SYNC_MSK(0) )|((tPwmCfg->syncen0 &0x01)<<EPT_SYNC_POS(0));
-//	w_A_Val =(w_A_Val & ~EPT_SYNC_MSK(1) )|((tPwmCfg->syncen1 &0x01)<<EPT_SYNC_POS(1));
-//	w_A_Val =(w_A_Val & ~EPT_SYNC_MSK(2) )|((tPwmCfg->syncen2 &0x01)<<EPT_SYNC_POS(2));
-//	w_A_Val =(w_A_Val & ~EPT_SYNC_MSK(3) )|((tPwmCfg->syncen3 &0x01)<<EPT_SYNC_POS(3));
-//	w_A_Val =(w_A_Val & ~EPT_SYNC_MSK(4) )|((tPwmCfg->syncen4 &0x01)<<EPT_SYNC_POS(4));
-//	w_A_Val =(w_A_Val & ~EPT_SYNC_MSK(5) )|((tPwmCfg->syncen5 &0x01)<<EPT_SYNC_POS(5));
-//	
-//	w_A_Val =(w_A_Val & ~EPT_OSTMD_MSK(0) )|((tPwmCfg->ostmd0 &0x01)<<EPT_OSTMD_POS(0));
-//	w_A_Val =(w_A_Val & ~EPT_OSTMD_MSK(1) )|((tPwmCfg->ostmd1 &0x01)<<EPT_OSTMD_POS(1));
-//	w_A_Val =(w_A_Val & ~EPT_OSTMD_MSK(2) )|((tPwmCfg->ostmd2 &0x01)<<EPT_OSTMD_POS(2));
-//	w_A_Val =(w_A_Val & ~EPT_OSTMD_MSK(3) )|((tPwmCfg->ostmd3 &0x01)<<EPT_OSTMD_POS(3));
-//	w_A_Val =(w_A_Val & ~EPT_OSTMD_MSK(4) )|((tPwmCfg->ostmd4 &0x01)<<EPT_OSTMD_POS(4));
-//	w_A_Val =(w_A_Val & ~EPT_OSTMD_MSK(5) )|((tPwmCfg->ostmd5 &0x01)<<EPT_OSTMD_POS(5));
-//	
-//	w_A_Val =(w_A_Val & ~EPT_REARM_MSK(0) )|((tPwmCfg->rearm0 &0x01)<<EPT_REARM_POS(0));
-//	w_A_Val =(w_A_Val & ~EPT_REARM_MSK(1) )|((tPwmCfg->rearm1 &0x01)<<EPT_REARM_POS(1));
-//	w_A_Val =(w_A_Val & ~EPT_REARM_MSK(2) )|((tPwmCfg->rearm2 &0x01)<<EPT_REARM_POS(2));
-//	w_A_Val =(w_A_Val & ~EPT_REARM_MSK(3) )|((tPwmCfg->rearm3 &0x01)<<EPT_REARM_POS(3));
-//	w_A_Val =(w_A_Val & ~EPT_REARM_MSK(4) )|((tPwmCfg->rearm4 &0x01)<<EPT_REARM_POS(4));
-//	w_A_Val =(w_A_Val & ~EPT_REARM_MSK(5) )|((tPwmCfg->rearm5 &0x01)<<EPT_REARM_POS(5));
-//	
-//	w_A_Val =(w_A_Val & ~EPT_AREARM_MSK )  |((tPwmCfg->arearm &0x03)   <<EPT_AREARM_POS);
-//	w_A_Val =(w_A_Val & ~EPT_TXREARM0_MSK )|((tPwmCfg->Tx_rearm0 &0x03)<<EPT_TXREARM0_POS);
-//	w_A_Val =(w_A_Val & ~EPT_TRGO0SEL_MSK )|((tPwmCfg->trgo0sel &0x07) <<EPT_TRGO0SEL_POS);
-//	w_A_Val =(w_A_Val & ~EPT_TRGO1SEL_MSK )|((tPwmCfg->trgo1sel &0x07) <<EPT_TRGO1SEL_POS);
-////	 mdelay(1);
-//	csp_ept_sync_config(ptEptBase,w_A_Val);
-//	
-// return CSI_OK;
-//}
 
 csi_error_t csi_ept_channel_config(csp_ept_t *ptEptBase, csi_ept_pwmchannel_config_t *tPwmCfg, csi_ept_channel_e channel)
 {
@@ -215,20 +224,6 @@ csi_error_t csi_ept_channel_config(csp_ept_t *ptEptBase, csi_ept_pwmchannel_conf
 	return CSI_OK;
 }
 
-//csi_error_t csi_ept_dbldrloadcontrol_config(csp_ept_t *ptEptBase, csi_ept_dbldr_config_t *tCfg)
-//{  uint32_t w_Val;
-//	w_Val= tCfg -> bycfgdbcrshadoworimmediate
-//	      |(tCfg -> bycfgdbcrshadowLoadcontrol << (EPT_DBCR_SHDWEN_POS+1))
-//		  |(tCfg -> bycfgdbdtrshadoworimmediate<<  EPT_DBDTR_SHDWEN_POS)
-//		  |(tCfg -> bycfgdbdtrshadowLoadcontrol<< (EPT_DBDTR_SHDWEN_POS+1))
-//		  |(tCfg -> bycfgdbdtfshadoworimmediate<<  EPT_DBDTF_SHDWEN_POS)
-//		  |(tCfg -> bycfgdbdtfshadowLoadcontrol<< (EPT_DBDTF_SHDWEN_POS+1))
-//		  |(tCfg -> bycfgdckpscshadoworimmediate<< EPT_DCKPSC_SHDWEN_POS)
-//		  |(tCfg -> bycfgdckpscshadowLoadcontrol<<(EPT_DCKPSC_SHDWEN_POS+1))
-//		  ;
-//	csp_ept_set_dbldr(ptEptBase,w_Val);	  
-//	return CSI_OK;	  
-//}
 csi_error_t csi_ept_dbldrload_config(csp_ept_t *ptEptBase, csi_ept_dbdldr_e byVal,csp_ept_shdw_e byWod,csp_ept_lddb_e byWod2)
 {   uint32_t w_Val;
 	w_Val=csp_ept_get_dbldr(ptEptBase);
@@ -309,172 +304,98 @@ csi_error_t csi_ept_choppercpcr_config(csp_ept_t *ptEptBase, csi_ept_Chopper_con
 csi_error_t csi_ept_chopper_config(csp_ept_t *ptEptBase, csi_ept_chx_e byCh, bool bEn)
 {   uint32_t w_Val;
 	w_Val=csp_ept_get_cpcr(ptEptBase);
-	
-	
-}
-
-
-csi_error_t csi_ept_emergency_config(csp_ept_t *ptEptBase, csi_ept_emergency_input_config_t *tCfg)
-{ uint32_t w_EMSRC;
-  uint32_t w_EMSRC2;
-  uint32_t w_EMPOL;
-  uint32_t w_EMECR;
-  uint32_t w_EMOSR;
-  
-    w_EMSRC=      ((tCfg -> ep0choiceebixint & 0x0f)<< EPT_SEL_POS_EP(EP0))
-                 |((tCfg -> ep1choiceebixint & 0x0f)<< EPT_SEL_POS_EP(EP1))
-				 |((tCfg -> ep2choiceebixint & 0x0f)<< EPT_SEL_POS_EP(EP2))
-				 |((tCfg -> ep3choiceebixint & 0x0f)<< EPT_SEL_POS_EP(EP3))
-				 |((tCfg -> ep4choiceebixint & 0x0f)<< EPT_SEL_POS_EP(EP4))
-				 |((tCfg -> ep5choiceebixint & 0x0f)<< EPT_SEL_POS_EP(EP5))
-				 |((tCfg -> ep6choiceebixint & 0x0f)<< EPT_SEL_POS_EP(EP6))
-				 |((tCfg -> ep7choiceebixint & 0x0f)<< EPT_SEL_POS_EP(EP7))
-                 ;
-	csp_ept_set_src(ptEptBase,w_EMSRC);	
-
-	w_EMSRC2= (tCfg -> orl1choiceepxorl &0xff0000) 
-             |(tCfg -> orl0choiceepxorl &0xff)
-			 |((tCfg -> fltpace0 &0x0f )<<EPT_EPPACE0_POS)
-			 |((tCfg -> fltpace1 &0x0f )<<EPT_EPPACE1_POS)
-             ;
-	csp_ept_set_src2(ptEptBase,w_EMSRC2);
-
-    w_EMPOL=  (tCfg -> POLPOSEBI0 &0x01)<<POL_POS_EBI(0)
-             |(tCfg -> POLPOSEBI1 &0x01)<<POL_POS_EBI(1)
-			 |(tCfg -> POLPOSEBI2 &0x01)<<POL_POS_EBI(2)
-			 |(tCfg -> POLPOSEBI3 &0x01)<<POL_POS_EBI(3)
-			 |(tCfg -> POLPOSEBI4 &0x01)<<POL_POS_EBI(4)
-			 ;
-	csp_ept_set_empol(ptEptBase,w_EMPOL);
-
-    w_EMECR= ((tCfg -> ep0lckmd &0x3)<<EPT_LCKMD_POS_EP(EP0))
-	        |((tCfg -> ep1lckmd &0x3)<<EPT_LCKMD_POS_EP(EP1))
-			|((tCfg -> ep2lckmd &0x3)<<EPT_LCKMD_POS_EP(EP2))
-			|((tCfg -> ep3lckmd &0x3)<<EPT_LCKMD_POS_EP(EP3))
-			|((tCfg -> ep4lckmd &0x3)<<EPT_LCKMD_POS_EP(EP4))
-			|((tCfg -> ep5lckmd &0x3)<<EPT_LCKMD_POS_EP(EP5))
-			|((tCfg -> ep6lckmd &0x3)<<EPT_LCKMD_POS_EP(EP6))
-			|((tCfg -> ep7lckmd &0x3)<<EPT_LCKMD_POS_EP(EP7))
-			|((tCfg -> osrshdw &0x1)  <<EPT_EMOSR_SHDWEN_POS )
-			|((tCfg -> osrldmd &0x3)  <<EPT_OSRLDMD_POS      )
-			|((tCfg -> slclrmd &0x3)  <<EPT_SLCK_CLRMD_POS   )
-			|((tCfg -> emasync &0x1)  <<EPT_EPASYNC_POS      )
-			|((tCfg -> cpufault &0x1)<<EPT_CPUFAULT_HLCK_POS)
-			|((tCfg -> memfault &0x1)<<EPT_MEMFAULT_HLCK_POS)
-			|((tCfg -> eomfault &0x1)<<EPT_EOMFAULT_HLCK_POS)
-			;
-	csp_ept_set_emecr(ptEptBase,w_EMECR);
-		
-	w_EMOSR	=  ((tCfg -> emcoax &0x3)<< EPT_EMCHAX_O_POS)
-	          |((tCfg -> emcobx &0x3)<< EPT_EMCHBX_O_POS)
-			  |((tCfg -> emcocx &0x3)<< EPT_EMCHCX_O_POS)
-			  |((tCfg -> emcocx &0x3)<< EPT_EMCHCX_O_POS)
-			  |((tCfg -> emcod  &0x3)<<  EPT_EMCHD_O_POS)
-			  |((tCfg -> emcoay &0x3)<< EPT_EMCHAY_O_POS)
-			  |((tCfg -> emcoby &0x3)<< EPT_EMCHBY_O_POS)
-			  |((tCfg -> emcocy &0x3)<< EPT_EMCHCY_O_POS)
-			  ;
-	csp_ept_set_emosr(ptEptBase,w_EMOSR);
-	
+	switch (byCh)
+	{	
+		case (EPTCHAX): w_Val=(  w_Val &~ EPT_CPEN_CHAX_MSK )|( bEn  << EPT_CPEN_CHAX_POS);
+			break;
+		case (EPTCHAY): w_Val=(  w_Val &~ EPT_CPEN_CHAY_MSK )|( bEn  << EPT_CPEN_CHAY_POS);
+			break;
+		case (EPTCHBX): w_Val=(  w_Val &~ EPT_CPEN_CHBX_MSK )|( bEn  << EPT_CPEN_CHBX_POS);
+            break;
+		case (EPTCHBY): w_Val=(  w_Val &~ EPT_CPEN_CHBY_MSK )|( bEn  << EPT_CPEN_CHBY_POS);
+		    break;
+		case (EPTCHCX): w_Val=(  w_Val &~ EPT_CPEN_CHCX_MSK )|( bEn  << EPT_CPEN_CHCX_POS);
+            break;
+		case (EPTCHCY): w_Val=(  w_Val &~ EPT_CPEN_CHCY_MSK )|( bEn  << EPT_CPEN_CHCY_POS);
+		    break;
+		default:return CSI_ERROR;
+			break;
+	}
+	csp_ept_set_cpcr(ptEptBase,w_Val) ;  
 	return CSI_OK;
 }
 
 
-csi_error_t  csi_ept_evtrg_config(csp_ept_t *ptEptBase, csi_ept_Event_trigger_config_t *tCfg)
-{uint32_t w_EVTRG;
- uint32_t w_EVPS;
- uint32_t w_val=0;
-// uint32_t w_EVCNTINIT; 
-    w_EVTRG=  (tCfg -> trg0sel &0xf)   << EPT_SEL_POS_TRG(0)
-             |(tCfg -> trg1sel &0xf)   << EPT_SEL_POS_TRG(1)
-			 |(tCfg -> trg2sel &0xf)   << EPT_SEL_POS_TRG(2)
-	         |(tCfg -> trg3sel &0xf)   << EPT_SEL_POS_TRG(3)
-			 |(tCfg -> cnt0initen&0x01)<< EPT_INITEN_POS_CNT(0)
-			 |(tCfg -> cnt1initen&0x01)<< EPT_INITEN_POS_CNT(1)
-			 |(tCfg -> cnt2initen&0x01)<< EPT_INITEN_POS_CNT(2)
-			 |(tCfg -> cnt3initen&0x01)<< EPT_INITEN_POS_CNT(3)
-			 |(tCfg -> trg0en&0x01)    << EPT_OUTEN_POS_TRG(0)
-			 |(tCfg -> trg1en&0x01)    << EPT_OUTEN_POS_TRG(1)
-			 |(tCfg -> trg2en&0x01)    << EPT_OUTEN_POS_TRG(2)
-			 |(tCfg -> trg3en&0x01)    << EPT_OUTEN_POS_TRG(3)
-			 |(tCfg -> cnt0initfrc&0x01)<< EPT_SWTRG_EV(0)
-			 |(tCfg -> cnt1initfrc&0x01)<< EPT_SWTRG_EV(1)
-			 |(tCfg -> cnt2initfrc&0x01)<< EPT_SWTRG_EV(2)
-			 |(tCfg -> cnt3initfrc&0x01)<< EPT_SWTRG_EV(3)
-			 ;
-	csp_ept_set_evtrg(ptEptBase,w_EVTRG);
-		 
-	w_EVPS= (tCfg -> trg0prd &0xf)<<EPT_PRD_POS_EV(0)
-	       |(tCfg -> trg1prd &0xf)<<EPT_PRD_POS_EV(1)
-		   |(tCfg -> trg2prd &0xf)<<EPT_PRD_POS_EV(2)
-		   |(tCfg -> trg3prd &0xf)<<EPT_PRD_POS_EV(3)
-		   ;
-	csp_ept_set_evps(ptEptBase,w_EVPS);   
-		   
-//    w_EVCNTINIT=  (tCfg -> cnt0_init&0xf) <<EPT_CNT_INIT_POS_EV(0)
-//	             |(tCfg -> cnt1_init&0xf) <<EPT_CNT_INIT_POS_EV(1)
-//				 |(tCfg -> cnt2_init&0xf) <<EPT_CNT_INIT_POS_EV(2)
-//				 |(tCfg -> cnt3_init&0xf) <<EPT_CNT_INIT_POS_EV(3)
-//                 ;
-	csp_ept_init_trgtime(ptEptBase, 0,tCfg -> cnt0init);
-	csp_ept_init_trgtime(ptEptBase, 1,tCfg -> cnt1init);
-	csp_ept_init_trgtime(ptEptBase, 2,tCfg -> cnt2init);
-	csp_ept_init_trgtime(ptEptBase, 3,tCfg -> cnt3init);
-			 
-	if(tCfg -> trg0en){csp_ept_int_enable(ptEptBase,EPT_INT_TRGEV0,true);}//enable interrupt
-	if(tCfg -> trg1en){csp_ept_int_enable(ptEptBase,EPT_INT_TRGEV1,true);}
-	if(tCfg -> trg2en){csp_ept_int_enable(ptEptBase,EPT_INT_TRGEV2,true);}
-	if(tCfg -> trg3en){csp_ept_int_enable(ptEptBase,EPT_INT_TRGEV3,true);}
+csi_error_t csi_ept_emergency_cfg(csp_ept_t *ptEptBase, csi_ept_emergency_config_t *tCfg)
+{ uint32_t wEmsrc;
+  uint32_t wEmsrc2;
+  uint32_t wEmpol;
+  uint32_t wEmecr;
+
+    wEmsrc2=csp_ept_get_src2(ptEptBase);
+	wEmsrc2=(wEmsrc2 & (~EPT_EPPACE0_MSK) & (~EPT_EPPACE1_MSK) ) | (tCfg -> byFltpace1 << EPT_EPPACE1_POS) | (tCfg ->byFltpace0  << EPT_EPPACE0_POS);
+	wEmsrc2=(wEmsrc2 &~0xff0000) |  tCfg ->byOrl1 <<16;
+	wEmsrc2=(wEmsrc2 &~0xff)     |  tCfg ->byOrl0 ;
+	csp_ept_set_src2(ptEptBase,wEmsrc2);
+		
+	wEmsrc = csp_ept_get_src(ptEptBase);
+    wEmsrc=(  wEmsrc &~ EPT_SEL_MSK_EP(tCfg -> byEpx) )|( tCfg -> byEpxInt  << EPT_SEL_POS_EP(tCfg -> byEpx));
+    csp_ept_set_src(ptEptBase,wEmsrc);
 	
-	csi_irq_enable((uint32_t *)ptEptBase);							//enable  irq
-	
-	if(tCfg ->fltipscld){
-		                 ptEptBase->CEDR =( ptEptBase->CEDR &~(EPT_FLTPRS_MSK))|((tCfg ->fltckprs & 0xff)<<EPT_FLTPRS_POS);
-		                 ptEptBase->CR =( ptEptBase->CR &~(EPT_FLT_INIT))|((tCfg ->fltipscld)<<EPT_FLT_POS);
-	                    
-	                    }
-	if((tCfg ->srcsel>0)&&(tCfg ->srcsel<7)){
-		                 w_val=( w_val &~(EPT_FLTSRC_MSK))|((tCfg ->srcsel & 0x07)<<EPT_FLTSRC_POS );
-						 w_val=( w_val &~(EPT_FLTBLKINV_MSK))|((tCfg ->blkinv & 0x01)<<EPT_FLTBLKINV_POS );
-						 w_val=( w_val &~(EPT_ALIGNMD_MSK))|((tCfg ->alignmd & 0x03)<<EPT_ALIGNMD_POS );
-						 w_val=( w_val &~(EPT_CROSSMD_MSK))|((tCfg ->crossmd & 0x01)<<EPT_CROSSMD_POS );
-						 csp_ept_set_trgftcr(ptEptBase,w_val);
-						 w_val=(tCfg ->window <<16)| tCfg ->offset;						 
-						 csp_ept_set_trgftwr(ptEptBase,w_val);
-	}					
-		 
-	return CSI_OK;	 
+    wEmpol=csp_ept_get_empol(ptEptBase);	
+	 switch (tCfg ->byEpxInt)
+	 {    case (EBI0): wEmpol=( wEmpol  &~ POL_MSK_EBI(0)) | (tCfg -> byPolEbix <<POL_POS_EBI(0) );break;
+		  case (EBI1): wEmpol=( wEmpol  &~ POL_MSK_EBI(1)) | (tCfg -> byPolEbix <<POL_POS_EBI(1) );break;
+		  case (EBI2): wEmpol=( wEmpol  &~ POL_MSK_EBI(2)) | (tCfg -> byPolEbix <<POL_POS_EBI(2) );break;
+		  case (EBI3): wEmpol=( wEmpol  &~ POL_MSK_EBI(3)) | (tCfg -> byPolEbix <<POL_POS_EBI(3) );break;
+		  case (EBI4): wEmpol=( wEmpol  &~ POL_MSK_EBI(4)) | (tCfg -> byPolEbix <<POL_POS_EBI(4) );break;
+		  default:return CSI_ERROR;break;
+	 }
+	csp_ept_set_empol(ptEptBase,wEmpol);
+
+    wEmecr =  csp_ept_get_emecr(ptEptBase);	
+	wEmecr =(wEmecr & (~EPT_LCKMD_MSK_EP(tCfg ->byEpx))) | (   tCfg ->byEpxLckmd <<  EPT_LCKMD_POS_EP(tCfg ->byEpx));
+	csp_ept_set_emecr(ptEptBase,wEmecr);
+			
+	return CSI_OK;
+}
+csi_error_t csi_ept_emergency_pinxout(csp_ept_t *ptEptBase,csi_ept_osrchx_e  byCh ,csp_ept_emout_e byCh2)
+{ uint32_t wEmosr;
+    wEmosr=csp_ept_get_emosr(ptEptBase);	
+	 switch (byCh)
+	 {    case (EMCOAX): wEmosr=( wEmosr &~(EPT_EMCHAX_O_MSK) )|( byCh2 <<EPT_EMCHAX_O_POS);break;
+		  case (EMCOBX): wEmosr=( wEmosr &~(EPT_EMCHBX_O_MSK) )|( byCh2 <<EPT_EMCHBX_O_POS);break;
+          case (EMCOCX): wEmosr=( wEmosr &~(EPT_EMCHCX_O_MSK) )|( byCh2 <<EPT_EMCHCX_O_POS);break;
+		  case (EMCOD):  wEmosr=( wEmosr &~(EPT_EMCHD_O_MSK) )|( byCh2 <<EPT_EMCHD_O_POS);break;
+		  case (EMCOAY): wEmosr=( wEmosr &~(EPT_EMCHAY_O_MSK) )|( byCh2 <<EPT_EMCHAY_O_POS);break;
+		  case (EMCOBY): wEmosr=( wEmosr &~(EPT_EMCHBY_O_MSK) )|( byCh2 <<EPT_EMCHBY_O_POS);break;
+		  case (EMCOCY): wEmosr=( wEmosr &~(EPT_EMCHCY_O_MSK) )|( byCh2 <<EPT_EMCHCY_O_POS);break;
+		  default:return CSI_ERROR;break;
+	 }
+    csp_ept_set_emosr(ptEptBase,wEmosr);
+	return CSI_OK;
 }
 
+
 csi_error_t csi_ept_global_config(csp_ept_t *ptEptBase,csi_ept_Global_load_control_config_t *Global)
-{uint32_t w_GLDCR;
- uint32_t w_GLDCR2;	
- uint32_t w_GLDCFG;	
+{   uint32_t w_GLDCR;	
 	w_GLDCR =0;
-    w_GLDCR = (w_GLDCR &~EPT_GLDEN_MSK)       | ((Global->glden & 0x01)<<EPT_GLDEN_POS);
-	w_GLDCR = (w_GLDCR &~EPT_GLDMD_MSK)       | ((Global->gldmd & 0x0f)<<EPT_GLDMD_POS);
-	w_GLDCR = (w_GLDCR &~EPT_GLDCR_OSTMD_MSK) | ((Global->ostmd & 0x01)<<EPT_GLDCR_OSTMD_POS);
-	w_GLDCR = (w_GLDCR &~EPT_GLDPRD_MSK)      | ((Global->gldprd & 0x07)<<EPT_GLDPRD_POS);
+    w_GLDCR = (w_GLDCR &~EPT_GLDEN_MSK)       | ((Global->bGlden & 0x01)<<EPT_GLDEN_POS);
+	w_GLDCR = (w_GLDCR &~EPT_GLDMD_MSK)       | ((Global->byGldmd & 0x0f)<<EPT_GLDMD_POS);
+	w_GLDCR = (w_GLDCR &~EPT_GLDCR_OSTMD_MSK) | ((Global->bOstmd & 0x01)<<EPT_GLDCR_OSTMD_POS);
+	w_GLDCR = (w_GLDCR &~EPT_GLDPRD_MSK)      | ((Global->bGldprd & 0x07)<<EPT_GLDPRD_POS);
 	csp_ept_set_gldcr(ptEptBase,w_GLDCR);	
-	w_GLDCR2 =  Global->osrearm ;
-	w_GLDCR2 |= Global->gfrcld << 1;
-	csp_ept_set_gldcr2(ptEptBase,w_GLDCR2);	
-	w_GLDCFG=0;
-	w_GLDCFG |= Global-> prdren ;
-	w_GLDCFG |= Global-> cmpaen  << EPT_LD_CMPA_POS;
-	w_GLDCFG |= Global-> cmpben  << EPT_LD_CMPB_POS;
-	w_GLDCFG |= Global-> cmpcen  << EPT_LD_CMPC_POS;
-	w_GLDCFG |= Global-> cmpden  << EPT_LD_CMPD_POS;
-	w_GLDCFG |= Global-> dbdtren << EPT_LD_DBDTR_POS;
-	w_GLDCFG |= Global-> dbdtfen << EPT_LD_DBDTF_POS;
-	w_GLDCFG |= Global-> dbcren  << EPT_LD_DBCR_POS;
-	w_GLDCFG |= Global-> aqcraen << EPT_LD_AQCRA_POS;
-	w_GLDCFG |= Global-> aqcrben << EPT_LD_AQCRB_POS;
-	w_GLDCFG |= Global-> aqcrcen << EPT_LD_AQCRC_POS;
-	w_GLDCFG |= Global-> aqcrden << EPT_LD_AQCRD_POS;
-	w_GLDCFG |= Global-> aqcsfen << EPT_LD_AQCSF_POS;
-	w_GLDCFG |= Global-> aqosren << EPT_LD_EMOSR_POS;
-	csp_ept_set_gldcfg(ptEptBase,w_GLDCFG);
+	return CSI_OK;
+}
+csi_error_t csi_ept_global_sw(csp_ept_t *ptEptBase)
+{
+	csp_ept_set_gldcr2(ptEptBase,0x01);
+	return CSI_OK;
+}
+
+csi_error_t csi_ept_global_rearm(csp_ept_t *ptEptBase)
+{
+	csp_ept_set_gldcr2(ptEptBase,0x02);
 	return CSI_OK;
 }
 
