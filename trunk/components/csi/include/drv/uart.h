@@ -15,7 +15,7 @@
 
 #include <drv/common.h>
 #include <drv/dma.h>
-#include <drv/ringbuffer.h>
+#include <drv/ringbuf.h>
 
 #include "csp.h"
 
