@@ -15,6 +15,7 @@
 #include "drv/pin.h"
 #include <drv/irq.h>
 
+
 uint32_t gEptPrd;
 
  /**
@@ -39,7 +40,9 @@ csi_error_t csi_ept_config_init(csp_ept_t *ptEptBase, csi_ept_config_t *pteptPwm
 	csp_ept_wr_key(ptEptBase);                                           //Unlocking
 	csp_ept_reset(ptEptBase);											// reset 
 	
-	wClkDiv = (csi_get_pclk_freq() / pteptPwmCfg->wFreq / 60000);		// clk div value
+
+	wClkDiv = (soc_get_pclk_freq() / pteptPwmCfg->wFreq / 30000);		// clk div value
+
 	if(wClkDiv == 0)wClkDiv = 1;
 	
 	wPrdrLoad  = (csi_get_pclk_freq()/pteptPwmCfg->wFreq/wClkDiv);	    //prdr load value
@@ -74,14 +77,16 @@ csi_error_t csi_ept_config_init(csp_ept_t *ptEptBase, csi_ept_config_t *pteptPwm
 	csp_ept_set_cr(ptEptBase, wCrVal);									// set bt work mode
 	csp_ept_set_pscr(ptEptBase, (uint16_t)wClkDiv - 1);					// clk div
 	csp_ept_set_prdr(ptEptBase, (uint16_t)wPrdrLoad);				    // prdr load value
+			
 		
-	if(pteptPwmCfg->byDutyCycle){
-	wCmpLoad =wPrdrLoad-(wPrdrLoad * pteptPwmCfg->byDutyCycle /100);	// cmp load value
+	if(pteptPwmCfg->byDutyCycle>=100){wCmpLoad=0;}
+	else if(pteptPwmCfg->byDutyCycle==0){wCmpLoad=wPrdrLoad+1;}
+	else{wCmpLoad =wPrdrLoad-(wPrdrLoad * pteptPwmCfg->byDutyCycle /100);}			
 	csp_ept_set_cmpa(ptEptBase, (uint16_t)wCmpLoad);					// cmp load value
 	csp_ept_set_cmpb(ptEptBase, (uint16_t)wCmpLoad);
 	csp_ept_set_cmpc(ptEptBase, (uint16_t)wCmpLoad);
 	csp_ept_set_cmpd(ptEptBase, (uint16_t)wCmpLoad);
-	}
+	
 	
 	if(pteptPwmCfg->byInter)
 	{
@@ -166,8 +171,10 @@ csi_error_t  csi_ept_wave_init(csp_ept_t *ptEptBase, csi_ept_pwmconfig_t *pteptP
 	csp_ept_clken(ptEptBase);
 	csp_ept_wr_key(ptEptBase);                                           //Unlocking
 	csp_ept_reset(ptEptBase);											// reset 
-	
-	wClkDiv = (csi_get_pclk_freq() / pteptPwmCfg->wFreq / 60000);		// clk div value
+
+	wClkDiv=soc_get_pclk_freq();
+	wClkDiv = (wClkDiv / pteptPwmCfg->wFreq / 30000);		            // clk div value
+
 	if(wClkDiv == 0)wClkDiv = 1;
 	
 	wPrdrLoad  = (csi_get_pclk_freq()/pteptPwmCfg->wFreq/wClkDiv);	    //prdr load value
@@ -182,13 +189,14 @@ csi_error_t  csi_ept_wave_init(csp_ept_t *ptEptBase, csi_ept_pwmconfig_t *pteptP
 	csp_ept_set_pscr(ptEptBase, (uint16_t)wClkDiv - 1);					// clk div
 	csp_ept_set_prdr(ptEptBase, (uint16_t)wPrdrLoad);				    // prdr load value
 		
-	if(pteptPwmCfg->byDutyCycle){
-	wCmpLoad =wPrdrLoad-(wPrdrLoad * pteptPwmCfg->byDutyCycle /100);	// cmp load value
+	if(pteptPwmCfg->byDutyCycle>=100){wCmpLoad=0;}
+	else if(pteptPwmCfg->byDutyCycle==0){wCmpLoad=wPrdrLoad+1;}
+	else{wCmpLoad =wPrdrLoad-(wPrdrLoad * pteptPwmCfg->byDutyCycle /100);}		
 	csp_ept_set_cmpa(ptEptBase, (uint16_t)wCmpLoad);					// cmp load value
 	csp_ept_set_cmpb(ptEptBase, (uint16_t)wCmpLoad);
 	csp_ept_set_cmpc(ptEptBase, (uint16_t)wCmpLoad);
 	csp_ept_set_cmpd(ptEptBase, (uint16_t)wCmpLoad);
-	}
+	
 	
 	if(pteptPwmCfg->byInter)
 	{
@@ -530,7 +538,10 @@ uint16_t csi_ept_get_prdr(csp_ept_t *ptEpt)
 */
 csi_error_t csi_ept_change_ch_duty(csp_ept_t *ptEptBase, csi_ept_chtype_e eCh, uint32_t wActiveTime)
 { uint16_t  wCmpLoad;
-    wCmpLoad =gEptPrd-(gEptPrd * wActiveTime /100);
+
+	if(wActiveTime>=100){wCmpLoad=0;}
+	else if(wActiveTime==0){wCmpLoad=gEptPrd+1;}
+	else{wCmpLoad =gEptPrd-(gEptPrd * wActiveTime /100);}
 
 	switch (eCh)
 	{	
