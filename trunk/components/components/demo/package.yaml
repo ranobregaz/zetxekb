@@ -22,8 +22,8 @@ build_config:
   include:
     - include
   internal_include: ~
-  cflag: -O0  -g3
-  cxxflag: -O0  -g3
+  cflag: -Og  -g3
+  cxxflag: -Og  -g3
   asmflag: -Wa,--gdwarf2
   define: ~
   libs: ~
