@@ -22,26 +22,6 @@
 extern "C" {
 #endif
 
-///****** ADC Event *****/
-//typedef enum {
-//    ADC_EVENT_CONVERT_COMPLETE = 0,      ///< All data convert completed
-//    ADC_EVENT_CONVERT_HALF_DONE,         ///< Convert half done
-//    ADC_EVENT_ERROR,                      ///< Converted data has not been read before the new conversion result is load to the data register
-//	ADC_EVENT_CMP,
-//} csi_adc_event_t;
-//
-//typedef struct csi_adc csi_adc_t;
-//struct csi_adc {
-//    csi_dev_t                dev;        ///< Hw-device info
-//    void (*callback)(csi_adc_t *adc, csi_adc_event_t event, void *arg);  ///< User callback ,signaled by driver event
-//    void                    *arg;        ///< User private param ,passed to user callback
-//    uint32_t                *data;       ///< Data buf
-//    uint32_t                 num;        ///< Data size (depth)
-//    csi_error_t             (*start)(csi_adc_t *adc);  ///< Start function
-//    csi_error_t             (*stop)(csi_adc_t *adc);   ///< Stop function
-//    csi_state_t             state;       ///< current state
-//    void                    *priv;		 ///< channels that are used 
-//};
 
 /**
  * \enum	csi_adc_conv_mode_e
