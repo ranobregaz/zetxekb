@@ -312,15 +312,15 @@ int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
 			
 			//read ringbuffer, multiple processing methods 
 			//allow users to modify 
-			hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
-			if(hwRecvNum >= hwSize)
-				ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);
-			else
-				hwRecvNum = 0;
-			
-//			hwRecvNum = (hwRecvNum > hwSize)? hwSize: hwRecvNum;
-//			if(hwRecvNum)
+//			hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
+//			if(hwRecvNum >= hwSize)
 //				ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);
+//			else
+//				hwRecvNum = 0;
+			
+			hwRecvNum = (hwRecvNum > hwSize)? hwSize: hwRecvNum;
+			if(hwRecvNum)
+				ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);
 				
 			break;
 		case UART_RX_MODE_INT_DYN:			//receive dynamic length data, handle without (wTimeOut and hwSize)
