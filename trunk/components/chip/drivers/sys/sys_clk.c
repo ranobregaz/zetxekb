@@ -289,7 +289,7 @@ uint32_t soc_get_pclk_freq(void)
  */ 
 uint32_t soc_get_coret_freq(void)
 {
-	switch (CK801CORET->CTRL & 0x4 >>2)
+	switch ((CK801CORET->CTRL & 0x4) >> 2)
 	{
 		case 0: return tClkConfig.wSclk/8;
 			break;
