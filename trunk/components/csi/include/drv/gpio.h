@@ -29,8 +29,8 @@ extern "C" {
  * \brief    GPIO speed define
  */
 typedef enum {
-    GPIO_SPEED_LV0 	= 0U,
-    GPIO_SPEED_LV1,
+    GPIO_SPEED_LV0 	= 0U,		//normal
+    GPIO_SPEED_LV1,				//fast
 } csi_gpio_speed_e;
 
 /**
@@ -38,8 +38,8 @@ typedef enum {
  * \brief    GPIO speed define
  */
 typedef enum {
-    GPIO_DRIVE_LV0 	= 0U,
-    GPIO_DRIVE_LV1,
+    GPIO_DRIVE_LV0 	= 0U,		//normal
+    GPIO_DRIVE_LV1,				//strong
 } csi_gpio_drive_e;
 
 /**
@@ -48,8 +48,8 @@ typedef enum {
  */
 typedef enum {
 	GPIO_DIR_GPD		= 0,
-    GPIO_DIR_INPUT,    					//GPIO as input
-    GPIO_DIR_OUTPUT             		//GPIO as output
+    GPIO_DIR_INPUT,    			//GPIO as input
+    GPIO_DIR_OUTPUT             //GPIO as output
 } csi_gpio_dir_e;
 
 /**
@@ -57,8 +57,8 @@ typedef enum {
  * \brief    GPIO pin state define
  */
 typedef enum {
-    GPIO_PIN_LOW 		= 0,           //GPIO low level
-    GPIO_PIN_HIGH,                     //GPIO high level
+    GPIO_PIN_LOW 		= 0,	//GPIO low level
+    GPIO_PIN_HIGH,              //GPIO high level
 } csi_gpio_pin_state_e;
 
 /**
@@ -66,9 +66,9 @@ typedef enum {
  * \brief    GPIO pull mode define
  */
 typedef enum {
-    GPIO_PULLNONE		= 0,    		//Pull none 
-    GPIO_PULLUP,                  		//Pull up 
-    GPIO_PULLDOWN,               		//Pull down 
+    GPIO_PULLNONE		= 0,    //Pull none 
+    GPIO_PULLUP,                //Pull up 
+    GPIO_PULLDOWN,              //Pull down 
 } csi_gpio_pull_mode_e;	
 
 /**
@@ -76,8 +76,8 @@ typedef enum {
  * \brief    GPIO output mode define
  */
 typedef enum {
-	GPIO_PUSH_PULL 		= 0,			//push-pull output
-	GPIO_OPEN_DRAIN,					//open drain output
+	GPIO_PUSH_PULL 		= 0,	//push-pull 
+	GPIO_OPEN_DRAIN,			//open drain 
 } csi_gpio_output_mode_e;
 
 /**
@@ -85,9 +85,9 @@ typedef enum {
  * \brief    GPIO input mode define
  */
 typedef enum {
-	GPIO_INPUT_CMOS 	= 0U,
-	GPIO_INPUT_TTL1,
-	GPIO_INPUT_TTL2
+	GPIO_INPUT_CMOS 	= 0U,	//cmos
+	GPIO_INPUT_TTL1,			//ttl1
+	GPIO_INPUT_TTL2				//ttl2
 }csi_gpio_input_mode_e;
 
 /**
@@ -95,9 +95,9 @@ typedef enum {
  * \brief    GPIO irq triger type
  */
 typedef enum {
-    GPIO_IRQ_RISING_EDGE  = 0,    		//Interrupt mode for rising edge
-    GPIO_IRQ_FALLING_EDGE,        		//Interrupt mode for falling edge
-    GPIO_IRQ_BOTH_EDGE,          		//Interrupt mode for both edge
+    GPIO_IRQ_RISING_EDGE  = 0, //rising edge
+    GPIO_IRQ_FALLING_EDGE,     //falling edge
+    GPIO_IRQ_BOTH_EDGE,        //both edge
 } csi_gpio_irq_mode_e;
 
 /**
@@ -195,28 +195,28 @@ csi_error_t csi_gpio_port_dir(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpi
   \brief       Config pin pull mode
   \param[in]   ptGpioBase	GPIO port handle
   \param[in]   wPinMask		Pin mask need to be set
-  \param[in]   eMode        \ref csi_gpio_pull_mode_e
+  \param[in]   ePullMode    \ref csi_gpio_pull_mode_e
   \return      Error code
 */
-csi_error_t csi_gpio_port_pull_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pull_mode_e eMode);
+csi_error_t csi_gpio_port_pull_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pull_mode_e ePullMode);
 
 /**
   \brief       Config pin output mode
   \param[in]   ptGpioBase	GPIO port handle
   \param[in]   wPinMask		Pin mask need to be set
-  \param[in]   eMode        \ref csi_gpio_output_mode_e
+  \param[in]   eOutMode     \ref csi_gpio_output_mode_e
   \return      Error code
 */
-csi_error_t csi_gpio_port_output_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_output_mode_e eMode);
+csi_error_t csi_gpio_port_output_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_output_mode_e eOutMode);
 
 /** 
   \brief config gpio input mode
   \param[in]   ptGpioBase	pointer of gpio register structure
   \param[in]   wPinMask		pin mask,0x0001~0xffff
-  \param[in]   eMode		\ref csi_gpio_output_mode_e
+  \param[in]   eInputMode	\ref csi_gpio_output_mode_e
   \return 	   error code 	\ref csi_error_t
  */ 
-csi_error_t csi_gpio_port_input_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_input_mode_e eMode);
+csi_error_t csi_gpio_port_input_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_input_mode_e eInputMode);
 
 /**
   \brief       Config gpio irq params
