@@ -129,7 +129,6 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_conta_pwm_config_t *ptC
 		eRemStat = CNTA_REMSTAT_HIGH;
 			
 	csp_cnta_set_ckdiv(ptCntaBase, ptContaPwmCfg->eClkDiv, CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv
-	csi_cnta_set_sync(ptCntaBase, PEND_CARRIERON_DIS, MATCH_CARRIERON_DIS,CNTA_HW_DIS);//结合bt0设置硬件自动打开或者关闭载波
 	csp_cnta_set_carrier(ptCntaBase, CNTA_CARRIER_EN, PWM_CARRIER, eRemStat, eOsp);
 	csp_cnta_set_datah(ptCntaBase, wDatahLoad);
 	csp_cnta_set_datal(ptCntaBase, wDatalLoad);
@@ -170,7 +169,7 @@ void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t datah, uint16_t d
  *  \param[in] hw_updata: cadata reg auto updata control
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cnta_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e tcpend_rem, csi_cnta_tcmatch_e tcmatch_rem,csi_cnta_hw_updata_e hw_updata)
+csi_error_t csi_cnta_bt0_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e tcpend_rem, csi_cnta_tcmatch_e tcmatch_rem,csi_cnta_hw_updata_e hw_updata)
 {
 	csp_cnta_set_sync(ptCntaBase, tcpend_rem, tcmatch_rem, hw_updata);	
 	return CSI_OK;
