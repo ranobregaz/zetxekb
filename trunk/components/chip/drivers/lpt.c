@@ -247,14 +247,14 @@ bool csi_lpt_is_running(csp_lpt_t *ptLptBase)
  *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] hwCmp: duty cycle
  *  \param[in] hwPrdr: period 
- *  \param[in] mode_updata: updata mode 
+ *  \param[in] eModeUpdata: updata mode 
  *  \return none
  */
-void csi_lpt_pwm_para_updata(csp_lpt_t *ptLptBase, uint16_t hwCmp, uint16_t hwPrdr, csi_lpt_updata_e mode_updata)
+void csi_lpt_pwm_para_updata(csp_lpt_t *ptLptBase, uint16_t hwCmp, uint16_t hwPrdr, csi_lpt_updata_e eModeUpdata)
 {
 	
 	csp_lpt_data_update(ptLptBase, hwCmp, hwPrdr);
-	if(mode_updata == UPDATA_IM)
+	if(eModeUpdata == UPDATA_IM)
 	{
 		csp_lpt_set_prdr(ptLptBase, hwPrdr);
 		csp_lpt_set_cmp(ptLptBase, hwCmp);
@@ -282,11 +282,11 @@ csi_error_t csi_lpt_rearm_sync(csp_lpt_t *ptLptBase, uint8_t bySync)
 /** \brief lpt evtrg source output config  
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
- *  \param[in] lpt_trgsrc: lpt evtrg source(1~4) 
- *  \param[in] trg_prd: event count period 
+ *  \param[in] eTrgsrc: lpt evtrg source(1~4) 
+ *  \param[in] byTrgprd: event count period 
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t byEvtrg, csi_lpt_trgsrc_e lpt_trgsrc, uint8_t trg_prd)
+csi_error_t csi_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t byEvtrg, csi_lpt_trgsrc_e eTrgsrc, uint8_t byTrgprd)
 {
 	CSI_PARAM_CHK(ptLptBase, CSI_ERROR);
 
@@ -294,8 +294,8 @@ csi_error_t csi_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t byEvtrg, csi_lpt_trg
 	if(byEvtrg > 0)
 		return CSI_ERROR;
 	
-	csp_lpt_set_evtrg(ptLptBase, lpt_trgsrc);
-	csp_lpt_set_trgprd(ptLptBase, trg_prd-1);
+	csp_lpt_set_evtrg(ptLptBase, eTrgsrc);
+	csp_lpt_set_trgprd(ptLptBase, byTrgprd-1);
 	csp_lpt_trg_enable(ptLptBase, ENABLE);
 	
 	return ret;
@@ -305,17 +305,17 @@ csi_error_t csi_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t byEvtrg, csi_lpt_trg
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] eClk: lpt clock source selection
- *  \param[in] wHz: frequency
+ *  \param[in] hwHz: frequency
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_set_fre(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint16_t wHz)
+csi_error_t csi_lpt_set_fre(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint16_t hwHz)
 {
 
 	uint32_t wLptClk =0, wMult = 0;
 	csi_error_t tRet = CSI_OK;
 	
 	wLptClk = apt_get_lpt_clk(eClk);
-	wMult = wLptClk/wHz;
+	wMult = wLptClk/hwHz;
 	
 	wLptPrd = apt_set_lpt_clk(ptLptBase,eClk,wMult);	
 
@@ -446,20 +446,20 @@ csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *p
 /** \brief change lpt duty cycle
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
- *  \param[in] duty_cycle: lpt clock source selection
+ *  \param[in] wDutyCycle: lpt clock source selection
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_change_duty(csp_lpt_t *ptLptBase, uint32_t duty_cycle)
+csi_error_t csi_lpt_change_duty(csp_lpt_t *ptLptBase, uint32_t wDutyCycle)
 {
 	uint16_t hwCmp;
 	
-	if(duty_cycle >= 100)
+	if(wDutyCycle >= 100)
 	{
 		hwCmp = wLptPrd + 1;
 	}
 	else
 	{
-		hwCmp = wLptPrd*duty_cycle/100;		
+		hwCmp = wLptPrd*wDutyCycle/100;		
 	}
 	csp_lpt_set_cmp(ptLptBase, hwCmp);
 	return CSI_OK;
@@ -482,10 +482,10 @@ csi_error_t csi_lpt_start(csp_lpt_t *ptLptBase)
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] eClk: lpt clock source selection
- *  \param[in] wms: ms
+ *  \param[in] wTimeMs: ms
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint32_t wms)
+csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint32_t wTimeMs)
 {
 	uint32_t wLptClk =0, wMult = 0;
 	csi_error_t tRet = CSI_OK;
@@ -495,7 +495,7 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
 	csp_lpt_clk_enable(ptLptBase, ENABLE);	
 	
 	wLptClk = apt_get_lpt_clk(eClk);
-	wMult = wLptClk/1000*wms;
+	wMult = wLptClk/1000*wTimeMs;
 
 	wLptPrd = apt_set_lpt_clk(ptLptBase,eClk,wMult);	
 
@@ -516,15 +516,15 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] bySync: select sync
- *  \param[in] tSyncMode: LPT_TRG_CONT/LPT_TRG_ONCE
+ *  \param[in] eSyncMode: LPT_TRG_CONT/LPT_TRG_ONCE
  *  \param[in] bARearmEnable: auto rearm enable/disable
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, uint8_t bySync, csi_lpt_syncmode_e tSyncMode, bool bARearmEnable)
+csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, uint8_t bySync, csi_lpt_syncmode_e eSyncMode, bool bARearmEnable)
 {
 	if(bySync > 0)
 		return CSI_ERROR;		
-	csp_lpt_set_sync_mode(ptLptBase, tSyncMode);
+	csp_lpt_set_sync_mode(ptLptBase, eSyncMode);
 	csp_lpt_auto_rearm_enable(ptLptBase, bARearmEnable);
 	csp_lpt_sync_enable(ptLptBase, ENABLE);
 	return CSI_OK;

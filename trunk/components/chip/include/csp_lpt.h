@@ -60,20 +60,20 @@ typedef struct
 #define	LPT_CSS_MSK			(0x07ul << LPT_CSS_POS)
 typedef enum
 {
-	LPT_PCLK_DIV4 = 	(0x00ul),
-    LPT_ISCLK = 		(0x01ul ),
+	LPT_PCLK_DIV4  = 	(0x00ul),
+    LPT_ISCLK      =    (0x01ul),
 	LPT_IMCLK_DIV4 = 	(0x02ul),
-	LPT_EMCLK = 		(0x03ul ),
-	LPT_IN_RISE = 		(0x04ul ),
-	LPT_IN_FALL = 		(0x05ul),	
+	LPT_EMCLK      =    (0x03ul),
+	LPT_IN_RISE    = 	(0x04ul),
+	LPT_IN_FALL    = 	(0x05ul),	
 }lpt_css_e;
 
 #define	LPT_SHDWSTP_POS		(6)
 #define	LPT_SHDWSTP_MSK		(0x01ul << LPT_SHDWSTP_POS)
 typedef enum
 {
-    LPT_START_SHADOW = 		(0x00ul ),
-	LPT_START_IMMEDIATE= 	(0x01ul),
+    LPT_START_SHADOW    = 	(0x00ul),
+	LPT_START_IMMEDIATE = 	(0x01ul),
 }lpt_shdwstp_e;
 
 
@@ -92,8 +92,8 @@ typedef enum
 #define	LPT_STR_MSK			(0x01ul << LPT_STR_POS)
 typedef enum
 {
-    LPT_STOP = 			(0x00ul ),
-	LPT_START = 		(0x01ul )
+    LPT_STOP = 			(0x00ul),
+	LPT_START = 		(0x01ul)
 }lpt_str_e;
 
 #define	LPT_SRR_POS			(12)
@@ -107,19 +107,19 @@ typedef enum
 #define	LPT_PSCDIV_MSK			(0x0Ful << LPT_STR_POS)
 typedef enum
 {
-	LPT_PSC_DIV1 = 		(0x00 ),
-	LPT_PSC_DIV2 = 		(0x01 ),
-	LPT_PSC_DIV4 = 		(0x02 ),
-    LPT_PSC_DIV8 = 		(0x03 ),
-	LPT_PSC_DIV16 = 	(0x04 ),
-	LPT_PSC_DIV32 = 	(0x05 ),
-	LPT_PSC_DIV64 = 	(0x06 ),
-	LPT_PSC_DIV128 = 	(0x07 ),
-    LPT_PSC_DIV256 = 	(0x08 ),
-	LPT_PSC_DIV512 = 	(0x09 ),
-	LPT_PSC_DIV1024 = 	(0x0A ),
-	LPT_PSC_DIV2048 = 	(0x0B ),
-	LPT_PSC_DIV4096 = 	(0x0C )	
+	LPT_PSC_DIV1    = 	(0x00),
+	LPT_PSC_DIV2    = 	(0x01),
+	LPT_PSC_DIV4    = 	(0x02),
+    LPT_PSC_DIV8    = 	(0x03),
+	LPT_PSC_DIV16   = 	(0x04),
+	LPT_PSC_DIV32   = 	(0x05),
+	LPT_PSC_DIV64   = 	(0x06),
+	LPT_PSC_DIV128  = 	(0x07),
+    LPT_PSC_DIV256  = 	(0x08),
+	LPT_PSC_DIV512  = 	(0x09),
+	LPT_PSC_DIV1024 = 	(0x0A),
+	LPT_PSC_DIV2048 = 	(0x0B),
+	LPT_PSC_DIV4096 = 	(0x0C)	
 }lpt_pscdiv_e;
 
 /******************************************************************************
@@ -133,8 +133,8 @@ typedef enum
 #define	LPT_IDLEST_MSK		(0x01ul << LPT_IDLEST_POS)
 typedef enum
 {
-    LPTIDLE_Z = 		(0x00ul ),
-	LPTIDLE_L = 		(0x01ul )
+    LPTIDLE_Z = 		(0x00ul),
+	LPTIDLE_L = 		(0x01ul)
 }lpt_idlest_e;
 
 #define	LPT_PRDLD_POS		(4)
@@ -157,8 +157,8 @@ typedef enum
 #define	LPT_OPM_MSK			(0x01ul << LPT_OPM_POS)
 typedef enum
 {
-    LPT_OPM_CONTINUOUS = 	(0x00ul ),
-	LPT_OPM_ONCE = 		 	(0x01ul )
+    LPT_OPM_CONTINUOUS = 	(0x00ul),
+	LPT_OPM_ONCE = 		 	(0x01ul)
 }lpt_opm_e;
 
 #define	LPT_FLT_POS			(10)
@@ -169,14 +169,14 @@ typedef enum
 #define	LPT_FLTDEB_MSK		(0x07ul << LPT_FLTDEB_POS)
 typedef enum
 {
-    LPT_FLTDEB_00 = 	(0x00ul ),         
-	LPT_FLTDEB_02 = 	(0x01ul ), 
-    LPT_FLTDEB_03 = 	(0x02ul ),         
-	LPT_FLTDEB_04 = 	(0x03ul ), 
-    LPT_FLTDEB_06 = 	(0x04ul ),         
-	LPT_FLTDEB_08 = 	(0x05ul ), 
-    LPT_FLTDEB_16 = 	(0x06ul ),         
-	LPT_FLTDEB_32 = 	(0x07ul ), 	
+    LPT_FLTDEB_00 = 	(0x00ul),         
+	LPT_FLTDEB_02 = 	(0x01ul), 
+    LPT_FLTDEB_03 = 	(0x02ul),         
+	LPT_FLTDEB_04 = 	(0x03ul), 
+    LPT_FLTDEB_06 = 	(0x04ul),         
+	LPT_FLTDEB_08 = 	(0x05ul), 
+    LPT_FLTDEB_16 = 	(0x06ul),         
+	LPT_FLTDEB_32 = 	(0x07ul), 	
 }lpt_fltdeb_e;
 
 
@@ -184,16 +184,16 @@ typedef enum
 #define	LPT_PSCLD_MSK		(0x01ul << LPT_PSCLD_POS)
 typedef enum
 {
-    LPT_PSCLD_START = 		(0x00ul ),
-	LPT_PSCLD_START_PEND = 		(0x01ul )
+    LPT_PSCLD_START      = 		(0x00ul),
+	LPT_PSCLD_START_PEND = 		(0x01ul)
 }lpt_pscld_e;
 
 #define	LPT_CMPLD_POS		(17)
 #define	LPT_CMPLD_MSK		(0x01ul << LPT_CMPLD_POS)
 typedef enum
 {
-    LPT_CMPLD_IM = 		(0x00ul ),
-	LPT_CMPLD_END = 	(0x01ul )
+    LPT_CMPLD_IM  = 	(0x00ul),
+	LPT_CMPLD_END = 	(0x01ul)
 }lpt_cmpld_e;
 
 #define LPT_OUT_EN_POS	31
@@ -211,7 +211,7 @@ typedef enum
 #define	LPT_OSTMD_MSK		(0x01ul << LPT_OSTMD_POS)
 typedef enum
 {
-    LPT_SYNC_CT= (0x00ul ),  	       
+    LPT_SYNC_CT =  (0x00ul),  	       
 	LPT_SYNC_OT =  (0x01ul)	
 }lpt_syncmd_e;
 
@@ -247,11 +247,11 @@ typedef enum
 #define	LPT_TRGSRC_MSK		(0x0ful << LPT_TRGSRC_POS)
 typedef enum
 {
-    LPT_TRGSRC0_DIS = 		(0x00ul ),  	       
-	LPT_TRGSRC0_ZRO = 		(0x01ul ),
-	LPT_TRGSRC0_PRD = 		(0x02ul),
-	LPT_TRGSRC0_ZRO_PRD = 	(0x03ul ),
-	LPT_TRGSRC0_CMP = 		(0x04ul )
+    LPT_TRGSRC0_DIS     = 	(0x00ul),  	       
+	LPT_TRGSRC0_ZRO     = 	(0x01ul),
+	LPT_TRGSRC0_PRD     = 	(0x02ul),
+	LPT_TRGSRC0_ZRO_PRD = 	(0x03ul),
+	LPT_TRGSRC0_CMP     = 	(0x04ul)
 }lpt_trgsrc_e;
 
 #define	LPT_TRG0OE_POS		(20)
@@ -264,9 +264,9 @@ typedef enum
 typedef enum
 {
     LPT_TRGEV_INT  = 	(1<<0),  	       
-	LPT_MATCH_INT = 	(1<<1),	
-	LPT_PEND_INT  = 	(1<<2), 
-	LPT_NONE_INT = 	    (1<<3) 	       
+	LPT_MATCH_INT  = 	(1<<1),	
+	LPT_PEND_INT   = 	(1<<2), 
+	LPT_NONE_INT   = 	(1<<3) 	       
 }lpt_int_e;
 
 /******************************************************************************
@@ -296,7 +296,7 @@ typedef enum
 ******************************************************************************/
 #define	LPT_EVSWF_POS		(0)
 #define	LPT_EVSWF_MSK		(0x01 << LPT_EVSWF_POS)
-#define	LPT_EVSWF		(0x01 << LPT_EVSWF_POS)
+#define	LPT_EVSWF		    (0x01 << LPT_EVSWF_POS)
 
 /******************************************************************************
 * PRDR : Period reg
