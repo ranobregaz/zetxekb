@@ -469,10 +469,9 @@ void csi_adc_rearm_sync(csp_adc_t *ptAdcBase, csi_adc_trgin_e eTrgIn)
  *  \param[in] ptAdcBase: pointer of adc register structure
  *  \param[in] byTrgOut: adc evtrg out port (0~1)
  *  \param[in] adc_trgsrc: adc evtrg source(0~23) 
- *  \param[in] byTrgCnt: evtrg count 
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, uint8_t byTrgOut, csi_adc_trgsrc_e eTrgSrc, uint8_t byTrgCnt)
+csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, uint8_t byTrgOut, csi_adc_trgsrc_e eTrgSrc)
 {
 	switch(byTrgOut)
 	{
