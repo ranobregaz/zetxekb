@@ -416,7 +416,7 @@ csi_error_t csi_adc_set_sync(csp_adc_t *ptAdcBase, csi_adc_trgin_e eTrgIn, csi_a
 /** 
   \brief 	   set adc evtrg output
   \param[in]   ptAdcBase	pointer of adc register structure
-  \param[in]   byTrgOut		adc evtrg out select(0~1)
+  \param[in]   byTrgOut		adc evtrg out port(0~1)
   \param[in]   eTrgSrc 		adc evtrg source(0~23) 
   \param[in]   byTrgCnt		evtrg count 
   \return 	   error code \ref csi_error_t

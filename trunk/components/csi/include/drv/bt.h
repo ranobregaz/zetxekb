@@ -210,9 +210,9 @@ void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin);
 /** 
   \brief 	   bt evtrg output config
   \param[in]   ptBtBase		pointer of bt register structure
-  \param[in]   byTrgOut		trigger out event (only 0)
+  \param[in]   byTrgOut		evtrg out port (only 0)
   \param[in]   eTrgSrc 		bt evtrg source(1~3) 
-  \param[in]   byTrgCnt 		evtrg count 
+  \param[in]   byTrgCnt 	evtrg count 
   \return 	   error code \ref csi_error_t
  */
 csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byTrgOut, csi_bt_trgsrc_e eTrgSrc, uint8_t byTrgCnt);
