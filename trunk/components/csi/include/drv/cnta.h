@@ -71,7 +71,7 @@ typedef enum
 typedef enum
 {
 	CNTA_SW_EN			= (0x01ul)  
-}csi_cnta_sw_updata_t;
+}csi_cnta_sw_updata_e;
 
 typedef enum
 {
@@ -124,14 +124,15 @@ uint32_t csi_cnta_get_datal_value(csp_cnta_t *ptCntaBase);
  */ 
 csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_conta_pwm_config_t *ptContaPwmCfg);
 
-/**
-  \brief       updata cnta pwm freq para
-  \param[in]   ptCntaBase   cnta handle to operate. 
-  \param[in]   datah    	pwm ouput high time long 
-  \param[in]   datal   		pwm ouput low time long 
-  \param[in] sw_updata:     data reg soft updata control
-*/
-void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t datah, uint16_t datal, csi_cnta_sw_updata_t sw_updata);
+/** \brief updata cnta pwm freq para: (datah and datal value)
+ * 
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \param[in] hwDatah: rem ouput high time long 
+ *  \param[in] hwDatal: rem ouput low time long  
+ *  \param[in] eUpdata: data reg soft updata control
+ *  \return none
+ */
+void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t hwDatah, uint16_t hwDatal, csi_cnta_sw_updata_e eUpdata);
 
 /** \brief set cnta tc sync 
  *  \param[in] ptCntaBase: pointer of cnta register structure
