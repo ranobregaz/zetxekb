@@ -138,8 +138,8 @@ extern csi_uart_trans_t g_tUartTran[UART_IDX_NUM];
 
 /**
   \brief       initializes the resources needed for the UART interface.
-  \param[in]   uart      	operate handle.
-  \param[in]   idx       	the device idx.
+  \param[in]   ptUartBase	pointer of uart register structure
+  \param[in]   ptUartCfg    pointer of uart parameter config structure
   \return      error code.
 */
 csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg);
