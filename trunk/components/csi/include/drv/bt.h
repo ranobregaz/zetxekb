@@ -21,15 +21,15 @@
 extern "C" {
 #endif
 
-typedef struct csi_bt_pwm_config csi_bt_pwm_config_t;
-
-struct csi_bt_pwm_config {
+/// \struct csi_bt_pwm_config_t
+/// \brief  bt pwm parameter configuration, open to users  
+typedef struct {
 	uint8_t		byIdleLevel;		//TIMER PWM OUTPUT idel level
 	uint8_t		byStartLevel;		//TIMER PWM OUTPUT start Level
 	uint8_t		byInter;			//TIMER PWM interrupt source select
 	uint8_t		byDutyCycle;		//TIMER PWM OUTPUT duty cycle
 	uint32_t	wFreq;				//TIMER PWM OUTPUT frequency
-} ;
+} csi_bt_pwm_config_t;
 
 /**
  * \enum     csi_bt_pwmlev_e
@@ -228,7 +228,7 @@ void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin);
   \param[in]   eTrgPrd 		event count period
   \return 	   error code \ref csi_error_t
  */
-csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byEvtrg, csi_bt_trgsrc_e eTrgSrc, uint8_t eTrgPrd);
+csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byEvTrg, csi_bt_trgsrc_e eTrgSrc, uint8_t eTrgPrd);
 
 
 /** \brief     start bt by sync event
