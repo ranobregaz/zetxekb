@@ -194,7 +194,7 @@ uint8_t csi_uart_getc(csp_uart_t *ptUartBase)
 	while(!(csp_uart_get_sr(ptUartBase) & UART_RNE));
 	return csp_uart_get_data(ptUartBase);
 }
-/** \brief send data to uart transmitter, this function is polling(sync mode).
+/** \brief send data from uart, this function is polling(sync mode).
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] pData: pointer to buffer with data to send to uart transmitter.
@@ -242,7 +242,7 @@ int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize
 	}
 }
 
-/** \brief send data to uart transmitter, this function is interrupt mode(async mode)
+/** \brief send data from uart, this function is interrupt mode(async mode)
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] pData: pointer to buffer with data to send to uart transmitter.
@@ -270,7 +270,7 @@ csi_error_t csi_uart_send_async(csp_uart_t *ptUartBase, const void *pData, uint1
 	
 	return ret;
 }
-/** \brief receive data to uart transmitter, this function is polling(sync).
+/** \brief receive data from uart, this function is polling(sync).
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] pData: pointer to buffer with data to be received.
@@ -364,7 +364,7 @@ int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
 	
 	return hwRecvNum;
 }
-/** \brief receive data to uart transmitter, assign length; this function is interrupt mode(async),
+/** \brief receive data from uart , assign length; this function is interrupt mode(async),
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] pData: pointer to buffer with data to be received.
@@ -404,7 +404,7 @@ int16_t csi_uart_recv_async(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize
 	return hwRecvNum;
 }
 
-/** \brief receive data to uart transmitter, dynamic length receive; this function is interrupt mode(async).
+/** \brief receive data from uart, dynamic length receive; this function is interrupt mode(async).
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] pData: pointer to buffer with data to be received.
