@@ -22,6 +22,7 @@
 /* externs function--------------------------------------------------------*/
 extern void tick_irq_handler(void *arg);		//system coret 
 extern void apt_uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx);
+extern void apt_adc_irqhandler(csp_adc_t *ptAdcBase);
 
 /* private function--------------------------------------------------------*/
 
@@ -65,6 +66,8 @@ void IFCIntHandler(void)
 
 void ADCIntHandler(void) 
 {
+	
+	apt_adc_irqhandler(ADC0);
 //	uint8_t i;
 //	uint32_t tmp;
 //    	
