@@ -18,12 +18,477 @@
 #include <drv/porting.h>
 #include <drv/tick.h>
 
-#include "csp_i2c.h"
+
 
 /* Private macro-----------------------------------------------------------*/
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
+
+
+
+
+
+/***********************************************************************************/
+
+
+
+csi_error_t csi_iic_slave_init(csp_i2c_t *ptIicBase, csi_iic_slave_config_t *ptIicSlaveCfg)
+{
+	uint32_t wIicClk;
+	uint16_t hwSclL = 8;
+	uint16_t hwSclH = 6;
+	uint16_t hwHold = 2;
+	csp_pcer0_clk_en(SYSCON,22);
+	csi_iic_deinit(ptIicBase);
+	csp_i2c_set_cr(ptIicBase,(ptIicSlaveCfg->bySpeedMode<<1)|(ptIicSlaveCfg->byAddrMode<<3));
+	csp_i2c_set_saddr(ptIicBase, ptIicSlaveCfg->hwSlaveAddr >> 1);
+
+	wIicClk = soc_get_pclk_freq() / 1000000U;
+	
+	if(ptIicSlaveCfg->bySpeedMode == IIC_BUS_SPEED_STANDARD)
+	{
+		if(0 == wIicClk)
+		{
+			hwSclH = 8;
+			hwSclL = 8;
+		}
+		else
+		{
+			hwSclH = wIicClk *5;
+			hwSclL = wIicClk *5;
+		}
+		csp_i2c_set_ss_sclh(ptIicBase,hwSclH);
+		csp_i2c_set_ss_scll(ptIicBase,hwSclL);
+		
+	}else if(ptIicSlaveCfg->bySpeedMode == IIC_BUS_SPEED_FAST){
+		if(0 == wIicClk)
+		{
+			hwSclH = 8;
+			hwSclL = 8;
+		}
+		else
+		{
+			hwSclH = wIicClk  * 125 / 100;
+			hwSclL = wIicClk  * 125 / 100;
+		}
+		
+		csp_i2c_set_fs_sclh(ptIicBase,hwSclH);
+		csp_i2c_set_fs_scll(ptIicBase,hwSclL);
+	}
+	csi_iic_set_rx_flsel(ptIicBase,0x7);
+	csi_iic_set_tx_flsel(ptIicBase,0x7);
+	hwHold = hwSclH / 3;
+	if(hwHold < 2)
+		hwHold = 2;
+	csp_i2c_sda_setup(ptIicBase,hwHold);
+	csp_i2c_sda_hold(ptIicBase,hwHold,hwHold);
+	csp_i2c_set_imcr(ptIicBase,ptIicSlaveCfg->hwInterrput);
+	csi_irq_enable((uint32_t *)ptIicBase);
+	
+    return CSI_OK;
+}
+
+
+csi_error_t csi_iic_master_init(csp_i2c_t *ptIicBase, csi_iic_master_config_t *ptIicMasterCfg)
+{
+	
+	uint32_t wIicClk;
+	uint16_t hwSclL = 8;
+	uint16_t hwSclH = 6;
+	uint16_t hwHold = 2;
+	csp_pcer0_clk_en(SYSCON,22);
+	csi_iic_deinit(ptIicBase);
+	csp_i2c_set_cr(ptIicBase,(ptIicMasterCfg->bySpeedMode<<1)|(ptIicMasterCfg->byAddrMode<<4) |(0x1<<0)|(0x1<<6)|(ptIicMasterCfg->byReStart<<5));
+	
+	
+	
+	wIicClk = soc_get_pclk_freq() / 1000000U;
+	
+	if(ptIicMasterCfg->bySpeedMode == IIC_BUS_SPEED_STANDARD)
+	{
+		if(0 == wIicClk)
+		{
+			hwSclH = 8;
+			hwSclL = 8;
+		}
+		else
+		{
+			hwSclH = wIicClk *5;
+			hwSclL = wIicClk *5;
+		}
+		csp_i2c_set_ss_sclh(ptIicBase,hwSclH);
+		csp_i2c_set_ss_scll(ptIicBase,hwSclL);
+		
+	}else if(ptIicMasterCfg->bySpeedMode == IIC_BUS_SPEED_FAST)
+	{
+		if(0 == wIicClk)
+		{
+			hwSclH = 8;
+			hwSclL = 8;
+		}
+		else
+		{
+			hwSclH = wIicClk  * 125 / 100;
+			hwSclL = wIicClk  * 125 / 100;			
+		}
+		
+		csp_i2c_set_fs_sclh(ptIicBase,hwSclH);
+		csp_i2c_set_fs_scll(ptIicBase,hwSclL);
+	}
+	csi_iic_set_rx_flsel(ptIicBase,0x7);
+	csi_iic_set_tx_flsel(ptIicBase,0x7);
+	hwHold = hwSclH / 3;
+	if(hwHold < 2)
+		hwHold = 2;
+	csp_i2c_sda_setup(ptIicBase,hwHold);
+	csp_i2c_sda_hold(ptIicBase,hwHold,hwHold);
+	csp_i2c_set_imcr(ptIicBase,ptIicMasterCfg->hwInterrput);
+	csi_irq_enable((uint32_t *)ptIicBase);
+	
+    return CSI_OK;
+}
+
+void csi_iic_deinit(csp_i2c_t *ptIicBase)
+{
+	csp_i2c_disable(ptIicBase);
+   csp_i2c_set_imcr(ptIicBase,0);
+    csp_i2c_clr_all_int(ptIicBase);
+}
+void csi_iic_enable(csp_i2c_t *ptIicBase)
+{
+	csp_i2c_enable(ptIicBase);
+}
+void csi_iic_disable(csp_i2c_t *ptIicBase)
+{
+	csp_i2c_disable(ptIicBase);
+}
+void csi_iic_sda_tsetup_config(csp_i2c_t *ptIicBase,uint8_t byTsetup)
+{
+	csp_i2c_sda_setup(ptIicBase);
+}
+
+void csi_iic_thold_config(csp_i2c_t *ptIicBase,uint8_t byRxHold,uint16_t hwTxHold)
+{
+	csp_i2c_sda_hold(ptIicBase,hwTxHold,byRxHold);
+}
+
+void csi_iic_set_timeout(csp_i2c_t *ptIicBase,uint32_t wSdaTimeout,uint32_t wSclTimeout)
+{
+	csp_i2c_set_sda_tout(ptIicBase,wSdaTimeout);
+	csp_i2c_set_scl_tout(ptIicBase,wSclTimeout);
+}
+
+void csi_iic_set_rx_flsel(csp_i2c_t *ptIicBase,uint8_t byRxFL)
+{
+	csp_i2c_set_rx_flsel(ptIicBase, byRxFL);
+}
+void csi_iic_set_tx_flsel(csp_i2c_t *ptIicBase,uint8_t byTxFL)
+{
+	csp_i2c_set_tx_flsel(ptIicBase, byTxFL);
+}
+
+
+void csi_iic_write_byte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wWriteAdds, uint8_t byWriteAddrNumByte, uint8_t byData)
+{
+	uint16_t hwEerorCont=0;
+	
+	csi_iic_disable(ptIicBase);
+	csp_i2c_set_saddr(ptIicBase,wdevaddr >> 1);
+	csi_iic_enable(ptIicBase);
+	uint8_t byWriteAdds = 0;
+	switch(byWriteAddrNumByte)
+	{
+		case 1:
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+			break;
+		case 2:
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+			break;
+		case 3:
+				byWriteAdds = wWriteAdds>>16;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				
+			break;
+		case 4:
+				byWriteAdds = wWriteAdds>>24;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds>>16;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+			break;	
+		default:
+			break;
+	}
+	
+	csp_i2c_set_data_cmd(ptIicBase,byData |I2C_CMD_STOP);
+	do
+	{
+		if(hwEerorCont++>=10000)
+		{
+			hwEerorCont=0;
+			csi_iic_disable(ptIicBase);
+			csi_iic_enable(ptIicBase);
+			break;
+		}
+	}
+	while( (csp_i2c_get_status(ptIicBase) & I2C_BUSY) != I2C_BUSY ); 		//Wait for FSM working
+	do
+	{
+		if(hwEerorCont++>=10000)
+		{
+			hwEerorCont=0;
+			csi_iic_disable(ptIicBase);
+			csi_iic_enable(ptIicBase);
+			break;
+		}
+	}
+	while((csp_i2c_get_status(ptIicBase) & I2C_TFE) != I2C_TFE);
+}
+
+
+void csi_iic_write_nbyte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wWriteAdds, uint8_t byWriteAddrNumByte,volatile uint8_t *pbyIicData,uint8_t byNumByteToWrite)
+{
+	uint16_t hwEerorCont=0;
+	uint8_t i;
+	csi_iic_disable(ptIicBase);
+	csp_i2c_set_saddr(ptIicBase,wdevaddr >> 1);
+	csi_iic_enable(ptIicBase);
+	
+	switch(byWriteAddrNumByte)
+	{
+		case 1:
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+			break;
+		case 2:
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+			break;
+		case 3:
+				byWriteAdds = wWriteAdds>>16;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				
+			break;
+		case 4:
+				byWriteAdds = wWriteAdds>>24;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds>>16;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+			break;	
+		default:
+			break;
+	}
+	for(i=0;i<byNumByteToWrite;i++)
+	{
+		if(i>=byNumByteToWrite-1)
+		{
+			csp_i2c_set_data_cmd(ptIicBase,*(pbyIicData+i) |I2C_CMD_STOP);
+		}
+		else
+		{
+			csp_i2c_set_data_cmd(ptIicBase,*(pbyIicData+i));
+		}
+		do
+		{
+			if(hwEerorCont++>=10000)
+			{
+				hwEerorCont=0;
+				csi_iic_disable(ptIicBase);
+				csi_iic_enable(ptIicBase);
+				break;
+			}
+		}
+		while( (csp_i2c_get_status(ptIicBase) & I2C_BUSY) != I2C_BUSY ); 		//Wait for FSM working
+		do
+		{
+			if(hwEerorCont++>=10000)
+			{
+				hwEerorCont=0;
+				csi_iic_disable(ptIicBase);
+				csi_iic_enable(ptIicBase);
+				break;
+			}
+		}
+		while((csp_i2c_get_status(ptIicBase) & I2C_TFNF) != I2C_TFNF);
+		hwEerorCont=0;
+	}
+}
+
+
+
+uint8_t csi_iic_read_byte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wReadAdds, uint8_t byReadAddrNumByte)
+{
+	uint8_t byValue;
+	uint16_t hwEerorCont=0;
+	csi_iic_disable(ptIicBase);
+	csp_i2c_set_saddr(ptIicBase,wdevaddr >> 1);
+	csi_iic_enable(ptIicBase);
+	
+	
+	switch(byReadAddrNumByte)
+	{
+		case 1:
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds|I2C_CMD_RESTART1);
+			break;
+		case 2:
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds|I2C_CMD_RESTART1);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+			break;
+		case 3:
+				byWriteAdds = wWriteAdds>>16;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds|I2C_CMD_RESTART1);
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				
+			break;
+		case 4:
+				byWriteAdds = wWriteAdds>>24;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds|I2C_CMD_RESTART1);
+				byWriteAdds = wWriteAdds>>16;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+			break;	
+		default:
+			break;
+	}
+	
+	csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_READ|I2C_CMD_STOP);
+	do
+	{
+		if(hwEerorCont++>=10000)
+		{
+			hwEerorCont=0;
+			break;
+		}
+	}
+	while( (csp_i2c_get_status(ptIicBase)) != I2C_BUSY ); 		//Wait for FSM working
+	do
+	{
+		if(hwEerorCont++>=10000)
+		{
+			hwEerorCont=0;
+			break;
+		}
+	}
+	while( (csp_i2c_get_status(ptIicBase)) != I2C_RFNE ); 		//Wait for RX done
+	byValue=csp_i2c_get_data(ptIicBase);
+	return byValue;
+}
+
+void csi_iic_read_nbyte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wReadAdds, uint8_t byReadAddrNumByte,volatile uint8_t *pbyIicData,uint8_t byNumByteRead)
+{
+	uint16_t hwEerorCont=0;
+	uint8_t i;
+	csi_iic_disable(ptIicBase);
+	csp_i2c_set_saddr(ptIicBase,wdevaddr >> 1);
+	csi_iic_enable(ptIicBase);
+	
+	
+	switch(byReadAddrNumByte)
+	{
+		case 0:
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds|I2C_CMD_RESTART1);
+			break;
+		case 1:
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds|I2C_CMD_RESTART1);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+			break;
+		case 2:
+				byWriteAdds = wWriteAdds>>16;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds|I2C_CMD_RESTART1);
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				
+			break;
+		case 3:
+				byWriteAdds = wWriteAdds>>24;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds|I2C_CMD_RESTART1);
+				byWriteAdds = wWriteAdds>>16;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds>>8;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+				byWriteAdds = wWriteAdds;
+				csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_WRITE|byWriteAdds);
+			break;	
+		default:
+			break;
+	}
+	
+	for(i=0;i<byNumByteRead;i++)
+	{
+		if(i>=byNumByteRead-1)
+		{
+			csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_READ|I2C_CMD_STOP);
+		}
+		else
+		{
+			csp_i2c_set_data_cmd(ptIicBase,I2C_CMD_READ);
+		}
+		do
+		{
+			if(hwEerorCont++>=10000)
+			{
+				hwEerorCont=0;
+				break;
+			}
+		}
+		while( (csp_i2c_get_status(ptIicBase) & I2C_BUSY) != I2C_BUSY ); 		//Wait for FSM working
+		do
+		{
+			if(hwEerorCont++>=10000)
+			{
+				hwEerorCont=0;			
+				break;
+			}
+		}
+		while( (csp_i2c_get_status(ptIicBase) & I2C_RFNE) != I2C_RFNE ); 		//Wait for RX done
+		*(pbyIicData+i)=csp_i2c_get_data(ptIicBase);
+	}
+	
+}
+
+
+
+
+
+
+/**************************************************************************************/
+
 
 /** \brief iic recie data,interrupt call 
  * 
@@ -147,7 +612,7 @@ static void apt_iic_tx_handler(void *arg)
 		if(csp_i2c_get_tx_abrt(iic_base) & TX_ABRT_SDA_S_LOW)		//iic SDA lock low
 		{
 			csp_i2c_recover_en(iic_base);							//recover sda
-			while((csp_i2c_get_i2cenable(iic_base) >> I2C_RECOVER_POS) & 0x01ul) ;
+			while((csp_i2c_get_i2cenable(iic_base) >> I2C_RECOVER_POS) & 0x01ul);
 			
 			if(csp_i2c_get_status(iic_base) & I2C_REC_FAIL)			//recover sda false
 			{
@@ -277,7 +742,7 @@ static void apt_iic_slave_tx_handler(void *arg)
 		if(csp_i2c_get_tx_abrt(iic_base) & TX_ABRT_SDA_S_LOW)		//iic SDA lock low
 		{
 			csp_i2c_recover_en(iic_base);							//recover sda
-			while((csp_i2c_get_i2cenable(iic_base) >> I2C_RECOVER_POS) & 0x01ul) ;
+			while((csp_i2c_get_i2cenable(iic_base) >> I2C_RECOVER_POS) & 0x01ul);
 			
 			if(csp_i2c_get_status(iic_base) & I2C_REC_FAIL)			//recover sda false
 			{

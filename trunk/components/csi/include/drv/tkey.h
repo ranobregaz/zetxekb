@@ -41,6 +41,8 @@ uint16_t 	hwTkeyECLevel;
 uint8_t 	byTkeyLowpowerMode;
 uint8_t 	byTkeypowerLevel;	
 uint8_t 	byTkeyWakeupLevel;	
+uint8_t		byTkeyTckdiv;
+uint8_t		byTkeyPckdiv;
 
 extern volatile uint16_t hwOffseData0Abs[17];
 extern volatile uint16_t hwOffseData1Abs[17];
@@ -63,9 +65,7 @@ extern void csi_tkey_handler(void);
 extern void csi_tkey_setup_sleep(void);
 extern void csi_tkey_quit_sleep(void);
 extern void csi_tkey_init(void);
-extern void csi_tkey_reinit(void);
 extern void csi_tkey_prgm(void);
-extern void csi_tkey_baseline_prog(void);
 extern void csi_tkey_parameter_init(void);
 
 #ifdef __cplusplus

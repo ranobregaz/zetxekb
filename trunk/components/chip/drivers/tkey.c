@@ -96,8 +96,6 @@ extern void	csi_tkey_baseline_tracking(void);
 extern void	csi_tkey_result_prog(void);
 
 
-
-
 /****************************************************
 //TK Deinit
 *****************************************************/
@@ -359,6 +357,26 @@ void csi_tkey_timer_handler(void)
 	}
 }
 
+void csi_tkey_prgm(void){
+	
+	if(byTkeyBaseOverFlag==1)								//baseline scan success
+	{
+		csi_tkey_scan_start();
+		csi_tkey_keymap_prog();
+		csi_tkey_baseline_tracking();
+		csi_tkey_result_prog();
+		if((wKeyMap!=0)&&(wTkeyLongPressTime!=0))
+		{
+			wTimeCnt++;
+			if(wTimeCnt>(wTkeyLongPressTime*100))		//cnt base 10ms*100=1s
+			{
+				byBaseUpdata=1;
+				wTimeCnt=0;
+			}
+		}
+	}
+
+}
 
 /*************************************************************/
 //TKEY Interrupt
@@ -1022,7 +1040,7 @@ void csi_tkey_init(void)
 		}
 	}
 	csi_tkey_io_enable();
-	csi_tkey_clk_config(ENABLE,0,0);
+	csi_tkey_clk_config(ENABLE,byTkeyPckdiv,byTkeyTckdiv);
 	csi_tkey_chxval_seqxcon_clr();
 	byTkeyNum=csi_get_key_seq();
 	sci_tkey_con0_config(TK_HM_EN,TK_SEQ,(byTkeyNum-1),hwTkeyECLevel,TK_CKSPR_DIS,TK_CKRND_DIS,TK_CKREQ_HIGH,

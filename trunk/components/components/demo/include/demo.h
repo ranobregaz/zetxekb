@@ -107,6 +107,8 @@ extern int spi_sync_test_speed(void);
 extern int spi_sync_async_master_slave(void);
 
 //touch demo
-extern void touch_demo(void);
+extern void touch_lowpower_demo(void);
+extern void touch_timer_demo(void);
+extern void touch_main_demo(void);
 
 #endif

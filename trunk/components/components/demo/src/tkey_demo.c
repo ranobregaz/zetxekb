@@ -14,41 +14,6 @@
 #include "tkey.h"
 #include "porting.h"
 
-uint32_t wKeyMapBk;
-uint32_t wSleepCnt;
-/***************************************
- * 按键处理程序，wKeyMap 的bit位代表TOUCH的通道是否有按键按下，如：bit0对应TOUCH通道0   bit16对应TOUCH通道16
- ***************************************/
-void Keymap_Porg(void)  
-{
-	if(wKeyMap!=0)
-	{
-		wSleepCnt=0;
-		if(wKeyMapBk!=wKeyMap)
-		{
-			wKeyMapBk=wKeyMap;
-			if(wKeyMap==0x20)
-			{
-				nop;
-			}
-			if(wKeyMap==0x40)
-			{
-				nop;
-			}
-			if(wKeyMap==0x80)
-			{
-				nop;
-			}
-			//......
-		}
-		wKeyMap=0;
-	}
-	else
-	{
-		wKeyMapBk=0;
-	}
-}
-
 /********************************************
  * TOUCH需要使用库使用说明：
  * ①把lib_csi_touch_1_01.a文件放置在chip->driwers目录下
@@ -63,22 +28,100 @@ void Keymap_Porg(void)
  * 	然后在interrupt.c里的CORETHandler中断里调用csi_tkey_timer_handler();注意需要添加相应的头文件。
  * 	
  ********************************************/
-void touch_demo(void){
-	
+void touch_lowpower_demo(void){
+	uint32_t wSleepCnt = 0;
 	csi_tkey_init();//TOUCH初始化函数调用
 	while(1){
 		
-		//csi_tkey_timer_handler(); 如果不用定时器触发扫描，则去掉该语句前的注释即可
-		Keymap_Porg();
-		wSleepCnt++;
-		
+		csi_tkey_prgm(); 
+		//wKeyMap 的bit位代表TOUCH的通道是否有按键按下，如：bit0对应TOUCH通道0   bit16对应TOUCH通道16
+		if(wKeyMap!=0)   //按键键处理
+		{		
+			wSleepCnt = 0;
+			if((wKeyMap & 0x20)==0x20)	//判断TOUCH通道5是否按下
+			{
+				nop;
+			}
+			if((wKeyMap & 0x40)==0x40)	//判断TOUCH通道6是否按下
+			{
+				nop;
+			}
+			if((wKeyMap & 0x80)==0x80)	//判断TOUCH通道7是否按下
+			{
+				nop;
+			}
+			//......			
+			
+		}		
+		wSleepCnt++;		
 		if(wSleepCnt > 500){
 			csi_tkey_setup_sleep();  				//设置TOUCH唤醒，及相关的配置
 			soc_pm_enter_sleep(PM_MODE_DEEPSLEEP);	//进入低功耗模式（deepsleep）
 			csi_tkey_quit_sleep();					//唤醒后清除一些操作
 			wSleepCnt=0;
-		}
+		}		
 		
+		wKeyMap=0;
+		mdelay(10);
+	}
+	
+}
+
+
+void touch_timer_demo(void){
+	
+	csi_tkey_init();//TOUCH初始化函数调用
+	while(1){
+		
+		//wKeyMap 的bit位代表TOUCH的通道是否有按键按下，如：bit0对应TOUCH通道0   bit16对应TOUCH通道16
+		if(wKeyMap!=0)   //按键键处理
+		{		
+			if((wKeyMap & 0x20)==0x20)	//判断TOUCH通道5是否按下
+			{
+				nop;
+			}
+			if((wKeyMap & 0x40)==0x40)	//判断TOUCH通道6是否按下
+			{
+				nop;
+			}
+			if((wKeyMap & 0x80)==0x80)	//判断TOUCH通道7是否按下
+			{
+				nop;
+			}
+			//......			
+			
+		}			
+		wKeyMap=0;
+		mdelay(10);
+	}
+	
+}
+
+void touch_main_demo(void){
+	csi_tkey_init();//TOUCH初始化函数调用
+	while(1){
+		
+		csi_tkey_prgm(); 
+		//wKeyMap 的bit位代表TOUCH的通道是否有按键按下，如：bit0对应TOUCH通道0   bit16对应TOUCH通道16
+		if(wKeyMap!=0)   //按键键处理
+		{		
+		
+			if((wKeyMap & 0x20)==0x20)	//判断TOUCH通道5是否按下
+			{
+				nop;
+			}
+			if((wKeyMap & 0x40)==0x40)	//判断TOUCH通道6是否按下
+			{
+				nop;
+			}
+			if((wKeyMap & 0x80)==0x80)	//判断TOUCH通道7是否按下
+			{
+				nop;
+			}
+			//......			
+			
+		}				
+		wKeyMap=0;
 		mdelay(10);
 	}
 	
