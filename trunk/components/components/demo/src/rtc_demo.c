@@ -29,7 +29,7 @@ void rtc_set_time_demo(void)
 {	
 	csi_rtc_config_t tRtcConfig;
 	csi_rtc_time_t tRtcTime,tRtcTimeRdbk;
-	uint32_t wSec;
+	uint32_t wSec = 0;
 	
 	tRtcConfig.byClkSrc = RTC_CLKSRC_ISOSC;		//选择时钟源
 	tRtcConfig.byFmt = RTC_24FMT;				//选择时间模式
@@ -45,7 +45,7 @@ void rtc_set_time_demo(void)
 	csi_rtc_set_time(RTC, &tRtcTime);			//设置时间
 	csi_rtc_start(RTC);							//RTC开始计时
 	
-	tRtcTime.tm_year = 14;
+	tRtcTime.tm_year = 150;
 	tRtcTime.tm_mon = 12;
 	tRtcTime.tm_mday = 26;
 	tRtcTime.tm_hour = 19;
@@ -82,7 +82,8 @@ void rtc_set_time_demo(void)
 csi_rtc_alm_t  tAlmA;
 void rtc_alarm_demo(void)	
 {	
-	uint32_t wTemp0, wSec;
+	uint32_t wTemp0;
+	uint32_t wSec = 0;
 	csi_rtc_time_t tRtcTime, tAlmTime, tRtcTimeRdbk;
 	csi_rtc_config_t tRtcConfig;
 	
@@ -99,10 +100,10 @@ void rtc_alarm_demo(void)
 	csi_rtc_set_time(RTC, &tRtcTime);				//设置时间
 	csi_rtc_start(RTC);								//RTC开始工作
 	
-	tAlmA.byAlmMode = 0;							//日，小时，分钟，秒模式
+	tAlmA.byAlmMode = 1;							//日，小时，分钟，秒模式
 	tAlmA.byAlmSt = 0;								//清除alarm时间到标志位
-	tAlmTime.tm_mday = 25;
-	tAlmTime.tm_hour = 15;
+	tAlmTime.tm_mday = 0;
+	tAlmTime.tm_hour = 14;
 	tAlmTime.tm_min = 16;
 	tAlmTime.tm_sec = 0xff;							//不要比较sec（0xFF意味着不要比较）
 	csi_rtc_set_alarm(RTC, RTC_ALMA, tAlmA.byAlmMode, &tAlmTime);	//设置闹钟A	

@@ -511,7 +511,7 @@ static inline void csp_rtc_alm_set_sec(csp_rtc_t *ptRtcBase, uint8_t byAlm,  uin
 		ptRtcBase->ALRB = (ptRtcBase->ALRB & (~RTC_ALM_SEC_MSK)) | (byVal << RTC_ALM_SECU_POS);
 }
 
-static inline uint8_t csp_rtc_alm_read_day(csp_rtc_t *ptRtcBase, uint8_t byAlm)
+static inline uint8_t csp_rtc_alm_read_mday(csp_rtc_t *ptRtcBase, uint8_t byAlm)
 {
 	if (byAlm == RTC_ALMA)
 		return (  ((ptRtcBase->ALRA & RTC_ALM_DAYT_MSK) >> RTC_ALM_DAYT_POS) * 10 + ((ptRtcBase->ALRA & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS)  );
@@ -519,6 +519,13 @@ static inline uint8_t csp_rtc_alm_read_day(csp_rtc_t *ptRtcBase, uint8_t byAlm)
 		return (  ((ptRtcBase->ALRB & RTC_ALM_DAYT_MSK) >> RTC_ALM_DAYT_POS) * 10 + ((ptRtcBase->ALRB & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS)  );
 }
 
+static inline uint8_t csp_rtc_alm_read_wday(csp_rtc_t *ptRtcBase, uint8_t byAlm)
+{
+	if (byAlm == RTC_ALMA)
+		return (   ((ptRtcBase->ALRA & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS)  );
+	else
+		return (  ((ptRtcBase->ALRB & RTC_ALM_DAYU_MSK) >> RTC_ALM_DAYU_POS)  );
+}
 
 static inline uint8_t csp_rtc_alm_read_hour(csp_rtc_t *ptRtcBase, uint8_t byAlm)
 {
