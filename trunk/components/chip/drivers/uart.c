@@ -72,11 +72,11 @@ void apt_uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx)
 	{
 		case UART_RXFIFO_INT_S:								//rx fifo interrupt; recommended use RXFIFO interrupt
 		
-			//if(csp_uart_get_sr(ptUartBase) & UART_RNE)		//rx fifo no empty		
+			//if(csp_uart_get_sr(ptUartBase) & UART_RNE)	//rx fifo no empty		
 			{
 				//uint8_t byData = csp_uart_get_data(ptUartBase);
 				//ringbuffer_byte_in(g_tUartTran[byIdx].ptRingBuf, byData);
-				if(g_tUartTran[byIdx].ptRingBuf->hwDataLen < g_tUartTran[byIdx].ptRingBuf->hwSize)
+				if(g_tUartTran[byIdx].ptRingBuf->hwDataLen < g_tUartTran[byIdx].ptRingBuf->hwSize)	//this code the same as previous line of code 
 				{
 					g_tUartTran[byIdx].ptRingBuf->pbyBuf[g_tUartTran[byIdx].ptRingBuf->hwWrite] = csp_uart_get_data(ptUartBase);;
 					g_tUartTran[byIdx].ptRingBuf->hwWrite = (g_tUartTran[byIdx].ptRingBuf->hwWrite + 1) % g_tUartTran[byIdx].ptRingBuf->hwSize;
@@ -84,7 +84,7 @@ void apt_uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx)
 				}
 			}
 			break;
-		case UART_TXDONE_INT_S:								//tx send complete; recommended use TXDONE interrupt
+		case UART_TXDONE_INT_S:													//tx send complete; recommended use TXDONE interrupt
 		
 			csp_uart_clr_isr(ptUartBase,UART_TXDONE_INT_S);						//clear interrupt status
 			g_tUartTran[byIdx].hwTxSize --;
@@ -208,6 +208,9 @@ int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize
 	uint8_t *pbySend = (uint8_t *)pData;
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
 	
+	if(NULL == pData || 0 == hwSize)
+		return 0;
+	
 	switch(g_tUartTran[byIdx].bySendMode)
 	{
 		case UART_TX_MODE_POLL:						//return the num of data which is send							
@@ -251,7 +254,7 @@ csi_error_t csi_uart_send_async(csp_uart_t *ptUartBase, const void *pData, uint1
 	csi_error_t ret = CSI_ERROR;
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
 
-	if(hwSize == 0 || byIdx >= UART_IDX_NUM) 
+	if(hwSize == 0 || NULL == pData) 
 		return CSI_ERROR;
 	
 	g_tUartTran[byIdx].pbyTxData =(uint8_t *)pData;
@@ -280,7 +283,10 @@ int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
 	uint8_t *pbyRecv = (uint8_t *)pData;
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
 	int16_t hwRecvNum = 0;
-
+	
+	if(NULL == pData)
+		return 0;
+	
 	switch(g_tUartTran[byIdx].byRecvMode)
 	{
 		case UART_RX_MODE_POLL:
@@ -313,12 +319,29 @@ int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
 			//read ringbuffer, multiple processing methods 
 			//allow users to modify 
 			hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
-			if(hwRecvNum >= hwSize)
-				ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);
-			else
-				hwRecvNum = 0;
+			switch(hwSize)
+			{
+				case 0:						
+					return 0;
+				case 1:						//single byte receive(read)
+					if(hwRecvNum)
+						hwRecvNum = ringbuffer_byte_out(g_tUartTran[byIdx].ptRingBuf, pData);
+					else
+						hwRecvNum = 0;
+					break;
+				default:					//Multibyte  receive(read)
+					if(hwRecvNum >= hwSize)
+						hwRecvNum = ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwSize);
+					else
+						hwRecvNum = 0;
+					break;
+			}
+			
+//			if(hwRecvNum >= hwSize)
+//				ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);
+//			else
+//				hwRecvNum = 0;
 
-//			hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
 //			hwRecvNum = (hwRecvNum > hwSize)? hwSize: hwRecvNum;
 //			if(hwRecvNum)
 //				ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);
@@ -329,10 +352,13 @@ int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
 			if(hwRecvNum)
 			{
 				memcpy(pData, (void *)g_tUartTran[byIdx].ptRingBuf->pbyBuf, hwRecvNum);		//read receive data
-				ringbuffer_reset(g_tUartTran[byIdx].ptRingBuf);								//reset ringbuffer					
+				//ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);			//the same as previous line of code 
+				ringbuffer_reset(g_tUartTran[byIdx].ptRingBuf);								//reset ringbuffer	
+				g_tUartTran[byIdx].byRecvStat = UART_STATE_IDLE;							//set uart receive status for idle				
 			}
 			break;
 		default:
+			hwRecvNum = 0;
 			break;
 	}
 	
@@ -348,18 +374,34 @@ int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, u
 int16_t csi_uart_recv_async(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize)
 {
 	uint8_t  byIdx = apt_get_uart_idx(ptUartBase);
-	uint16_t hwRecvLen = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
+	uint16_t hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
 	
-	hwRecvLen = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
-	if(hwRecvLen >= hwSize)
-		ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvLen);
-	else
-		hwRecvLen = 0;
-//	hwRecvLen = (hwRecvLen > hwSize)? hwSize: hwRecvLen;
-//	if(hwRecvLen)
-//		ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvLen);
+	if(NULL == pData)
+		return 0;
 		
-	return hwRecvLen;
+	switch(hwSize)
+	{
+		case 0: 	
+			return 0;
+		case 1:					//single byte receive(read)
+			if(hwRecvNum)
+				hwRecvNum = ringbuffer_byte_out(g_tUartTran[byIdx].ptRingBuf, pData);
+			else
+				hwRecvNum = 0;
+			break;
+		default:				//Multibyte  receive(read)
+			if(hwRecvNum >= hwSize)
+				hwRecvNum = ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwSize);
+			else
+				hwRecvNum = 0;
+			break;
+	}
+		
+//	hwRecvNum = (hwRecvNum > hwSize)? hwSize: hwRecvNum;
+//	if(hwRecvNum)
+//		ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);
+		
+	return hwRecvNum;
 }
 
 /** \brief receive data to uart transmitter, dynamic length receive; this function is interrupt mode(async).
@@ -373,17 +415,17 @@ int16_t csi_uart_recv_dynamic(csp_uart_t *ptUartBase, void *pData)
 {
 	
 	uint8_t  byIdx = apt_get_uart_idx(ptUartBase);
-	uint16_t hwRecvLen = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
+	uint16_t hwRecvNum = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
 	
-	if(hwRecvLen)
+	if(hwRecvNum)
 	{
-		memcpy(pData, (void *)g_tUartTran[byIdx].ptRingBuf->pbyBuf, hwRecvLen);		//read receive data
-		//ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvLen);			//
+		memcpy(pData, (void *)g_tUartTran[byIdx].ptRingBuf->pbyBuf, hwRecvNum);		//read receive data
+		//ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvNum);			//the same as previous line of code 
 		ringbuffer_reset(g_tUartTran[byIdx].ptRingBuf);								//reset ringbuffer para
 		g_tUartTran[byIdx].byRecvStat = UART_STATE_IDLE;							//set uart receive status for idle
 	}
 		
-	return hwRecvLen;
+	return hwRecvNum;
 }
 /** \brief get the status of uart send 
  * 

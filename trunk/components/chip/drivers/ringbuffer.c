@@ -12,7 +12,7 @@
 /* Private variablesr-------------------------------------------------*/
 
 
-/** \brief  Removes the entire FIFO contents.
+/** \brief  removes the entire FIFO contents.
   * 
   * \param  [in] ptFifo: The fifo to be emptied.
   * \return None.
@@ -23,25 +23,7 @@ void ringbuffer_reset(ringbuffer_t *ptFifo)
     ptFifo->hwRead  = 0U;
     ptFifo->hwDataLen = 0U;
 }
-
-/** \brief  Puts onebyte data into the FIFO.
-  * 
-  * \param  [in] fifo: The fifo to be used.
-  * \param  [in] in:   The data to be added.
-  * \note   This function copies at most @len bytes from the @in into
-  *         the FIFO depending on the free space, and returns the number
-  *         of bytes copied.
-  */
-void ringbuffer_byte_in(ringbuffer_t *ptFifo, uint8_t byDataIn)
-{
-	if(ptFifo->hwDataLen < ptFifo->hwSize)
-	{
-		ptFifo->pbyBuf[ptFifo->hwWrite] = byDataIn;
-		ptFifo->hwWrite = (ptFifo->hwWrite + 1) % ptFifo->hwSize;
-		ptFifo->hwDataLen ++;
-	}
-}
-/** \brief  Puts some data into the FIFO.
+/** \brief  puts some data into the FIFO.
   * 
   * \param  [in] ptFifo: The fifo to be used.
   * \param  [in] pDataIn: The data to be added.
@@ -79,7 +61,7 @@ uint32_t ringbuffer_in(ringbuffer_t *ptFifo, const void *pDataIn, uint16_t hwLen
 
     return writelen;
 }
-/** \brief  Gets some data from the FIFO.
+/** \brief  gets some data from the FIFO.
   * 
   * \param  [in] ptFifo: The fifo to be used.
   * \param  [in] pOutBuf: Where the data must be copied.
@@ -115,5 +97,44 @@ uint32_t ringbuffer_out(ringbuffer_t *ptFifo, void *pOutBuf, uint16_t hwLen)
 	ptFifo->hwDataLen -= readlen;
 	
 	return readlen;
+}
+/** \brief  puts onebyte data into the FIFO.
+  * 
+  * \param  [in] fifo: The fifo to be used.
+  * \param  [in] in:   The data to be added.
+  * \note   This function copies at most @len bytes from the @in into
+  *         the FIFO depending on the free space, and returns the number
+  *         of bytes copied.
+  */
+void ringbuffer_byte_in(ringbuffer_t *ptFifo, uint8_t byDataIn)
+{
+	if(ptFifo->hwDataLen < ptFifo->hwSize)
+	{
+		ptFifo->pbyBuf[ptFifo->hwWrite] = byDataIn;
+		ptFifo->hwWrite = (ptFifo->hwWrite + 1) % ptFifo->hwSize;
+		ptFifo->hwDataLen ++;
+	}
+}
+
+/** \brief  gets one byte data from the FIFO.
+  * 
+  * \param  [in] ptFifo: The fifo to be used.
+  * \param  [in] pOutBuf: Where the data must be copied.
+  * \return The number of read bytes, 0/1
+  * \note   This function copies at most @len bytes from the FIFO into
+  *         the @out and returns the number of copied bytes.
+  */
+uint8_t ringbuffer_byte_out(ringbuffer_t *ptFifo, void *pOutBuf)
+{
+	if(ptFifo->hwDataLen == 0)
+		return 0;
+	else
+	{
+		*((uint8_t*)pOutBuf) = ptFifo->pbyBuf[ptFifo->hwRead];
+		ptFifo->hwRead = (ptFifo->hwRead + 1) % ptFifo->hwSize;
+		ptFifo->hwDataLen --;
+		
+	}
+	return 1;
 }
 
