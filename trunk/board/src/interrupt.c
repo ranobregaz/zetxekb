@@ -17,6 +17,7 @@
 #include <drv/adc.h>
 #include <drv/pin.h>
 #include "board_config.h"
+#include "spi.h"
 #include "csp.h"
 
 #include "drv/ept.h"
@@ -185,6 +186,7 @@ void I2CIntHandler(void)
 void SPI0IntHandler(void) 
 {
     // ISR content ...
+	spi_irqhandler(SPI0);
 
 }
 void SIO0IntHandler(void) 
@@ -292,6 +294,7 @@ void EXI10to15IntHandler(void)
 void CNTAIntHandler(void) 
 {
     // ISR content ...
+	csi_pin_toggle(PA01);
 
 }
 void TKEYIntHandler(void) 
