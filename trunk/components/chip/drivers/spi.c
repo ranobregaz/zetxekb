@@ -95,6 +95,22 @@ csi_error_t csi_spi_init(csp_spi_t *ptSpiBase,csi_spi_config_t *ptSpiCfg)
 	return tRet;
 }
 
+/** \brief uninit spi data structure
+ * 
+ *  \param[in] ptSpiBase: SPI handle
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_spi_uninit(csp_spi_t *ptSpiBase)
+{
+	csi_error_t tRet = CSI_OK;
+	
+	csi_clk_disable((uint32_t *)ptSpiBase);	
+	csi_irq_disable((uint32_t *)ptSpiBase);
+	csp_spi_default_init(ptSpiBase);
+	csi_spi_Internal_variables_init(SPI_RXFIFO_1_2,SPI_NONE_INT);
+	
+	return tRet;	
+}
 /** \brief set spi mode, master or slave
  * 
  *  \param[in] ptSpiBase: SPI handle
