@@ -19,7 +19,7 @@ uint32_t gGptaPrd;
 
  /**
  \brief  Basic configuration
- \param  ptGptaBase    	gpta handle to operate 
+ \param  ptGptaBase    	    pointer of ept register structure
  \param  ptGptaPwmCfg   	refer to csi_gpta_config_t
  \return CSI_OK/CSI_ERROR
 */
@@ -96,7 +96,7 @@ csi_error_t csi_gpta_config_init(csp_gpta_t *ptGptaBase, csi_gpta_config_t *ptGp
 
  /**
  \brief  capture configuration
- \param  ptGptaBase    	gpta handle to operate 
+ \param  ptGptaBase    	    pointer of ept register structure
  \param  ptGptaPwmCfg   	refer to csi_gpta_captureconfig_t
  \return CSI_OK /CSI_ERROR
 */
@@ -148,7 +148,7 @@ csi_error_t csi_gpta_capture_init(csp_gpta_t *ptGptaBase, csi_gpta_captureconfig
 
  /**
  \brief  wave configuration
- \param  ptGptaBase    	gpta handle to operate 
+ \param  ptGptaBase    	    pointer of ept register structure
  \param  ptGptaPwmCfg   	refer to csi_gpta_pwmconfig_t
  \return CSI_OK /CSI_ERROR
 */
@@ -205,7 +205,7 @@ csi_error_t  csi_gpta_wave_init(csp_gpta_t *ptGptaBase, csi_gpta_pwmconfig_t *pt
 
  /**
  \brief  Channel configuration
- \param  ptGptaBase    	gpta handle to operate 
+ \param  ptGptaBase    	pointer of ept register structure
  \param  tPwmCfg   	    refer to csi_gpta_pwmchannel_config_t
  \param  channel        Channel label
  \return CSI_OK /CSI_ERROR
@@ -246,7 +246,7 @@ csi_error_t csi_gpta_channel_config(csp_gpta_t *ptGptaBase, csi_gpta_pwmchannel_
 
 /**
  \brief  gpta configuration Loading
- \param  ptGptaBase    	gpta handle to operate 
+ \param  ptGptaBase    	pointer of ept register structure
  \param  tCfg           refer to csi_gpta_Global_load_control_config_t
  \return CSI_OK /CSI_ERROR
 */
@@ -262,7 +262,7 @@ csi_error_t csi_gpta_global_config(csp_gpta_t *ptGptaBase,csi_gpta_Global_load_c
 }
 /**
  \brief  Software trigger loading
- \param  ptGptaBase    	gpta handle to operate 
+ \param  ptGptaBase    	pointer of ept register structure
  \return CSI_OK
 */
 csi_error_t csi_gpta_global_sw(csp_gpta_t *ptGptaBase)
@@ -272,7 +272,7 @@ csi_error_t csi_gpta_global_sw(csp_gpta_t *ptGptaBase)
 }
 /**
  \brief  rearm  loading
- \param  ptGptaBase    	gpta handle to operate 
+ \param  ptGptaBase    	pointer of ept register structure
  \return CSI_OK
 */
 csi_error_t csi_gpta_global_rearm(csp_gpta_t *ptGptaBase)
@@ -291,7 +291,7 @@ csi_error_t csi_gpta_start(csp_gpta_t *ptgptaBase)
 }
 /**
  \brief SW stop GPTA counter
- \param ptgptaBase    GPTA handle to operate
+ \param ptgptaBase    pointer of ept register structure
 */
 void csi_gpta_swstop(csp_gpta_t *ptgptaBase)
 {
@@ -300,7 +300,7 @@ void csi_gpta_swstop(csp_gpta_t *ptgptaBase)
 }
 /**
  \brief set GPTA start mode. 
- \param ptgptaBase    GPTA handle to operate
+ \param ptgptaBase    pointer of ept register structure
  \return eMode ：GPTA_SW/GPTA_SYNC
 */
 void csi_gpta_set_start_mode(csp_gpta_t *ptgptaBase, csi_gpta_stmd_e eMode)
@@ -309,7 +309,7 @@ void csi_gpta_set_start_mode(csp_gpta_t *ptgptaBase, csi_gpta_stmd_e eMode)
 }
 /**
  \brief set GPTA operation mode
- \param ptgptaBase    GPTA handle to operate
+ \param ptgptaBase    pointer of ept register structure
  \param eMode 	 GPTA_OP_CONT/GPTA_OP_OT
 */
 void csi_gpta_set_os_mode(csp_gpta_t *ptgptaBase, csi_gpta_opmd_e eMode)
@@ -319,7 +319,7 @@ void csi_gpta_set_os_mode(csp_gpta_t *ptgptaBase, csi_gpta_opmd_e eMode)
 
 /**
  \brief set GPTA stop status
- \param ptgptaBase    GPTA handle to operate
+ \param ptgptaBase    pointer of ept register structure
  \param eSt 	 GPTA_STP_HZ/GPTA_STP_LOW
 */
 void csi_gpta_set_stop_st(csp_gpta_t *ptgptaBase, csp_gpta_stpst_e eSt)
@@ -329,7 +329,7 @@ void csi_gpta_set_stop_st(csp_gpta_t *ptgptaBase, csp_gpta_stpst_e eSt)
 
 /**
  \brief get counter period to calculate the duty cycle. 
- \param ptgptaBase    gpta handle to operate
+ \param ptgptaBase   pointer of ept register structure
  \return counter period (reg data)
 */
 uint16_t csi_gpta_get_prdr(csp_gpta_t *ptgptaBase)
@@ -339,7 +339,7 @@ uint16_t csi_gpta_get_prdr(csp_gpta_t *ptgptaBase)
 
 /**
  \brief change gpta output dutycycle. 
- \param ptGptaBase     gpta handle to operate
+ \param ptGptaBase    pointer of ept register structure
  \param eCh           refer to csi_gpta_chtype_e
  \param wActiveTime   cmpx data to be set directly
 */
@@ -365,7 +365,7 @@ csi_error_t csi_gpta_change_ch_duty(csp_gpta_t *ptGptaBase, csi_gpta_chtype_e eC
 
 /**
   \brief       enable/disable gpta in debug mode
-  \param[in]   ptgptaBase       GPTA handle to operate
+  \param[in]   ptgptaBase   pointer of ept register structure
   \param[in]   bEnable		ENABLE/DISABLE
 */
 
@@ -376,31 +376,31 @@ void csi_gpta_debug_enable(csp_gpta_t *ptGptaBase, bool bEnable)
 
 /**
   \brief   enable/disable gpta out trigger 
-  \param   ptGptaBase       GPTA handle to operate
+  \param   ptGptaBase   pointer of ept register structure
   \param 	eCh			0/1/2/3
   \param   bEnable		ENABLE/DISABLE
 */
-csi_error_t csi_gpta_evtrg_enable(csp_gpta_t *ptGptaBase, uint8_t byCh, bool bEnable)
+csi_error_t csi_gpta_evtrg_enable(csp_gpta_t *ptGptaBase, csi_gpta_trgout_e byCh, bool bEnable)
 {	
-	if (byCh > 3)return CSI_ERROR;
+	if (byCh > 1)return CSI_ERROR;
     csp_gpta_trg_xoe_enable(ptGptaBase, byCh, bEnable);
 	return CSI_OK;
 }
 
 /**
   \brief   One time software output 
-  \param   ptGptaBase      GPTA handle to operate 
-  \param   byCh	         GPTA_OSTSFA/GPTA_OSTSFB/GPTA_OSTSFC/GPTA_OSTSFD		
-  \param   bEnable 		GPTA_LDAQCR_ZRO/GPTA_LDAQCR_PRD/GPTA_LDAQCR_ZROPRD
+  \param   ptGptaBase      pointer of ept register structure
+  \param   byCh	           GPTA_OSTSFA/GPTA_OSTSFB	
+  \param   bEnable 		   GPTA_NA/GPTA_LO/GPTA_HI/GPTA_TG
 */
 csi_error_t csi_gpta_Onetimesoftware_output(csp_gpta_t *ptGptaBase, uint16_t byCh, csp_gpta_action_e bEnable)
 {	
 	switch (byCh){
 	case GPTA_OSTSFA: ptGptaBase ->AQOSF |= GPTA_OSTSFA;
-	                 ptGptaBase ->AQOSF = (ptGptaBase ->AQOSF &~(GPTA_ACTA_MSK))|((bEnable&0x03)<<GPTA_ACTA_POS);
+	                  ptGptaBase ->AQOSF = (ptGptaBase ->AQOSF &~(GPTA_ACTA_MSK))|((bEnable&0x03)<<GPTA_ACTA_POS);
 	     break;
 	case GPTA_OSTSFB: ptGptaBase ->AQOSF |= GPTA_OSTSFB;
-	                 ptGptaBase ->AQOSF = (ptGptaBase ->AQOSF &~(GPTA_ACTB_MSK))|((bEnable&0x03)<<GPTA_ACTB_POS);
+	                  ptGptaBase ->AQOSF = (ptGptaBase ->AQOSF &~(GPTA_ACTB_MSK))|((bEnable&0x03)<<GPTA_ACTB_POS);
 	     break;	
 	default: return CSI_ERROR;
 	     break;
@@ -408,7 +408,7 @@ csi_error_t csi_gpta_Onetimesoftware_output(csp_gpta_t *ptGptaBase, uint16_t byC
 	return CSI_OK;
 }
 /** \brief  Continuous software waveform loading control
- *  \param[in] ptGptaBase: pointer of gpta register structure
+ *  \param[in] ptGptaBase: pointer of ept register structure
  *  \param[in] bEnable:    refer to csp_gpta_aqosf_e
  *  \return  none
  */
@@ -417,7 +417,7 @@ void csi_gpta_loading_method_aqcsf(csp_gpta_t *ptGptaBase, csp_gpta_aqosf_e bEna
 	ptGptaBase ->AQOSF  = (ptGptaBase ->AQOSF &~(GPTA_AQCSF_LDTIME_MSK))|((bEnable&0x03)<<GPTA_AQCSF_LDTIME_POS);
 }
 /** \brief Continuous software waveform control
- *  \param[in] ptGptaBase: pointer of gpta register structure
+ *  \param[in] ptGptaBase: pointer of ept register structure
  *  \param[in] byCh        refer to csi_gpta_channel_e
  *  \param[in] bEnable:    refer to  csp_gpta_aqosf_e
  *  \return  none
@@ -441,7 +441,7 @@ csi_error_t csi_gpta_continuous_software_waveform(csp_gpta_t *ptGptaBase, csi_gp
 }
 
 /** \brief gpta  input  config  
- *  \param[in] ptGptaBase: pointer of gpta register structure
+ *  \param[in] ptGptaBase:pointer of ept register structure
  *  \param[in] eInt:     refer to to csp_gpta_int_e
  *  \param[in] bEnable:  ENABLE/DISABLE
  *  \return CSI_OK;
@@ -454,7 +454,7 @@ csi_error_t csi_gpta_int_enable(csp_gpta_t *ptGptaBase, csp_gpta_int_e eInt, boo
 
 /** \brief gpta sync input evtrg config  
  * 
- *  \param[in] ptGptaBase: pointer of gpta register structure
+ *  \param[in] ptGptaBase:pointer of ept register structure
  *  \param[in] eTrgin: gpta sync evtrg input channel(0~5)
  *  \param[in] eTrgMode: gpta sync evtrg mode, continuous/once
  *  \param[in] eAutoRearm: refer to csi_gpta_arearm_e 
@@ -469,7 +469,7 @@ void csi_gpta_set_sync(csp_gpta_t *ptGptaBase, csi_gpta_trgin_e eTrgIn, csi_gpta
 
 /** \brief gpta extsync input select
  * 
- *  \param[in] ptGptaBase: pointer of gpta register structure
+ *  \param[in] ptGptaBase:pointer of ept register structure
  *  \param[in] eTrgin: gpta sync evtrg input channel(0~5)
  *  \param[in] byTrgChx: trgxsel channel(0~1)
  *  \return error code \ref csi_error_t
@@ -526,7 +526,7 @@ void csi_gpta_rearm_sync(csp_gpta_t *ptGptaBase,csi_gpta_trgin_e eTrgin)
 /** \brief gpta evtrg output config
  * 
  *  \param[in] ptGptaBase: pointer of gpta register structure
- *  \param[in] byTrgOut: evtrg out port(0~3)
+ *  \param[in] byTrgOut: evtrg out port(0~1)
  *  \param[in] eTrgSrc: evtrg source(1~15) 
  *  \return error code \ref csi_error_t
  */
