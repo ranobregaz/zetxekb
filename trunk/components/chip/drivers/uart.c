@@ -72,7 +72,7 @@ void apt_uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx)
 	{
 		case UART_RXFIFO_INT_S:								//rx fifo interrupt; recommended use RXFIFO interrupt
 		
-			if(csp_uart_get_sr(ptUartBase) & UART_RNE)		//rx fifo no empty		
+			//if(csp_uart_get_sr(ptUartBase) & UART_RNE)		//rx fifo no empty		
 			{
 				//uint8_t byData = csp_uart_get_data(ptUartBase);
 				//ringbuffer_byte_in(g_tUartTran[byIdx].ptRingBuf, byData);
