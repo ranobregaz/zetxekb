@@ -393,7 +393,7 @@ csi_error_t csi_adc_read_seqx(csp_adc_t *ptAdcBase);
   \param[in]   eVrefSrc		source of adc reference voltage
   \return 	   error code \ref csi_error_t
  */ 
-csi_error_t csi_adc_set_vref(csp_adc_t *ptAdcBase, csi_adc_vref_e eVrefSrc);
+void csi_adc_set_vref(csp_adc_t *ptAdcBase, csi_adc_vref_e eVrefSrc);
 
 /** 
   \brief 	   rearm adc sync 
