@@ -12,10 +12,36 @@
 #include <drv/common.h>
 #include <csp_syscon.h>
 #include <soc.h>
+#include "pm.h"
 
 #ifdef CONFIG_USER_PM
-extern pm_core_t g_tPmCore;
-#endif 
+/// to make user defined prepaare_to_stop() and wkup_frm_stop() possible
+pm_core_t g_tPmCore;
+
+/**
+  \brief       to attach user defined functions, 
+   * to use in case user wants to preserve the scene in lp mode 
+  \param	eMd: low power mode
+  \param   pBeforeSlp: funtion to be called before lp
+  \param   pBeforeSlp: funtion to be called after wakeup 
+  \return      None.
+*/
+void soc_pm_attach_callback(csi_pm_mode_t eMd, void *pBeforeSlp, void *pWkup)
+{
+	switch(eMd)
+	{
+		case (PM_MODE_SLEEP):g_tPmCore.prepare_to_sleep = pBeforeSlp;
+				g_tPmCore.wkup_frm_sleep = pWkup;
+			break;
+		case (PM_MODE_DEEPSLEEP):g_tPmCore.prepare_to_deepsleep = pBeforeSlp;
+				g_tPmCore.wkup_frm_deepsleep = pWkup;
+			break;
+		default:
+			break;
+	}
+	
+}
+#endif
 
 static csi_error_t soc_sleep(csi_pm_mode_t mode)
 {
@@ -132,3 +158,5 @@ csi_error_t soc_pm_config_wakeup_source(wakeupn_type_e eWkupSrc, bool bEnable)
 	}
 	return ret;
 }
+
+

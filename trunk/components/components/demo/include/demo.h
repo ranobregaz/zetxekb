@@ -59,4 +59,13 @@ extern void emcm_demo(void);
 //ifc demo
 void ifc_read(void);
 void ifc_program(void);
+
+//rtc_demo
+void rtc_set_time_demo(void);
+void rtc_alarm_demo(void);
+void rtc_timer_demo(void);
+void rtc_trgev_demo(void);
+
+//low power demo
+void lp_exi_wakeup_demo(void);
 #endif
