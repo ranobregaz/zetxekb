@@ -110,7 +110,8 @@ typedef enum{
 	UART_RX_MODE_INT_DYN	=	2			//rx use interrupt mode(RXFIFO), receive a bunch of data(dynamic length data)
 }csi_uart_wkmode_e;
 
-
+/// \struct csi_uart_config_t
+/// \brief  uart parameter configuration, open to users  
 typedef struct {
 	uint32_t            wBaudRate;			//baud rate	
 	uint32_t            wInter;				//interrupt
@@ -119,6 +120,9 @@ typedef struct {
 	uint8_t				byRxMode;			//recv mode: polling/interrupt0/interrupt1
 } csi_uart_config_t;
 
+
+/// \struct csi_uart_transfer_t
+/// \brief  uart transfer handle, not open to users  
 typedef struct {
 	uint8_t				bySendStat;			//send status
 	uint8_t				byRecvStat;			//receive status
@@ -127,7 +131,7 @@ typedef struct {
 	uint16_t            hwTxSize;			//tx send data size
 	uint16_t            hwRxSize;			//tx send data size
 	uint8_t				*pbyTxData;			//pointer of send buf 
-	ringbuffer_t		*ptRingBuf;			
+	ringbuffer_t		*ptRingBuf;			//pointer of ringbuffer		
 } csi_uart_transfer_t;
 
 extern csi_uart_transfer_t g_tUartTran[UART_IDX_NUM];	
