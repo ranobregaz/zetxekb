@@ -44,6 +44,7 @@ int uart_send_intr_demo(void);
 int uart_receive_demo(void);
 int uart_recv_intr_demo(void);
 int uart_recv_dynamic_demo(void);
+int uart_recv_dynamic_demo1(void);
 
 //lpt demo
 extern int lpt_timer_demo(void);
