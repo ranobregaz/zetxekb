@@ -156,19 +156,6 @@ uint32_t csi_bt_get_load_value(csp_bt_t *ptBtBase);
 bool csi_bt_is_running(csp_bt_t *ptBtBase);
 
 /**
-  \brief       Enable bt power manage
-  \param[in]   bt    	bt handle to operate.
-  \return      error code \ref csi_error_t
-*/
-//csi_error_t csi_bt_enable_pm(csi_bt_pwm_config_t *bt);
-
-/**
-  \brief       Disable bt power manage
-  \param[in]   bt    	bt handle to operate.
-*/
-//void csi_bt_disable_pm(csi_bt_pwm_config_t *bt);
-
-/**
   \brief       bt pwm init
   \param[in]   ptBtBase		pointer of bt register structure
   \param[in]   ptTmPara		pointer of bt parameter structure

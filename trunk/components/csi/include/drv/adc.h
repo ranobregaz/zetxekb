@@ -342,11 +342,19 @@ csi_error_t csi_adc_set_seqx(csp_adc_t *ptAdcBase, csi_adc_seq_t *ptSeqx, uint8_
 
 /** 
   \brief 	   Set adc conversion mode, continue/one shot
-  \param[in]   ptAdcBase: pointer of adc register structure
-  \param[in]   eConvMode: conversion mode, continuous/one shot
+  \param[in]   ptAdcBase	pointer of adc register structure
+  \param[in]   eConvMode	conversion mode, continuous/one shot
   \return 	   none
  */
 void csi_adc_conv_mode(csp_adc_t *ptAdcBase, csi_adc_conv_mode_e eConvMode);
+
+/** 
+  \brief set adc conversion sequence priority
+  \param[in] ptAdcBase: pointer of adc register structure
+  \param[in] byPri: conversion priority
+  \return none
+ */
+void csi_adc_conv_pri(csp_adc_t *ptAdcBase, uint8_t byPri);
 
 /**
   \brief       set ADC frequence division

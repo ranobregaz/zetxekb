@@ -220,15 +220,6 @@ uint8_t csi_uart_getc(csp_uart_t *ptUartBase);
 void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData);
 
 /**
-  \brief       Link DMA channel to uart device.
-  \param[in]   uart     uart handle to operate.
-  \param[in]   tx_dma   the DMA channel handle for send, when it is NULL means to unlink the channel.
-  \param[in]   rx_dma   the DMA channel handle for receive, when it is NULL means to unlink the channel.
-  \return      error code.
-*/
-//csi_error_t csi_uart_link_dma(csi_uart_t *uart, csi_dma_ch_t *tx_dma, csi_dma_ch_t *rx_dma);
-
-/**
   \brief       get the state of uart receive.
   \param[in]   ptUartBase   pointer of uart register structure
   \return      error code.
@@ -255,20 +246,6 @@ void csi_uart_clr_recv_status(csp_uart_t *ptUartBase);
   \return      none
 */
 void csi_uart_clr_send_status(csp_uart_t *ptUartBase);
-
-/**
-  \brief       Enable uart power manage.
-  \param[in]   ptUartBase   pointer of uart register structure
-  \return      error code.
-*/
-//csi_error_t csi_uart_enable_pm(csi_uart_t *uart);
-
-/**
-  \brief       Disable uart power manage.
-  \param[in]   uart   uart handle to operate.
-*/
-//void csi_uart_disable_pm(csi_uart_t *uart);
-
 
 #ifdef __cplusplus
 }
