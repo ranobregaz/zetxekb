@@ -201,7 +201,7 @@ int uart_recv_intr_demo(void)
 {
 	int iRet = 0;
 	uint8_t  byRxBuf[32];
-	uint16_t hwRecvNum = 9;
+	uint16_t hwRecvNum = 1;
 	volatile uint16_t hwRecvLen;
 	
 	
@@ -235,14 +235,14 @@ int uart_recv_intr_demo(void)
 		
 		if(hwRecvNum == 1)		//单个字节收数据(读接收ringbuf)
 		{
-			hwRecvLen = csi_uart_receive(UART1,(void *)byRxBuf, hwRecvNum, 0);	//读取接收循环buffer数据
-			if(hwRecvLen)
+			hwRecvLen = csi_uart_receive(UART1,(void *)byRxBuf, hwRecvNum, 0);	//读取接收循环buffer数据, 有数据返回数据
+			if(hwRecvLen == hwRecvNum)
 				csi_uart_putc(UART1,*byRxBuf);
 		}
 		else if(hwRecvNum > 1)	//多个字节收数据(读接收ringbuf)
 		{
 			hwRecvLen = csi_uart_receive(UART1,(void *)byRxBuf, hwRecvNum, 0);	//读取接收循环buffer数据
-			if(hwRecvLen)
+			if(hwRecvLen == hwRecvNum)
 				csi_uart_send(UART1,(void *)byRxBuf, hwRecvNum);				//UART发送采用轮询方式(同步)
 		}
 	}
