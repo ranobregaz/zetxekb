@@ -10,7 +10,6 @@
  * </table>
  * *********************************************************************
 */
-#include <drv/porting.h>
 #include <drv/clk.h>
 #include <drv/pin.h>
 

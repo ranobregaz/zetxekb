@@ -18,7 +18,6 @@
 #include <stdint.h>
 #include <csi_core.h>
 #include <drv/clk.h>
-#include <drv/porting.h>
 
 #ifdef __cplusplus
 extern "C" {

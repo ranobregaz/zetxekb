@@ -316,7 +316,7 @@ void soc_clk_pm_enable(clk_pm_e eClk, bool bEnable)
 }
 
 
-uint32_t soc_get_timer_freq(uint32_t idx)
+uint32_t soc_get_bt_freq(uint32_t idx)
 {
 	csp_bt_t *bt_base  = NULL;
 	switch(idx)

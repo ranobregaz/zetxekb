@@ -124,20 +124,109 @@ typedef enum {
 	EPT_SYS_CLK		= 49U
 } clk_module_t;
 
+//
+extern uint32_t g_wSystemClk;
 
-
+//
 csi_error_t soc_sysclk_config(void);
-uint32_t soc_get_sclk_freq(void);
-uint32_t soc_get_pclk_freq(void);
-void soc_clk_pm_enable(clk_pm_e eClk, bool bEnable);
 csi_error_t soc_clo_config(clo_src_e, clo_div_e, pin_name_e);
-
-
-uint32_t soc_get_coret_freq(void);
+//
+void soc_clk_pm_enable(clk_pm_e eClk, bool bEnable);
 void soc_clk_pm_enable(clk_pm_e eClk, bool vEnable);
 
 
-extern uint32_t soc_get_timer_freq(uint32_t idx);
-extern uint32_t g_wSystemClk;
+
+/**
+  \brief       Soc get sclk frequence.
+  \param[in]   none
+  \return      system clk frequence
+*/
+uint32_t soc_get_sclk_freq(void);
+
+/**
+  \brief       Soc get pclk frequence.
+  \param[in]   none
+  \return      Peripherals clk frequence
+*/
+uint32_t soc_get_pclk_freq(void);
+
+/**
+  \brief       Soc get coret frequence.
+  \param[in]   none
+  \return      coret frequence
+*/
+uint32_t soc_get_coret_freq(void);
+
+/**
+  \brief       Soc get bt frequence.
+  \param[in]   none
+  \return      coret frequence
+*/
+uint32_t soc_get_bt_freq(uint32_t idx);
+
+/*
+  \brief       Soc enable device clock
+  \param[in]   module   clock module, defined in sys_clk.h, \ref clk_module_t
+  \return      none
+*/
+void soc_clk_enable(int32_t module);
+
+/*
+  \brief       Soc disable device clock
+  \param[in]   module   clock module, defined in sys_clk.h, \ref clk_module_t
+  \return      none
+*/
+void soc_clk_disable(int32_t module);
+
+
+/**
+  \brief       Soc get device frequence.
+  \param[in]   freq     cpu frequence
+  \return      none
+*/
+void soc_set_sys_freq(uint32_t freq);
+
+/**
+  \brief       SOC Dcache clean & invalid by range.
+  \return      none
+*/
+void soc_dcache_clean_invalid_range(uint32_t addr, uint32_t size);
+
+/**
+  \brief       SOC Dcache clean & invalid all.
+  \return      none
+*/
+void soc_dcache_clean_invalid_all(void);
+
+/**
+  \brief       SOC Dcache invalid by range.
+  \return      none
+*/
+void soc_dcache_invalid_range(uint32_t addr, uint32_t size);
+
+/**
+  \brief       SOC dma address remap.
+  \return      remaped address
+*/
+extern uint32_t soc_dma_address_remap(uint32_t addr);
+
+
+//#ifdef CONFIG_PM
+/**
+  \brief       SoC enter low-power mode, each chip's implementation is different
+               called by csi_pm_enter_sleep
+  \param[in]   mode        low-power mode
+  \return      error code
+*/
+csi_error_t soc_pm_enter_sleep(csi_pm_mode_t mode);
+
+/**
+  \brief       SoC the wakeup source.
+  \param[in]   wakeup_num  wakeup source num
+  \param[in]   enable      flag control the wakeup source is enable or not
+  \return      error code
+*/
+csi_error_t soc_pm_config_wakeup_source(uint32_t wakeup_num, bool enable);
+
 
 #endif /* _SYS_CLK_H_ */
