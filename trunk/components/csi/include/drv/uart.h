@@ -122,7 +122,7 @@ typedef struct {
 
 
 /// \struct csi_uart_transfer_t
-/// \brief  uart transfer handle, not open to users  
+/// \brief  uart transport handle, not open to users  
 typedef struct {
 	uint8_t				bySendStat;			//send status
 	uint8_t				byRecvStat;			//receive status
@@ -132,9 +132,9 @@ typedef struct {
 	uint16_t            hwRxSize;			//tx send data size
 	uint8_t				*pbyTxData;			//pointer of send buf 
 	ringbuffer_t		*ptRingBuf;			//pointer of ringbuffer		
-} csi_uart_transfer_t;
+} csi_uart_trans_t;
 
-extern csi_uart_transfer_t g_tUartTran[UART_IDX_NUM];	
+extern csi_uart_trans_t g_tUartTran[UART_IDX_NUM];	
 
 /**
   \brief       initializes the resources needed for the UART interface.
