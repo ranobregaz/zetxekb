@@ -63,13 +63,13 @@ static uint32_t apt_get_lpt_clk(csi_lpt_clksrc_e eClk)
 	return wLptClk;
 }
 
-/** \brief get lpt prd
+/** \brief set lpt clk and get lpt prd
  *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] eClk: clk source selection
  *  \param[in] wMult_t: converted wMult value 
  *  \return lpt prd
  */ 
-static uint32_t apt_get_lpt_prd(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint32_t wMult_t)
+static uint32_t apt_set_lpt_clk(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint32_t wMult_t)
 {
 	uint32_t hwLptPrd,wDiv = 0;
 	lpt_pscdiv_e ePscDiv;
@@ -166,7 +166,7 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk, uint3
 	wLptClk = apt_get_lpt_clk(eClk);	
 	wMult = wLptClk/1000*wTimeOut;
 		
-	wLptPrd = apt_get_lpt_prd(ptLptBase,eClk,wMult);
+	wLptPrd = apt_set_lpt_clk(ptLptBase,eClk,wMult);
 	if(wLptPrd == ERR_LPT_CLK)
 	{
 		tRet = CSI_UNSUPPORTED;
@@ -175,7 +175,7 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk, uint3
 	{
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)wLptPrd);
 	}
-	csi_lpt_int_enable(ptLptBase,LPT_PEND_INT,ENABLE);	 //选用MATCH中断 
+	csi_lpt_int_enable(ptLptBase,LPT_PEND_INT,ENABLE);	 //enable PEND interrupt
 	return tRet;	
 }
 
@@ -317,7 +317,7 @@ csi_error_t csi_lpt_set_fre(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint16_
 	wLptClk = apt_get_lpt_clk(eClk);
 	wMult = wLptClk/wHz;
 	
-	wLptPrd = apt_get_lpt_prd(ptLptBase,eClk,wMult);	
+	wLptPrd = apt_set_lpt_clk(ptLptBase,eClk,wMult);	
 
 	if(wLptPrd == ERR_LPT_CLK)
 	{
@@ -363,7 +363,7 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 
 	wMult = wLptClk/ptLptPara->wFreq;
 	
-	wLptPrd = apt_get_lpt_prd(ptLptBase,ptLptPara->byClksrc,wMult);	
+	wLptPrd = apt_set_lpt_clk(ptLptBase,ptLptPara->byClksrc,wMult);	
 	
 	if(wLptPrd == ERR_LPT_CLK)
 	{
@@ -377,7 +377,7 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 		
 		if(ptLptPara->byInter != LPT_NONE_INT)
 		{
-			csi_lpt_int_enable(ptLptBase,ptLptPara->byInter,ENABLE);	 //选用MATCH中断 
+			csi_lpt_int_enable(ptLptBase,ptLptPara->byInter,ENABLE);	 //enable interrupt
 		}
 	}
 	return tRet;	
@@ -404,7 +404,7 @@ csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, 
 		
 	wLptClk = apt_get_lpt_clk(eClk);
 	wMult = wLptClk/freq;
-	wLptPrd = apt_get_lpt_prd(ptLptBase,eClk,wMult);	
+	wLptPrd = apt_set_lpt_clk(ptLptBase,eClk,wMult);	
 	if(wLptPrd == ERR_LPT_CLK)
 	{
 		tRet = CSI_UNSUPPORTED;
@@ -469,7 +469,7 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
 	wLptClk = apt_get_lpt_clk(eClk);
 	wMult = wLptClk/1000*wms;
 
-	wLptPrd = apt_get_lpt_prd(ptLptBase,eClk,wMult);	
+	wLptPrd = apt_set_lpt_clk(ptLptBase,eClk,wMult);	
 
 	if(wLptPrd == ERR_LPT_CLK)
 	{
@@ -490,7 +490,7 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
  *  \param[in] bySync: select sync
  *  \param[in] tSyncMode: LPT_TRG_CONT/LPT_TRG_ONCE
  *  \param[in] bARearmEnable: auto rearm enable/disable
- *  \return csi_error_t
+ *  \return error code \ref csi_error_t
  */
 csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, uint8_t bySync, csi_lpt_syncmode_e tSyncMode, bool bARearmEnable)
 {
