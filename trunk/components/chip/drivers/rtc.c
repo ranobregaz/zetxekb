@@ -154,23 +154,33 @@ void csi_rtc_start(csp_rtc_t *ptRtc)
 }
 
 /**
+  \brief       To stop RTC 
+  \param       rtc handle rtc handle to operate
+  \return      none
+*/
+void csi_rtc_stop(csp_rtc_t *ptRtc)
+{
+	csp_rtc_stop(ptRtc);
+}
+
+/**
   \brief       Set system date and run after setting
    * 				week day will be calculated in this function
   \param       rtc        handle rtc handle to operate
   \param       rtctime    pointer to rtc time
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *rtctime)
+csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *ptRtcTime)
 {   
     csi_error_t ret = CSI_OK;
 		
 	do {
-//		if (csp_rtc_get_fmt(ptRtc) == RTC_12FMT && rtctime->tm_hour>12) {
+//		if (csp_rtc_get_fmt(ptRtc) == RTC_12FMT && ptRtcTime->tm_hour>12) {
 //			ret = CSI_ERROR;
 //			break;
 //		}
 		
-		ret = (csi_error_t) clock_check_tm_ok((const struct tm *)rtctime);
+		ret = (csi_error_t) clock_check_tm_ok((const struct tm *)ptRtcTime);
         if (ret < CSI_OK) {
             break;
 		
@@ -179,16 +189,16 @@ csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *rtctime)
 		
 	
 		
-		rtctime->tm_wday = get_week_by_date((struct tm *)rtctime);
+		ptRtcTime->tm_wday = get_week_by_date((struct tm *)ptRtcTime);
 		
 		
-		apt_rtc_set_date(ptRtc, rtctime->tm_year, rtctime->tm_mon, rtctime->tm_wday, rtctime->tm_mday);
+		apt_rtc_set_date(ptRtc, ptRtcTime->tm_year, ptRtcTime->tm_mon, ptRtcTime->tm_wday, ptRtcTime->tm_mday);
 		
 	
-		if ((rtctime->tm_hour == 12) && (csp_rtc_get_fmt(ptRtc) == RTC_24FMT))
-			ret =  apt_rtc_set_time(ptRtc, RTC_PM, rtctime->tm_hour, rtctime->tm_min,rtctime->tm_sec);
+		if ((ptRtcTime->tm_hour == 12) && (csp_rtc_get_fmt(ptRtc) == RTC_24FMT))
+			ret =  apt_rtc_set_time(ptRtc, RTC_PM, ptRtcTime->tm_hour, ptRtcTime->tm_min,ptRtcTime->tm_sec);
 		else
-			ret =  apt_rtc_set_time(ptRtc, rtctime->tm_pm, rtctime->tm_hour, rtctime->tm_min,rtctime->tm_sec);
+			ret =  apt_rtc_set_time(ptRtc, ptRtcTime->tm_pm, ptRtcTime->tm_hour, ptRtcTime->tm_min,ptRtcTime->tm_sec);
 		
 		
 		if (ret < CSI_OK) {
@@ -205,14 +215,14 @@ csi_error_t csi_rtc_set_time(csp_rtc_t *ptRtc, csi_rtc_time_t *rtctime)
   \brief   Config RTC alarm
   \param   ptRtc      handle rtc handle to operate
   \param   byAlm	  RTC_ALMA/RTC_ALMB
-  \param   rtctime    alarm time(s) 
+  \param   ptAlmTime    alarm time(s) 
   \param   byMode	  	0: day       hour min sec
 						1: weekday   hour min sec
 						2:           hour min sec
 
   \return  error code \ref csi_error_t
 */
-csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, csi_rtc_time_t *tpRtcTime)
+csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, csi_rtc_time_t *ptAlmTime)
 { 	
 	bool bDmsk = 0;
 	bool bWdsel = 0;
@@ -220,22 +230,25 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	bool bMmsk = 0;
 	bool bSmsk = 0;
 	bool bFmt = 0;
+	
+	if(byAlm > 1)
+		return CSI_ERROR;
 
-	if (tpRtcTime -> tm_yday == 0xff || byMode == 2) {
+	if (ptAlmTime -> tm_yday == 0xff || byMode == 2) {
 		bDmsk = 1;
-		tpRtcTime->tm_mday = 0;			
+		ptAlmTime->tm_mday = 0;			
 	}
-	if (tpRtcTime -> tm_hour == 0xff) {
+	if (ptAlmTime -> tm_hour == 0xff) {
 		bHmsk = 1;
-		tpRtcTime->tm_hour = 0;
+		ptAlmTime->tm_hour = 0;
 	}
-	if (tpRtcTime -> tm_min == 0xff) {
+	if (ptAlmTime -> tm_min == 0xff) {
 		bMmsk = 1;
-		tpRtcTime->tm_min = 0;
+		ptAlmTime->tm_min = 0;
 	}
-	if (tpRtcTime -> tm_sec == 0xff) {
+	if (ptAlmTime -> tm_sec == 0xff) {
 		bSmsk = 1;	
-		tpRtcTime->tm_sec = 0;
+		ptAlmTime->tm_sec = 0;
 	}
 	switch (byMode)
 	{
@@ -251,7 +264,7 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	}
 	
 	if(csp_rtc_get_fmt(RTC) == RTC_24FMT) {
-		if (tpRtcTime -> tm_hour == 12) 
+		if (ptAlmTime -> tm_hour == 12) 
 			bFmt = RTC_PM;
 		else
 			bFmt = RTC_AM;
@@ -270,7 +283,7 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	
 	csi_rtc_int_enable(RTC, RTC_INT_ALMA, ENABLE);
 	csp_rtc_alm_enable(ptRtc, byAlm, DISABLE);
-	apt_rtc_alm_set_time(ptRtc, byAlm, tpRtcTime->tm_mday, bFmt,  tpRtcTime->tm_hour, tpRtcTime->tm_min,tpRtcTime->tm_sec);
+	apt_rtc_alm_set_time(ptRtc, byAlm, ptAlmTime->tm_mday, bFmt,  ptAlmTime->tm_hour, ptAlmTime->tm_min,ptAlmTime->tm_sec);
 	csp_rtc_alm_set_mode(ptRtc, byAlm, bWdsel, bDmsk, bHmsk, bMmsk, bSmsk);
 	csp_rtc_alm_enable(ptRtc, byAlm, ENABLE);
 	

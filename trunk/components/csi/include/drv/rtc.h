@@ -39,7 +39,7 @@ typedef struct {
     int tm_min;             ///< Minute.      [0-59]
     int tm_hour;            ///< Hour.        [0-23]
     int tm_mday;            ///< Day.         [1-31]
-    int tm_mon;             ///< Month.       [0-11]
+    int tm_mon;             ///< Month.       [1-12]
     int tm_year;            ///< Year-1900.   [70- ]      !NOTE:100=2000    
 	int tm_wday;			/// weekday		  [1-7]	     
     int tm_yday;            ///< Days in year.[0-365]     !NOTE:January 1st = 0
@@ -136,7 +136,12 @@ csi_error_t csi_rtc_set_time(csp_rtc_t *rtc, csi_rtc_time_t *rtctime);
 */
 void csi_rtc_start(csp_rtc_t *ptRtc);
 
-
+/**
+  \brief       To stop RTC 
+  \param       rtc handle rtc handle to operate
+  \return      none
+*/
+void csi_rtc_stop(csp_rtc_t *ptRtc);
 
 
 /**
