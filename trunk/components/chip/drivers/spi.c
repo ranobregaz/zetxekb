@@ -50,7 +50,7 @@ static void apt_spi_gpio_init(csi_spi_mode_e eMode)
 
 /** \brief apt_spi_int_set 
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] eSpiInt:spi interrupt source 
  *  \return none
  */ 
@@ -69,7 +69,7 @@ static void apt_spi_int_set(csp_spi_t *ptSpiBase,spi_int_e eSpiInt)
 
 /** \brief initialize spi data structure
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] ptSpiCfg: user spi parameter config
  *  \return error code \ref csi_error_t
  */ 
@@ -97,7 +97,7 @@ csi_error_t csi_spi_init(csp_spi_t *ptSpiBase,csi_spi_config_t *ptSpiCfg)
 
 /** \brief uninit spi data structure
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_spi_uninit(csp_spi_t *ptSpiBase)
@@ -113,7 +113,7 @@ csi_error_t csi_spi_uninit(csp_spi_t *ptSpiBase)
 }
 /** \brief set spi mode, master or slave
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] eMode: master, slave
  *  \return error code \ref csi_error_t
  */ 
@@ -138,7 +138,7 @@ csi_error_t csi_spi_mode(csp_spi_t *ptSpiBase, csi_spi_mode_e eMode)
 
 /** \brief config spi cp format
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] eFormat: spi cp format
  *  \return error code \ref csi_error_t
  */
@@ -168,7 +168,7 @@ csi_error_t csi_spi_cp_format(csp_spi_t *ptSpiBase, csi_spi_cp_format_e eFormat)
 
 /** \brief config spi work frequence
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] wBaud: spi work baud
  *  \return spi config frequency
  */
@@ -194,7 +194,7 @@ uint32_t csi_spi_baud(csp_spi_t *ptSpiBase, uint32_t wBaud)
 
 /** \brief config spi frame length
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] eLength: frame length
  *  \return error code \ref csi_error_t
  */
@@ -214,7 +214,7 @@ csi_error_t csi_spi_frame_len(csp_spi_t *ptSpiBase, csi_spi_frame_len_e eLength)
 /** \brief get the tState of spi device
  * 
  *  \param[in] ptState: the tState of spi device
- *  \return none
+ *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_spi_get_state(csi_state_t *ptState)
 {
@@ -224,7 +224,7 @@ csi_error_t csi_spi_get_state(csi_state_t *ptState)
 
 /** \brief sending data to spi transmitter(received data is ignored),blocking mode
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] pData: pointer to buffer with data to send to spi transmitter
  *  \param[in] wSize: number of data to send(byte)
  *  \param[in] wTimeout: unit in mini-second
@@ -272,7 +272,7 @@ int32_t csi_spi_send(csp_spi_t *ptSpiBase, void *pData, uint32_t wSize, uint32_t
 
 /** \brief sending data to spi transmitter, non-blocking mode(interrupt mode)
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] pData: pointer to buffer with data to send to spi transmitter
  *  \param[in] wSize: number of data to send(byte)
  *  \return error code \ref csi_error_t
@@ -303,7 +303,7 @@ csi_error_t csi_spi_send_async(csp_spi_t *ptSpiBase, void *pData, uint32_t wSize
 
 /** \brief  receiving data from spi receiver, blocking mode
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] pData: pointer to buffer with data to receive
  *  \param[in] wSize: number of data to receive(byte)
  *  \param[in] wTimeout: unit in mini-second
@@ -356,7 +356,7 @@ int32_t csi_spi_receive(csp_spi_t *ptSpiBase, void *pData, uint32_t wSize, uint3
 
 /** \brief  receiving data from spi receiver, not-blocking mode(interrupt mode)
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] pData: pointer to buffer with data to send to spi transmitter
  *  \param[in] wSize: number of data to receive(byte)
  *  \return error code \ref csi_error_t
@@ -387,7 +387,7 @@ csi_error_t csi_spi_receive_async(csp_spi_t *ptSpiBase, void *pData, uint32_t wS
 
 /** \brief  receiving data from spi receiver,blocking mode
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] pDataout: pointer to buffer with data to send to spi transmitter
  *  \param[in] pDatain: number of data to receive(byte)
  *  \param[in] wSize: number of data to receive(byte)
@@ -465,7 +465,7 @@ int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain
 
 /** \brief  receiving data from spi receiver, not-blocking mode
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] pDataout: pointer to buffer with data to send to spi transmitter
  *  \param[in] pDatain: number of data to receive(byte)
  *  \param[in] wSize: number of data to receive(byte)
@@ -538,7 +538,7 @@ csi_error_t csi_spi_Internal_variables_init(spi_rxifl_e eRxLen,uint8_t byInter)
 
 /** \brief clr spi rx fifo
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \return none
  */
 void csi_spi_clr_rxfifo(csp_spi_t *ptSpiBase)
@@ -552,8 +552,8 @@ void csi_spi_clr_rxfifo(csp_spi_t *ptSpiBase)
 
 /** \brief spi slave receive data
  * 
- *  \param[in] ptSpiBase: SPI handle
- *  \return none
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \return the slave receive data
  */ 
 uint16_t csi_spi_receive_slave(csp_spi_t *ptSpiBase)
 {
@@ -563,9 +563,9 @@ uint16_t csi_spi_receive_slave(csp_spi_t *ptSpiBase)
 
 /** \brief spi slave receive data
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] hwDataout: data of send
- *  \return none
+ *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_spi_send_slave(csp_spi_t *ptSpiBase, uint16_t hwDataout)
 {
@@ -661,7 +661,7 @@ static void apt_spi_intr_send_data(csp_spi_t *ptSpiBase)
 
 /** \brief spi interrupt handle weak function
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \return none
  */ 
 __attribute__((weak)) void spi_irqhandler(csp_spi_t *ptSpiBase)
@@ -742,8 +742,8 @@ __attribute__((weak)) void spi_irqhandler(csp_spi_t *ptSpiBase)
 
 /** \brief spi_send_receive_1byte
  * 
- *  \param[in] ptSpiBase: SPI handle
- *  \param[in] byReceiveData :send data buffer pointer
+ *  \param[in] ptSpiBase: pointer of spi register structure
+ *  \param[in] byData :the send data 
  *  \return the receive data
  */ 
 uint8_t spi_send_receive_1byte(csp_spi_t *ptSpiBase,uint8_t byData)
@@ -766,7 +766,7 @@ uint8_t spi_send_receive_1byte(csp_spi_t *ptSpiBase,uint8_t byData)
 
 /** \brief spi send buff(this funtion will ignore the receive)
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] pbyData :send data buffer pointer
  *  \param[in] bySize ：length
  *  \return none
@@ -790,7 +790,7 @@ void spi_buff_send(csp_spi_t *ptSpiBase,uint8_t *pbyData,uint8_t bySize)
 
 /** \brief spi send and receive(equal to 8 or less than eight bytes)
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] pbyDataOut :send data buffer pointer
  *  \param[in] pbyDataIn :receive data buffer pointer
  *  \param[in] wSize ：length
@@ -834,9 +834,9 @@ void csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, uint8_t *pbyDataOut,uint8_t *
 
 /** \brief spi send and receive(equal to 8 bytes or  more than eight bytes)
  * 
- *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiBase: pointer of spi register structure
  *  \param[in] pbyDataOut :send data buffer pointer 
- *  \param[in] pbyDataIn  :send data buffer pointer 
+ *  \param[in] pbyDataIn  :receive data buffer pointer 
  *  \param[in] wSize ：length
  *  \return none
  */ 
