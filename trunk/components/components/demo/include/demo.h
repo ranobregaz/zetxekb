@@ -106,4 +106,7 @@ extern int spi_w25q16jvsiq_write_read(void);
 extern int spi_sync_test_speed(void);
 extern int spi_sync_async_master_slave(void);
 
+//touch demo
+extern void touch_demo(void);
+
 #endif
