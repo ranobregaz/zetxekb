@@ -94,8 +94,7 @@ typedef enum {
 
 
 typedef struct 
-{
-	
+{	
 	spi_rxifl_e         eSpiRxFifoLevel;	//(1/8 or 1/4 or 1/2)fifo trigger rx interrupt
 	csi_spi_mode_e      eSpiMode;	    	//0:master   1:slave
 	csi_spi_cp_format_e eSpiPolarityPhase;  //0:(0 0)   1:(0 1)  2:(1 0) 3:(1 1)
@@ -109,8 +108,8 @@ typedef struct
     csi_state_t         state;        ///< Peripheral state
     void                *priv;
 	void                *arg;          ///< User private param ,passed to user callback
-}csi_spi_send_receive_t;
-extern csi_spi_send_receive_t g_tSpiTransmit;
+}csi_spi_para_config_t;
+extern csi_spi_para_config_t g_tSpiTransmit;
 
 /** \brief initialize spi data structure
  * 
