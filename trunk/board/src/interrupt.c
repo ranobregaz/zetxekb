@@ -49,6 +49,7 @@ void CORETHandler(void)
     // ISR content ...
 	//CK801->CORET_CVR = 0x0;			// Clear counter and flag
 	tick_irq_handler(NULL);
+	csi_pin_toggle(PA01);
 }
 
 void SYSCONIntHandler(void) 
@@ -72,23 +73,8 @@ void IFCIntHandler(void)
 
 void ADCIntHandler(void) 
 {
-	
+	//csi_gpio_port_toggle(GPIOA0, 2);
 	apt_adc_irqhandler(ADC0);
-//	uint8_t i;
-//	uint32_t tmp;
-//    	
-//	uint16_t wSeqMax = csp_adc_get_seq_num(ADC0);
-//	tmp = csp_gpio_read_output_port(GPIOB0);
-//	csp_gpio_write_output_port(GPIOB0, tmp ^ GPIO_PIN_MSK); //toggle PB02
-//	
-//	for(i=0;i<wSeqMax; i++)
-//	{
-//		g_wAdcData[i] = csp_adc_get_data(ADC0, i);
-//	}
-//	g_byAdcDone = 1;
-	
-	//csp_adc_clr_status(ADC0, wSeqMax);
-		
 }
 
 
