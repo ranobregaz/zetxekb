@@ -301,8 +301,6 @@ uint32_t soc_get_coret_freq(void)
 	}
 	
 }
-
-
 /** \brief to set clock status in PM mode 
  *  when IWDT is enabled, trying to stop ISOSC in stop mode would be invalid
  *  refer to GCER in SYSCON chapter for detailed description
@@ -314,12 +312,14 @@ void soc_clk_pm_enable(clk_pm_e eClk, bool bEnable)
 {
 	csp_clk_pm_enable(SYSCON, eClk, bEnable);
 }
-
-
-uint32_t soc_get_bt_freq(uint32_t idx)
+/** \brief       Soc get bt frequence.
+ *  \param[in]   byIdx: id of bt
+ *  \return      coret frequence
+*/
+uint32_t soc_get_bt_freq(uint8_t byIdx)
 {
 	csp_bt_t *bt_base  = NULL;
-	switch(idx)
+	switch(byIdx)
 	{
 		case 0:
 			bt_base = (csp_bt_t *)APB_BT0_BASE;

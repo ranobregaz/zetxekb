@@ -19,10 +19,6 @@
 #include "csp_syscon.h"
 #include "csp_hwdiv.h"
 
-//#define SYSCON_REG_BASE	(csp_syscon_t *)APB_SYS_BASE
-//#define IFC_REG_BASE	(csp_ifc_t *)APB_IFC_BASE
-
-
 
 typedef enum {
     SRC_IMOSC = 0,
@@ -124,17 +120,36 @@ typedef enum {
 	EPT_SYS_CLK		= 49U
 } clk_module_t;
 
-//
+//Global variable sysclkclk 
 extern uint32_t g_wSystemClk;
 
-//
+
+
+/** 
+  \brief sysctem clock (HCLK) configuration
+   To set CPU frequence according to tClkConfig
+  \param[in] none.
+  \return csi_error_t.
+ */ 
 csi_error_t soc_sysclk_config(void);
+/** 
+  \brief Clock output configuration
+  \param[in] eCloSrc: source to output
+  \param[in] eCloDiv: clo divider 
+  \param[in] tPin: output pin
+  \return csi_error_t.
+ */
 csi_error_t soc_clo_config(clo_src_e, clo_div_e, pin_name_e);
-//
+
+/** 
+  \brief to set clock status in PM mode 
+   when IWDT is enabled, trying to stop ISOSC in stop mode would be invalid
+   refer to GCER in SYSCON chapter for detailed description
+  \param[in] eClk: clock to be configured
+  \param[in] bEnable: enable or disable
+  \return none.
+ */ 
 void soc_clk_pm_enable(clk_pm_e eClk, bool bEnable);
-void soc_clk_pm_enable(clk_pm_e eClk, bool vEnable);
-
-
 
 /**
   \brief       Soc get sclk frequence.
@@ -159,10 +174,10 @@ uint32_t soc_get_coret_freq(void);
 
 /**
   \brief       Soc get bt frequence.
-  \param[in]   none
-  \return      coret frequence
+  \param[in]   byIdx: id of bt
+  \return      bt frequence
 */
-uint32_t soc_get_bt_freq(uint32_t idx);
+uint32_t soc_get_bt_freq(uint8_t byIdx);
 
 /*
   \brief       Soc enable device clock
@@ -178,37 +193,36 @@ void soc_clk_enable(int32_t module);
 */
 void soc_clk_disable(int32_t module);
 
-
 /**
   \brief       Soc get device frequence.
   \param[in]   freq     cpu frequence
   \return      none
 */
-void soc_set_sys_freq(uint32_t freq);
+//void soc_set_sys_freq(uint32_t freq);
 
 /**
   \brief       SOC Dcache clean & invalid by range.
   \return      none
 */
-void soc_dcache_clean_invalid_range(uint32_t addr, uint32_t size);
+//void soc_dcache_clean_invalid_range(uint32_t addr, uint32_t size);
 
 /**
   \brief       SOC Dcache clean & invalid all.
   \return      none
 */
-void soc_dcache_clean_invalid_all(void);
+//void soc_dcache_clean_invalid_all(void);
 
 /**
   \brief       SOC Dcache invalid by range.
   \return      none
 */
-void soc_dcache_invalid_range(uint32_t addr, uint32_t size);
+//void soc_dcache_invalid_range(uint32_t addr, uint32_t size);
 
 /**
   \brief       SOC dma address remap.
   \return      remaped address
 */
-extern uint32_t soc_dma_address_remap(uint32_t addr);
+//extern uint32_t soc_dma_address_remap(uint32_t addr);
 
 
 //#ifdef CONFIG_PM
@@ -218,7 +232,7 @@ extern uint32_t soc_dma_address_remap(uint32_t addr);
   \param[in]   mode        low-power mode
   \return      error code
 */
-csi_error_t soc_pm_enter_sleep(csi_pm_mode_t mode);
+//csi_error_t soc_pm_enter_sleep(csi_pm_mode_t mode);
 
 /**
   \brief       SoC the wakeup source.
@@ -226,7 +240,7 @@ csi_error_t soc_pm_enter_sleep(csi_pm_mode_t mode);
   \param[in]   enable      flag control the wakeup source is enable or not
   \return      error code
 */
-csi_error_t soc_pm_config_wakeup_source(uint32_t wakeup_num, bool enable);
+//csi_error_t soc_pm_config_wakeup_source(uint32_t wakeup_num, bool enable);
 
 
 #endif /* _SYS_CLK_H_ */
