@@ -39,7 +39,9 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, uint32_t wTimeOut)
 		wClkDiv  = 1;
 	//wTmLoad = (soc_get_pclk_freq() / (wClkDiv * 20000)) * wTimeOut / 50;	//bt prdr load value
 	wTmLoad = (soc_get_pclk_freq() / wClkDiv /20000) * wTimeOut / 50;		//bt prdr load value
-	
+	if(wTmLoad > 0xffff)
+		wTmLoad = 0xffff;
+		
 	csp_bt_set_cr(ptBtBase, (BT_IMMEDIATE << BT_SHDW_POS) | (BT_CONTINUOUS << BT_OPM_POS) |		//bt work mode
 			(BT_PCLKDIV << BT_EXTCKM_POS) | (BT_CNTRLD_EN << BT_CNTRLD_POS) | BT_CLK_EN );
 	csp_bt_set_pscr(ptBtBase, (uint16_t)wClkDiv - 1);						//bt clk div	
@@ -148,22 +150,27 @@ csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg)
 	uint32_t wCmpLoad; 
 	uint32_t wPrdrLoad; 
 	
-	if(ptBtPwmCfg->wFreq == 0 || ptBtPwmCfg->byDutyCycle  == 0 || ptBtPwmCfg->byDutyCycle == 100)
+	if(ptBtPwmCfg->wFreq == 0)// || ptBtPwmCfg->byDutyCycle  == 0 || ptBtPwmCfg->byDutyCycle == 100)
 		return CSI_ERROR;
 	
 	csi_clk_enable((uint32_t *)ptBtBase);								//bt clk enable
 	csp_bt_soft_rst(ptBtBase);											//reset bt
 		
-	wClkDiv = (soc_get_pclk_freq() / ptBtPwmCfg->wFreq / 60000);		//bt clk div value
+	wClkDiv = (soc_get_pclk_freq() / ptBtPwmCfg->wFreq / 30000);		//bt clk div value
 	if(wClkDiv == 0)
 		wClkDiv = 1;
 	
-	//wPrdrLoad  = (soc_get_pclk_freq() / (wClkDiv * ptBtPwmCfg->wFreq));	//prdr load value
-	wPrdrLoad  = soc_get_pclk_freq() / ptBtPwmCfg->wFreq / wClkDiv;		//prdr load value
-	wCmpLoad = wPrdrLoad * ptBtPwmCfg->byDutyCycle / 100;				//cmp load value
+	wPrdrLoad  = soc_get_pclk_freq() / (wClkDiv * ptBtPwmCfg->wFreq);	//prdr load value
+	
+	if(ptBtPwmCfg->byDutyCycle  == 0)									//duty cycle = 0
+		wCmpLoad = 0;
+	else if(ptBtPwmCfg->byDutyCycle == 100)								//duty cycle = 100
+		wCmpLoad = wPrdrLoad;
+	else
+		wCmpLoad = wPrdrLoad * ptBtPwmCfg->byDutyCycle / 100;			//cmp load value
 		
 	wCrVal = BT_CLK_EN | (BT_IMMEDIATE << BT_SHDW_POS) | (BT_CONTINUOUS << BT_OPM_POS) | (BT_PCLKDIV << BT_EXTCKM_POS) |
-				(BT_CNTRLD_EN << BT_CNTRLD_POS) | (ptBtPwmCfg->byIdleLevel << BT_IDLEST_POS) | (ptBtPwmCfg->byIdleLevel << BT_STARTST_POS);
+				(BT_CNTRLD_EN << BT_CNTRLD_POS) | (ptBtPwmCfg->byIdleLevel << BT_IDLEST_POS) | (ptBtPwmCfg->byStartLevel << BT_STARTST_POS);
 	csp_bt_set_cr(ptBtBase, wCrVal);									//set bt work mode
 	csp_bt_set_pscr(ptBtBase, (uint16_t)wClkDiv - 1);					//bt clk div
 	csp_bt_set_prdr(ptBtBase, (uint16_t)wPrdrLoad);						//bt prdr load value
