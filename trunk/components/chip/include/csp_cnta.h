@@ -22,10 +22,10 @@
 /// \brief SPI reg description   
 typedef struct
 {
-	volatile unsigned int      CADATAH;        /**< DATA High Register        */
-    volatile unsigned int      CADATAL;        /**< DATA Low Register         */
-    volatile unsigned int      CACON;          /**< Control Register          */
-    volatile unsigned int      INTMASK;        /**< Interrupt Mask CR         */
+	__IOM uint32_t      CADATAH;        /**< DATA High Register        */
+    __IOM uint32_t      CADATAL;        /**< DATA Low Register         */
+    __IOM uint32_t      CACON;          /**< Control Register          */
+    __IOM uint32_t      INTMASK;        /**< Interrupt Mask CR         */
 } csp_cnta_t ;  
 
 /*****************************************************************************
