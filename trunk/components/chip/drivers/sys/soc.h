@@ -385,9 +385,9 @@ typedef enum {
 	PB05_TKEY_CH16          =  9U,
 	
 	PA014_GPD				=  0U,
-	PA014_INPUT				=  1U,		//input
-	PA014_OUTPUT			=  2U,		//output
-	PA014_OUTPUT_MONI		=  3U,		//output with monitor
+	PA014_INPUT				=  1U,		
+	PA014_OUTPUT			=  2U,		
+	PA014_OUTPUT_MONI		=  3U,		
 	PA014_EPT_CHBX			=  4U,
     PA014_BT1_OUT          	=  5U,
     PA014_I2C_SDA           =  6U,
@@ -395,22 +395,16 @@ typedef enum {
 	PA014_SPI_MOSI			=  8U,
 	
 	PA015_GPD				=  0U,
-	PA015_INPUT				=  1U,		//input
-	PA015_OUTPUT			=  2U,		//output
-	PA015_OUTPUT_MONI		=  3U,		//output with monitor
+	PA015_INPUT				=  1U,		
+	PA015_OUTPUT			=  2U,		
+	PA015_OUTPUT_MONI		=  3U,		
 	PA015_EPT_CHAX			=  4U,
     PA015_BT0_OUT          	=  5U,
     PA015_I2C_SCL           =  6U,
     PA015_UART1_RX		  	=  7U,
 	PA015_SPI_MISO			=  8U,
 	
-//	PIN_GPD					=  0U,
-//	PIN_INPUT				=  1U,		//input
-//	PIN_OUTPUT				=  2U,		//output
-//	PIN_OUTPUT_MONI			=  3U,		//output with monitor
-	
 	IOMAP					=  10U
-	
 } pin_func_e;
 
 typedef enum{
