@@ -1300,9 +1300,6 @@ static inline void csp_ept_evtrg_soft(csp_ept_t *ptEptBase, uint8_t  byCh)
 
 //EMSLCLR  EMHLSR  EMFRCR  EMSLSR   EMFRCR     EMIMCR  EMMISR  EMICR    AQOSF  AQTSCR  EVSWF
 
-
-
-
 //
 static inline void csp_ept_sync_enable(csp_ept_t *ptEptBase, uint8_t byCh, bool bEnable)
 {   ptEptBase -> REGPROT = EPT_REGPROT;
