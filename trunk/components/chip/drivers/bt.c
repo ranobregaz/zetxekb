@@ -214,11 +214,9 @@ void csi_bt_pwm_duty_cycle_updata(csp_bt_t *ptBtBase, uint8_t byDutyCycle)
 void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wFreq, uint8_t byDutyCycle) 
 {
 	uint16_t hwClkDiv = csp_bt_get_pscr(ptBtBase) + 1;
-<<<<<<< .mine
-	uint32_t wPrdrLoad  = (csi_get_pclk_freq() / (hwClkDiv * wfreq));
-=======
-	uint32_t wPrdrLoad  = (soc_get_pclk_freq() / (hwClkDiv * wFreq));
->>>>>>> .r384
+
+	uint32_t wPrdrLoad  = (csi_get_pclk_freq() / (hwClkDiv * wFreq));
+
 	uint32_t wCmpLoad = wPrdrLoad * byDutyCycle /100;
 	
 	csp_bt_set_prdr(ptBtBase, wPrdrLoad);					//bt prdr load value
