@@ -39,7 +39,9 @@ csi_error_t csi_gpta_config_init(csp_gpta_t *ptGptaBase, csi_gpta_config_t *ptGp
 	csp_gpta_wr_key(ptGptaBase);                                        //Unlocking
 	csp_gpta_reset(ptGptaBase);											// reset 
 	
-	wClkDiv = (csi_get_pclk_freq() / ptGptaPwmCfg->wFreq / 60000);		// clk div value
+
+	wClkDiv = (soc_get_pclk_freq() / ptGptaPwmCfg->wFreq / 30000);		// clk div value
+
 	if(wClkDiv == 0)wClkDiv = 1;
 	
 	wPrdrLoad  = (csi_get_pclk_freq()/ptGptaPwmCfg->wFreq/wClkDiv);	    //prdr load value
@@ -75,13 +77,14 @@ csi_error_t csi_gpta_config_init(csp_gpta_t *ptGptaBase, csi_gpta_config_t *ptGp
 	csp_gpta_set_pscr(ptGptaBase, (uint16_t)wClkDiv - 1);					// clk div
 	csp_gpta_set_prdr(ptGptaBase, (uint16_t)wPrdrLoad);				        // prdr load value
 		
-	if(ptGptaPwmCfg->byDutyCycle){
-	wCmpLoad =wPrdrLoad-(wPrdrLoad * ptGptaPwmCfg->byDutyCycle /100);	// cmp load value
+	if(ptGptaPwmCfg->byDutyCycle>=100){wCmpLoad=0;}
+	else if(ptGptaPwmCfg->byDutyCycle==0){wCmpLoad=wPrdrLoad+1;}
+	else{wCmpLoad =wPrdrLoad-(wPrdrLoad * ptGptaPwmCfg->byDutyCycle /100);}
 	csp_gpta_set_cmpa(ptGptaBase, (uint16_t)wCmpLoad);					// cmp load value
 	csp_gpta_set_cmpb(ptGptaBase, (uint16_t)wCmpLoad);
 //	csp_gpta_set_cmpc(ptGptaBase, (uint16_t)wCmpLoad);
 //	csp_gpta_set_cmpd(ptGptaBase, (uint16_t)wCmpLoad);
-	}
+	
 	
 	if(ptGptaPwmCfg->byInter)
 	{
@@ -167,7 +170,9 @@ csi_error_t  csi_gpta_wave_init(csp_gpta_t *ptGptaBase, csi_gpta_pwmconfig_t *pt
 	csp_gpta_wr_key(ptGptaBase);                                           //Unlocking
 	csp_gpta_reset(ptGptaBase);											// reset 
 	
-	wClkDiv = (csi_get_pclk_freq() / ptGptaPwmCfg->wFreq / 60000);		// clk div value
+
+	wClkDiv = (soc_get_pclk_freq() / ptGptaPwmCfg->wFreq / 30000);		// clk div value
+
 	if(wClkDiv == 0)wClkDiv = 1;
 	
 	wPrdrLoad  = (csi_get_pclk_freq()/ptGptaPwmCfg->wFreq/wClkDiv);	    //prdr load value
@@ -182,13 +187,14 @@ csi_error_t  csi_gpta_wave_init(csp_gpta_t *ptGptaBase, csi_gpta_pwmconfig_t *pt
 	csp_gpta_set_pscr(ptGptaBase, (uint16_t)wClkDiv - 1);					// clk div
 	csp_gpta_set_prdr(ptGptaBase, (uint16_t)wPrdrLoad);				    // prdr load value
 		
-	if(ptGptaPwmCfg->byDutyCycle){
-	wCmpLoad =wPrdrLoad-(wPrdrLoad * ptGptaPwmCfg->byDutyCycle /100);	// cmp load value
+	if(ptGptaPwmCfg->byDutyCycle>=100){wCmpLoad=0;}
+	else if(ptGptaPwmCfg->byDutyCycle==0){wCmpLoad=wPrdrLoad+1;}
+	else{wCmpLoad =wPrdrLoad-(wPrdrLoad * ptGptaPwmCfg->byDutyCycle /100);}		
 	csp_gpta_set_cmpa(ptGptaBase, (uint16_t)wCmpLoad);					// cmp load value
 	csp_gpta_set_cmpb(ptGptaBase, (uint16_t)wCmpLoad);
 //	csp_gpta_set_cmpc(ptGptaBase, (uint16_t)wCmpLoad);
 //	csp_gpta_set_cmpd(ptGptaBase, (uint16_t)wCmpLoad);
-	}
+	
 	
 	if(ptGptaPwmCfg->byInter)
 	{
@@ -345,7 +351,10 @@ uint16_t csi_gpta_get_prdr(csp_gpta_t *ptgptaBase)
 */
 csi_error_t csi_gpta_change_ch_duty(csp_gpta_t *ptGptaBase, csi_gpta_chtype_e eCh, uint32_t wActiveTime)
 { uint16_t  wCmpLoad;
-    wCmpLoad =gGptaPrd-(gGptaPrd * wActiveTime /100);
+
+	if(wActiveTime>=100){wCmpLoad=0;}
+	else if(wActiveTime==0){wCmpLoad=gGptaPrd+1;}
+	else{wCmpLoad =gGptaPrd-(gGptaPrd * wActiveTime /100);}
 
 	switch (eCh)
 	{	
