@@ -410,10 +410,23 @@ extern int  csp_i2c_read_mem_nbyte(csp_i2c_t *ptI2cBase,uint16_t hwRdAddr, i2c_a
 /******************************************************************************
 ********************* IIC inline Functions Declaration ************************
 ******************************************************************************/
+static inline void csp_i2c_enable(csp_i2c_t *ptI2cBase)
+{
+	ptI2cBase->I2CENABLE |= I2C_ENABLE;
+}
+static inline void csp_i2c_disable(csp_i2c_t *ptI2cBase)
+{
+	ptI2cBase->I2CENABLE = I2C_DISABLE;
+}
 static inline void csp_i2c_set_speed(csp_i2c_t *ptI2cBase, i2c_speed_e eSpeed)
 {
 	ptI2cBase->CR = (ptI2cBase->CR & (~I2C_SPEED_MSK)) | (eSpeed << I2C_SPEED_POS);
 }
+static inline void csp_i2c_set_cr(csp_i2c_t *ptI2cBase, uint32_t wCr)
+{
+	ptI2cBase->CR = (ptI2cBase->CR&0XFFFFF000)| wCr;
+}
+
 static inline void csp_i2c_set_saddr(csp_i2c_t *ptI2cBase, uint32_t wSaddr)
 {
 	ptI2cBase->SADDR = (wSaddr & 0x3ff);
@@ -462,6 +475,24 @@ static inline uint8_t csp_i2c_get_tx_fifo_num(csp_i2c_t *ptI2cBase)
 {
 	return (uint8_t)(ptI2cBase->TX_FL & I2C_TX_FL_MSK);
 }
+
+static inline void csp_i2c_set_ss_sclh(csp_i2c_t *ptI2cBase, uint32_t wSsSclH)
+{
+	ptI2cBase->SS_SCLH = wSsSclH; 
+}
+static inline void csp_i2c_set_ss_scll(csp_i2c_t *ptI2cBase, uint32_t wSsSclL)
+{
+	ptI2cBase->SS_SCLL = wSsSclL; 
+}
+static inline void csp_i2c_set_fs_sclh(csp_i2c_t *ptI2cBase, uint32_t wFsSclH)
+{
+	ptI2cBase->FS_SCLH = wFsSclH; 
+}
+static inline void csp_i2c_set_fs_scll(csp_i2c_t *ptI2cBase, uint32_t wFsSclL)
+{
+	ptI2cBase->FS_SCLL = wFsSclL; 
+}
+
 //
 static inline void csp_i2c_set_scl_tout(csp_i2c_t *ptI2cBase, uint32_t wSclTout)
 {
@@ -512,6 +543,18 @@ static inline void csp_i2c_clr_isr(csp_i2c_t *ptI2cBase,i2c_int_e eIntNum)
 static inline void csp_i2c_clr_all_int(csp_i2c_t *ptI2cBase)
 {
 	ptI2cBase->ICR = 0x7fff;
+}
+static inline void csp_i2c_set_imcr(csp_i2c_t *ptI2cBase,uint32_t wIntNum)
+{
+	ptI2cBase->IMCR = wIntNum;
+}
+static inline void csp_i2c_imcr_enable(csp_i2c_t *ptI2cBase,uint32_t wIntNum)
+{
+	ptI2cBase->IMCR |= wIntNum;
+}
+static inline void csp_i2c_imcr_disable(csp_i2c_t *ptI2cBase,uint32_t wIntNum)
+{
+	ptI2cBase->IMCR &= (~wIntNum);
 }
 //
 static inline void csp_i2c_restart_en(csp_i2c_t *ptI2cBase)
