@@ -256,7 +256,7 @@ int adc_samp_oneshot_int_demo(void)
 	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
 	
 	//adc 参数配置初始化
-	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
+	tAdcConfig.byClkDiv = 48;									//ADC clk两分频：clk = pclk/2
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_ONESHOT;					//ADC 转换模式： 单次转换；
 	tAdcConfig.byVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD
@@ -273,20 +273,30 @@ int adc_samp_oneshot_int_demo(void)
 	do
 	{
 		//读ADC采样序列，整个采样序列所有通道读到采样buffer 
-		if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)			//采样通道读取完成，ADC value 保持在 buffer中 
+		while(1)
 		{
-			csi_adc_clr_status(ADC0);
-			for(i = 0; i < byChnlNum; i++)
-				my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);
+			if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)			//采样通道读取完成，ADC value 保持在 buffer中 
+			{
+				csi_adc_clr_status(ADC0);
+				for(i = 0; i < byChnlNum; i++)
+					my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);
+				break;
+			}
 		}
 		
 		//若继续采样ADC序列，需再次启动ADC
-		iRet = csi_adc_start(ADC0);								//再次启动ADC	
-		if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)			//采样通道读取完成，ADC value 保持在 buffer中 
+		iRet = csi_adc_start(ADC0);								//再次启动ADC
+
+		while(1)
 		{
-			csi_adc_clr_status(ADC0);
-			for(i = 0; i < byChnlNum; i++)
-				my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);
+			if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)			//采样通道读取完成，ADC value 保持在 buffer中 
+			{
+				csi_adc_clr_status(ADC0);
+				for(i = 0; i < byChnlNum; i++)
+					my_printf("ADC channel value of seq: %d \n", g_hwAdcBuf[i]);
+				break;
+			}
+		
 		}
 		
 		nop;
@@ -315,7 +325,7 @@ int adc_samp_continuous_int_demo(void)
 	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
 	
 	//adc 参数配置初始化
-	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
+	tAdcConfig.byClkDiv = 8;									//ADC clk两分频：clk = pclk/2
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_CONTINU;					//ADC 转换模式： 连续转换；
 	tAdcConfig.byVrefSrc = ADCVERF_VDD_VSS;						//ADC 参考电压： 系统VDD
@@ -327,7 +337,6 @@ int adc_samp_continuous_int_demo(void)
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
 	csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, ADC_DATA_DEPTH);	//传递ADC采样buffer，ADC采样值存放于此buffer中
 	csi_adc_start(ADC0);										//启动ADC
-	
 	
 	do
 	{
