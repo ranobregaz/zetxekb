@@ -96,6 +96,8 @@ int adc_samp_oneshot_demo(void)
 		if(iRet < 0)
 			my_printf("ADC start failure ...\n");
 			
+#if ADC_DATA_DEPTH < 2
+
 		g_hwAdcBuf[0] = csi_adc_read_channel(ADC0, 0);
 		my_printf("ADC channel 0 value of seq: %d \n", g_hwAdcBuf[0]);
 		
@@ -104,7 +106,7 @@ int adc_samp_oneshot_demo(void)
 		
 		g_hwAdcBuf[2] = csi_adc_read_channel(ADC0, 2);
 		my_printf("ADC channel 2 value of seq: %d \n", g_hwAdcBuf[2]);
-		
+#endif
 		nop;
 		nop;
 		
