@@ -29,16 +29,23 @@
 /** \brief initialize cnta data structure
  * 
  *  \param[in] ptCntaBase: handle cnta handle to operate
- *  \param[in] eClkDiv: the cnta clk_div
- *  \param[in] eRunMode: the cnta run mode
+ *  \param[in] ptContaTimerCfg:point of timer parameter config
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,cnta_ckdiv_e eClkDiv,cnta_mode_e eRunMode)
+csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_conta_timer_config_t *ptContaTimerCfg)
 {
+	uint8_t byDivTemp = 1;
+	uint32_t wTempLoad = 1;
+	byDivTemp  = ( 0x01 << (ptContaTimerCfg->eClkDiv) );
+	wTempLoad  = (soc_get_pclk_freq() / (byDivTemp * 1000000)) * ptContaTimerCfg->wTime - 1; // (timeout_us / 1000000) = (byDivTemp / pclk) * (tmp_load + 1)
+	
 	csi_clk_enable((uint32_t *)ptCntaBase);		//cnta clk enable
     csp_cnta_soft_rst(ptCntaBase);				//default init valu
+	csp_cnta_set_ckdiv(ptCntaBase, ptContaTimerCfg->eClkDiv,ptContaTimerCfg->eRunMode);	//cnta clk = pclk/eClkDiv
 	
-	csp_cnta_set_ckdiv(ptCntaBase, eClkDiv, eRunMode);		//cnta clk = pclk/eClkDiv
+	csp_cnta_set_datah(ptCntaBase, wTempLoad);				//set data	
+	csp_cnta_set_int(ptCntaBase, ptContaTimerCfg->byInter, true);//set intrrupt
+	csi_irq_enable((uint32_t *)ptCntaBase);					//enable cnta irq
 	
 	return CSI_OK;
 }
@@ -46,22 +53,11 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,cnta_ckdiv_e eClkDiv,cnta
 /** \brief start cnta
  * 
  *  \param[in] ptCntaBase: handle cnta handle to operate
- *  \param[in] timeout_us: if cnta clk is 3M,the timeout for timer((0.333us * 1) ->(0.333us * 65535): 0.3333us -> 21.845ms)
- *  \return error code \ref csi_error_t
+ *  \return none
  */ 
-csi_error_t csi_cnta_timer_start(csp_cnta_t *ptCntaBase,uint32_t timeout_us)
-{	
-	csi_error_t ret = CSI_OK;
-
-	uint8_t byDivTemp  = (0x01 << csp_cnta_get_ckdiv(ptCntaBase));
-	uint32_t tmp_load  = (soc_get_pclk_freq() / (byDivTemp * 1000000)) * timeout_us - 1; // (timeout_us / 1000000) = (byDivTemp / pclk) * (tmp_load + 1)
-	
-	csp_cnta_set_datah(ptCntaBase, tmp_load);				//set data
-	csp_cnta_set_int(ptCntaBase, CNTA_PENDH_INT, true);		//set intrrupt
-	csi_irq_enable((uint32_t *)ptCntaBase);					//enable cnta irq
-	csp_cnta_start(ptCntaBase);								//cnta start
-	
-	return ret;
+void csi_cnta_start(csp_cnta_t *ptCntaBase)
+{		
+	csp_cnta_start(ptCntaBase);								//cnta start	
 }
 
 /** \brief stop cnta
@@ -97,67 +93,47 @@ uint32_t csi_cnta_get_datal_value(csp_cnta_t *ptCntaBase)
 /** \brief cnta pwm init 
  * 
  *  \param[in] ptCntaBase: handle cnta handle to operate
- *  \param[in] eClkDiv:the cnta clk_div
- *  \param[in] pwm_mode: pwm output mode, carrier/envelope
- *  \param[in] init_polar: pwm out initial polarity
- *  \param[in] stop_lev: pwm out stop level
+ *  \param[in] ptContaPwmCfg:point of pwm parameter config
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,cnta_ckdiv_e eClkDiv, csi_cnta_pwmout_t pwm_mode ,csi_cnta_pwmlev_t init_polar, csi_cnta_pwmlev_t stop_lev)
+csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_conta_pwm_config_t *ptContaPwmCfg)
 {	
 	csi_error_t ret = CSI_OK;
+	volatile uint32_t wDatahLoad; 
+	volatile uint32_t wDatalLoad;
+	uint32_t wPeriod;
+	//uint8_t byClkDiv;
+	cnta_osp_e eOsp = 0;
+	cnta_remstat_e eRemStat = 0;	
 	
+	if(ptContaPwmCfg->wFreq == 0 || ptContaPwmCfg->byDutyCycle == 0 || ptContaPwmCfg->byDutyCycle == 100)
+		return CSI_ERROR;
+		
 	csi_clk_enable((uint32_t *)ptCntaBase);		//cnta clk enable
     csp_cnta_soft_rst(ptCntaBase);				//default init valu
 	
-	cnta_osp_e eOsp = 0;
-	cnta_remstat_e eRemStat = 0;
+	//byClkDiv = ptContaPwmCfg->eClkDiv;
+	wPeriod = (soc_get_pclk_freq() / ptContaPwmCfg->wFreq) >> ptContaPwmCfg->eClkDiv;
+	wDatahLoad = wPeriod * ptContaPwmCfg->byDutyCycle / 100 - 3 + 1;//加1是误差调整
+	wDatalLoad = wPeriod * (100 - ptContaPwmCfg->byDutyCycle) / 100 - 3 + 1;//加1是误差调整
 	
-	if(init_polar == POLAR_LOW)				//initial polarity
+	if(ptContaPwmCfg->byStartLevel == POLAR_LOW)			//initial polarity
 		eOsp = CNTA_OSP_LOW;
-	else if(init_polar == POLAR_HIGH)
+	else if(ptContaPwmCfg->byStartLevel == POLAR_HIGH)
 		eOsp = CNTA_OSP_HIGH;
 		
-	//
-	if(stop_lev == STOP_LOW)				//stop output level
+	if(ptContaPwmCfg->byStopLevel == STOP_LOW)				//stop output level
 		eRemStat = CNTA_REMSTAT_LOW;
-	else if(stop_lev == STOP_HIGH)
+	else if(ptContaPwmCfg->byStopLevel == STOP_HIGH)
 		eRemStat = CNTA_REMSTAT_HIGH;
-	
-	csp_cnta_set_ckdiv(ptCntaBase, eClkDiv, CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv
-	csp_cnta_set_carrier(ptCntaBase, CNTA_CARRIER_EN, pwm_mode, eRemStat, eOsp);
+			
+	csp_cnta_set_ckdiv(ptCntaBase, ptContaPwmCfg->eClkDiv, CNTA_REPEAT_MODE);		//cnta clk = pclk/eClkDiv
+	csp_cnta_set_carrier(ptCntaBase, CNTA_CARRIER_EN, PWM_CARRIER, eRemStat, eOsp);
+	csp_cnta_set_datah(ptCntaBase, wDatahLoad);
+	csp_cnta_set_datal(ptCntaBase, wDatalLoad);
+	csp_cnta_set_int(ptCntaBase, ptContaPwmCfg->byInter, true);
 	
 	return ret;
-}
-
-/** \brief start cnta pwm
- * 
- *  \param[in] ptCntaBase: handle cnta handle to operate
- *  \param[in] freq: pwm frequency  
- *  \param[in] duty_cycle: duty cycle(0 -> 100)
- *  \return error code \ref csi_error_t
- */
-csi_error_t csi_cnta_pwm_start(csp_cnta_t *ptCntaBase, uint32_t freq, uint32_t duty_cycle) 
-{		
-	volatile uint32_t datah_load; 
-	volatile uint32_t datal_load;
-	uint8_t clkdiv;
-	uint32_t period;
-	
-	if(freq == 0 || duty_cycle == 0 || duty_cycle == 100)
-		return CSI_ERROR;
-	
-	clkdiv = csp_cnta_get_ckdiv(ptCntaBase);
-	period = (soc_get_pclk_freq() / freq) >> clkdiv;
-	datah_load = period * duty_cycle / 100 - 3;
-	datal_load = period * (100 - duty_cycle) / 100 - 3;
-	
-	csp_cnta_set_datah(ptCntaBase, datah_load);
-	csp_cnta_set_datal(ptCntaBase, datal_load);
-	//csp_cnta_set_int(cnta_base, CNTA_PENDH_L, true);
-	csp_cnta_start(ptCntaBase);
-	
-	return CSI_OK;
 }
 
 /** \brief updata cnta pwm freq para: (datah and datal value)
