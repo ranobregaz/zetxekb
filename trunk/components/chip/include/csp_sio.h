@@ -38,9 +38,7 @@ typedef struct
 /*****************************************************************************
 ************************** SIO Para Macro defined ****************************
 ******************************************************************************/
-#define SIO_RESET_VALUE  (0x00000000)
-#define SIO_RX_TIMEOUT		(0x10ff)
-#define SIO_TX_TIMEOUT		(0x1FFF)
+
 
 /******************************************************************************
 * CR : Control Register
@@ -343,18 +341,18 @@ typedef struct
 /*****************************************************************************
  ******************** SIO extern Functions Declaration ***********************
  *****************************************************************************/
-extern void csp_sio_def_Init(csp_sio_t *ptSioBase);
-extern void csp_sio_set_int(csp_sio_t *ptSioBase,sio_int_e eSioInt,uint8_t byEnable);
-extern void csp_sio_set_dh(csp_sio_t *ptSioBase, sio_lenob_e eDhBit, uint8_t byDhSq);
-extern void csp_sio_set_dl(csp_sio_t *ptSioBase, sio_lenob_e eDlBit, uint8_t byDlSq);
-extern void csp_sio_tx_init(csp_sio_t *ptSioBase, csp_sio_tx_t *tpSioTx);
-extern uint32_t csp_sio_send(csp_sio_t *ptSioBase, uint32_t *byPdata, uint8_t byLen);
+//extern void csp_sio_def_Init(csp_sio_t *ptSioBase);
+//extern void csp_sio_set_int(csp_sio_t *ptSioBase,sio_int_e eSioInt,uint8_t byEnable);
+//extern void csp_sio_set_dh(csp_sio_t *ptSioBase, sio_lenob_e eDhBit, uint8_t byDhSq);
+//extern void csp_sio_set_dl(csp_sio_t *ptSioBase, sio_lenob_e eDlBit, uint8_t byDlSq);
+//extern void csp_sio_tx_init(csp_sio_t *ptSioBase, csp_sio_tx_t *tpSioTx);
+//extern uint32_t csp_sio_send(csp_sio_t *ptSioBase, uint32_t *byPdata, uint8_t byLen);
 
 //SIO RX
-extern void csp_sio_set_sample_mode(csp_sio_t *ptSioBase,sio_bstsel_e eBst, sio_trgmode_e eTrgMd, sio_rmode_e eRmd);
-extern void csp_sio_set_sample(csp_sio_t *ptSioBase, sio_extract_e eExtract ,sio_align_e eAlign, uint8_t bySplCnt, uint8_t byHihr);
-extern void csp_sio_set_rx(csp_sio_t *ptSioBase,sio_rdir_e eRdir, uint8_t byRxCnt, uint8_t byBuflen);
-extern void csp_sio_set_break(csp_sio_t *ptSioBase, sio_break_e eBreak, sio_breaklel_e eBkLvl,uint8_t byBkCnt);
+//extern void csp_sio_set_sample_mode(csp_sio_t *ptSioBase,sio_bstsel_e eBst, sio_trgmode_e eTrgMd, sio_rmode_e eRmd);
+//extern void csp_sio_set_sample(csp_sio_t *ptSioBase, sio_extract_e eExtract ,sio_align_e eAlign, uint8_t bySplCnt, uint8_t byHihr);
+//extern void csp_sio_set_rx(csp_sio_t *ptSioBase,sio_rdir_e eRdir, uint8_t byRxCnt, uint8_t byBuflen);
+//extern void csp_sio_set_break(csp_sio_t *ptSioBase, sio_break_e eBreak, sio_breaklel_e eBkLvl,uint8_t byBkCnt);
 
 /*****************************************************************************
  ******************** SIO inline Functions Declaration ***********************
@@ -378,7 +376,7 @@ static inline void csp_sio_set_tx_clkdiv(csp_sio_t *ptSioBase,uint16_t hwClkDiv)
 	ptSioBase->CR = (ptSioBase->CR & ~SIO_TCKPRS_MSK) | SIO_TCKPRS(hwClkDiv);
 }
 
-static inline void csp_sio_set_tx(csp_sio_t *ptSioBase,sio_idlest_e eIdlest, sio_tdir_e eTdir, uint8_t byTxBufLen, uint8_t byTxCnt)
+static inline void csp_sio_set_txcr0(csp_sio_t *ptSioBase,sio_idlest_e eIdlest, sio_tdir_e eTdir, uint8_t byTxBufLen, uint8_t byTxCnt)
 {
 	ptSioBase->TXCR0 = (eIdlest) | (eTdir << SIO_TDIR_POS) | SIO_TXBUFLEN(byTxBufLen) | SIO_TXCNT(byTxCnt);
 }
@@ -391,6 +389,18 @@ static inline void csp_sio_set_d0(csp_sio_t *ptSioBase, uint8_t byD0Time)
 static inline void csp_sio_set_d1(csp_sio_t *ptSioBase, uint8_t byD1Time)
 {
 	ptSioBase->TXCR1 = (ptSioBase->TXCR1  &  ~SIO_D1DUR_MSK) | SIO_D1DUR(byD1Time) ;
+}
+
+static inline void csp_sio_set_dl(csp_sio_t *ptSioBase, sio_lenob_e eDlBit, uint8_t byDlSq)
+{
+	ptSioBase->TXCR1 = (ptSioBase->TXCR1 & ~(SIO_LENOBL_MSK | SIO_LSQ_MSK));
+	ptSioBase->TXCR1 |= (eDlBit << SIO_LENOBL_POS) | SIO_LSQ(byDlSq);
+}
+
+static inline  void csp_sio_set_dh(csp_sio_t *ptSioBase, sio_lenob_e eDhBit, uint8_t byDhSq)
+{
+	ptSioBase->TXCR1 = (ptSioBase->TXCR1 & ~(SIO_LENOBH_MSK | SIO_HSQ_MSK));
+	ptSioBase->TXCR1 |= (eDhBit << SIO_LENOBH_POS) | SIO_HSQ(byDhSq);
 }
 
 static inline void csp_sio_wait_tx(csp_sio_t *ptSioBase)
@@ -409,7 +419,7 @@ static inline void csp_sio_set_rx_clkdiv(csp_sio_t *ptSioBase,uint16_t hwClkDiv)
 	ptSioBase->RXCR1 = (ptSioBase->RXCR1 & ~SIO_RCKPRS_MSK) | SIO_RCKPRS(hwClkDiv);
 }
 
-static inline void csp_sio_set_rxdeb(csp_sio_t *ptSioBase,sio_debdep_e eDebDep, uint8_t byDebCks)
+static inline void csp_sio_set_rx_deb(csp_sio_t *ptSioBase,sio_debdep_e eDebDep, uint8_t byDebCks)
 {
 	ptSioBase->CR = (ptSioBase->CR & ~(SIO_DEBDEP_MSK | SIO_DEBCKS_MSK)) | (eDebDep << SIO_DEBDEP_POS) | SIO_DEBCKS(byDebCks);
 }
@@ -439,6 +449,29 @@ static inline uint32_t csp_sio_get_rxbuf(csp_sio_t *ptSioBase)
 	return (uint32_t)(ptSioBase->RXBUF);
 }
 
+static inline void csp_sio_set_sample_mode(csp_sio_t *ptSioBase,sio_bstsel_e eBst, sio_trgmode_e eTrgMode, sio_rmode_e eRMode)
+{
+	ptSioBase->RXCR0 = (ptSioBase->RXCR0 & ~(SIO_BSTSEL_MSK | SIO_TRGMODE_MSK | SIO_RMODE_MSK));
+	ptSioBase->RXCR0 |= (eBst << SIO_BSTSEL_POS) | (eTrgMode << SIO_TRGMODE_POS) | (eRMode << SIO_RMODE_POS);
+}
+
+static inline void csp_sio_set_sample(csp_sio_t *ptSioBase, sio_extract_e eExtract ,sio_align_e eAlign, uint8_t bySplCnt, uint8_t byHihr)
+{
+	ptSioBase->RXCR0 = (ptSioBase->RXCR0 & ~(SIO_SPLCNT_MSK | SIO_EXTRACT_MSK | SIO_HITHR_MSK | SIO_ALIGNEN_MSK));
+	ptSioBase->RXCR0 |= (eExtract << SIO_EXTRACT_POS) | (eAlign << SIO_ALIGNEN_POS)| SIO_SPLCNT(bySplCnt) | SIO_HITHR(byHihr);
+}
+
+static inline void csp_sio_set_recv(csp_sio_t *ptSioBase,sio_rdir_e eRdir, uint8_t byBuflen, uint8_t byRxCnt)
+{
+	ptSioBase->RXCR0 = (ptSioBase->RXCR0 & ~SIO_RDIR_MSK) | (eRdir << SIO_RDIR_POS);
+	ptSioBase->RXCR1 = (ptSioBase->RXCR1 & ~(SIO_BUFCNT_MSK | SIO_RXCNT_MSK)) | SIO_BUFCNT(byBuflen) | SIO_RXCNT(byRxCnt) ;
+}
+
+static inline void csp_sio_set_break(csp_sio_t *ptSioBase, sio_break_e eBreak, sio_breaklel_e eBkLvl,uint8_t byBkCnt)
+{
+	ptSioBase->RXCR2 = (ptSioBase->RXCR2 & ~(SIO_BREAKEN_MSK | SIO_BREAKLVL_MSK | SIO_BREAKCNT_MSK));
+	ptSioBase->RXCR2 |= eBreak | (eBkLvl << SIO_BREAKLVL_POS) | SIO_BREAKCNT(byBkCnt);
+}
 //SIO INT
 static inline uint32_t csp_sio_get_isr(csp_sio_t *ptSioBase)
 {
@@ -452,16 +485,23 @@ static inline uint32_t csp_sio_get_risr(csp_sio_t *ptSioBase)
 
 static inline void csp_sio_clr_isr(csp_sio_t *ptSioBase, sio_int_e eSioInt)
 {
-	ptSioBase->ICR |= eSioInt;
+	ptSioBase->ICR = eSioInt;
 }
-static inline void csp_sio_vic_irq_en(void)
+//static inline void csp_sio_vic_irq_en(void)
+//{
+//	NVIC_EnableIRQ(SIO_IRQn); 
+//}
+//static inline void csp_sio_vic_irq_dis(void)
+//{
+//	NVIC_DisableIRQ(SIO_IRQn); 
+//}
+static inline void csp_sio_int_enable(csp_sio_t *ptSioBase,sio_int_e eSioInt, bool bEnable)
 {
-	NVIC_EnableIRQ(SIO_IRQn); 
-}
-static inline void csp_sio_vic_irq_dis(void)
-{
-	NVIC_DisableIRQ(SIO_IRQn); 
-}
+	if(bEnable)
+		ptSioBase->IMCR |= eSioInt;
+	else
+		ptSioBase->IMCR &= ~eSioInt;
 
+}
 
 #endif
