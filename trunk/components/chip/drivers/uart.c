@@ -467,7 +467,7 @@ csi_uart_state_e csi_uart_get_recv_status(csp_uart_t *ptUartBase)
 void csi_uart_clr_recv_status(csp_uart_t *ptUartBase)
 {
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
-	g_tUartTran[byIdx].bySendStat= UART_STATE_IDLE;
+	g_tUartTran[byIdx].byRecvStat= UART_STATE_IDLE;
 }
 
 
