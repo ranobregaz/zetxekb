@@ -884,8 +884,9 @@ typedef enum{
 #define EPT_CNT_MSK_EV(n)	(0x1 << EPT_CNT_POS_EV(n))
 
 ///EVCNTINIT
-#define EPT_CNT_INIT_POS_EV(n) (n<<2)
-#define EPT_CNT_INIT_MSK_EV(n) (0xf << EPT_CNT_INIT_POS_EV(n) )	
+#define EPT_CNT_INIT_POS_EV(n)	(n<<2)
+#define EPT_CNT_INIT_MSK_EV(n) 	(0xf << EPT_CNT_INIT_POS_EV(n))
+#define EPT_CNT_INIT(val, n)   	((0xf & val) << EPT_CNT_INIT_POS_EV(n))	
 
 ///EVSWF
 #define EPT_SWF_EV(n)	(0x1 << n)
@@ -1307,6 +1308,11 @@ static inline void csp_ept_trg_xoe_enable(csp_ept_t *ptEptBase, uint8_t byCh, bo
 static inline void csp_ept_trg_cntxinitfrc_enable(csp_ept_t *ptEptBase, uint8_t byCh, bool bEnable)
 {
 	ptEptBase -> EVTRG = (ptEptBase -> EVTRG & ~(0x1 << (EPT_OUTEN_POS_TRG(byCh)))) | (bEnable << EPT_SWTRG_EV(byCh));
+}
+
+static inline void csp_ept_trg_cntxinit(csp_ept_t *ptEptBase, uint8_t byCh, uint8_t byVal)
+{
+	ptEptBase -> EVCNTINIT = (ptEptBase -> EVCNTINIT & ~EPT_CNT_INIT_MSK_EV(byCh)) | EPT_CNT_INIT(byVal,byCh);
 }
 
 static inline void csp_ept_sync_config(csp_ept_t *ptEptBase, uint32_t byCh)
