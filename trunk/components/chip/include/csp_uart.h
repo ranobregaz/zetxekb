@@ -224,9 +224,9 @@ static inline uint32_t csp_uart_get_isr(csp_uart_t *ptUartBase)
 {
 	return (uint32_t)(ptUartBase->ISR);
 }
-static inline void csp_uart_clr_isr(csp_uart_t *ptUartBase, uart_isr_e eIstatus)
+static inline void csp_uart_clr_isr(csp_uart_t *ptUartBase, uart_isr_e eIsr)
 {
-	ptUartBase->ISR = eIstatus;
+	ptUartBase->ISR = eIsr;
 }
 //
 static inline uint32_t csp_uart_get_ctrl(csp_uart_t *ptUartBase)
