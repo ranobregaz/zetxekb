@@ -233,8 +233,8 @@ typedef enum{
  * \brief   adc event trigger out port
  */
 typedef enum{
-	ADC_TRG_OUT0		= 0,	//trigger out1
-	ADC_TRG_OUT1				//trigger out2			
+	ADC_TRG_OUT0		= 0,	//trigger out0
+	ADC_TRG_OUT1				//trigger out1			
 }csi_adc_trgout_e;
 
 /**
