@@ -18,6 +18,7 @@
 #include <drv/tick.h>
 #include "csp_syscon.h"
 #include "csp_lpt.h"
+#include "board_config.h"
 
 /* Private macro-----------------------------------------------------------*/
 /* externs function--------------------------------------------------------*/

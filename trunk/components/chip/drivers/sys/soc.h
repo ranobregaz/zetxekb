@@ -28,12 +28,8 @@ extern "C" {
 #define ISOSC_VALUE			27000U
 #endif
 
-#ifndef EMOSC_VALUE
-#define EMOSC_VALUE         2000000U
-#endif
-
 #ifndef EMOSC_32K_VALUE
-#define EMOSC_32K_VALUE		32000U
+#define EMOSC_32K_VALUE		32768U
 #endif
 
 #ifndef IMOSC_5M_VALUE

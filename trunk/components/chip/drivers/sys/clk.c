@@ -205,7 +205,7 @@ csi_error_t csi_emosc_enable(uint32_t wFreq)
 	
 	if (wFreq == 32768) {
 		csp_set_em_lfmd(SYSCON, ENABLE);
-		SYSCON->OSTR = SYSCON->OSTR & (~0x3ff)|(0xff);
+		SYSCON->OSTR = (SYSCON->OSTR) & ((~0x3ff)|(0xff));
 	}
 	
 

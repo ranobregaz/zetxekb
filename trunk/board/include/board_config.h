@@ -25,6 +25,10 @@ extern "C" {
 //#define DBG_PRINT2PC	
 
 //extern system_clk_config_t g_tSystemClkConfig[];
+#ifndef EMOSC_VALUE
+#define EMOSC_VALUE         32768U
+#endif
+
 
 
 /* example pin manager */
