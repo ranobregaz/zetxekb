@@ -245,8 +245,8 @@ typedef enum
 
 //destination
 #define	ETB_CHX_TRG_DST_POS		(26U)	//CHx(3->7) trigger destination select
-#define	ETB_CHX_TRG_DST_MSK		(0x3Ful << ETB_CHX_TRG_SRC_POS)
-#define	ETB_CHX_TRG_DST(val)	(((val) & 0x3Ful) << ETB_CHX_TRG_SRC_POS)
+#define	ETB_CHX_TRG_DST_MSK		(0x3Ful << ETB_CHX_TRG_DST_POS)
+#define	ETB_CHX_TRG_DST(val)	(((val) & 0x3Ful) << ETB_CHX_TRG_DST_POS)
 
 /******************************************************************************
 ********************** ETCB inline Functions Declaration **********************
