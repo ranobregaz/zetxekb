@@ -282,7 +282,7 @@ int uart_recv_dynamic_demo(void)
 	{
 		if(csi_uart_get_recv_status(UART1) == UART_STATE_DONE)			//获取串口接收状态，串口接收到一串字符
 		{
-			csi_uart_clr_recv_status(UART1);							//清除串口接收状态，设置为空闲
+			//csi_uart_clr_recv_status(UART1);							//清除串口接收状态，设置为空闲
 			hwRecvLen = csi_uart_receive(UART1,(void*)byRxBuf,0,0);		//获取接收到的一串数据，返回数据长度, 后面两个参数无意义
 			csi_uart_send(UART1,(void *)byRxBuf,hwRecvLen);				//UART发送采用轮询方式(同步)
 		}
@@ -331,7 +331,7 @@ int uart_recv_dynamic_demo1(void)
 	{
 		if(csi_uart_get_recv_status(UART1) == UART_STATE_DONE)			//获取串口接收状态，串口接收到一串字符
 		{
-			csi_uart_clr_recv_status(UART1);							//清除串口接收状态，设置为空闲
+			//csi_uart_clr_recv_status(UART1);							//清除串口接收状态，设置为空闲
 			hwRecvLen = csi_uart_receive(UART1,(void*)byRxBuf,0,0);		//获取接收到的一串数据，返回数据长度, 后面两个参数无意义
 			csi_uart_send(UART1,(void *)byRxBuf,hwRecvLen);				//UART发送采用轮询方式(同步)
 		}
