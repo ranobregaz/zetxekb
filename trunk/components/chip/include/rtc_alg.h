@@ -24,7 +24,8 @@ extern "C" {
 
 #define RTC_TIME_BASE_YEAR                          (2000)                                 //< Year,      Effective range[1970,2099]
 
-#define RTC_TIME_MAX_VAL_YEAR                       (159)                                  ///< Year,     Maximum value#define RTC_TIME_MAX_VAL_MON                        (12)                                   ///< Month,    Maximum value
+#define RTC_TIME_MAX_VAL_YEAR                       (159)                                  ///< Year,     Maximum value
+#define RTC_TIME_MAX_VAL_MON                        (12)                                   ///< Month,    Maximum value
 #define RTC_TIME_MAX_VAL_DAY                        (31)                                   ///< Day,      Maximum value
 #define RTC_TIME_MAX_VAL_HOUR                       (23)                                   ///< Hour,     Maximum value
 #define RTC_TIME_MAX_VAL_MIN                        (59)                                   ///< Minute,   Maximum value
