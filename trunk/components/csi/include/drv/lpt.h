@@ -179,12 +179,11 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
 /** \brief start lpt pwm by external sync
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
- *  \param eClk: clk source selection
- *  \param[in] freq: pwm frequency  in Hz
- *  \param[in] duty cycle: duty cycle(0 -> 100)
+ *  \param[in] ptLptPara: pointer of lpt parameter structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint32_t freq, uint32_t duty_cycle);
+
+csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPara); 
 
 /** \brief change lpt duty cycle
  * 

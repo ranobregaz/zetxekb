@@ -371,7 +371,15 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 	else
 	{
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)wLptPrd);
-		hwCmp = wLptPrd * ptLptPara->byCycle / 100;		//cmp value = period * (duty cycle) 
+		
+		if(ptLptPara->byCycle >= 100)
+		{
+			hwCmp = wLptPrd + 1;
+		}
+		else
+		{
+			hwCmp = wLptPrd*ptLptPara->byCycle/100;		
+		}
 		csp_lpt_set_cmp(ptLptBase, (uint16_t)hwCmp);
 		
 		if(ptLptPara->byInter != LPT_NONE_INT)
@@ -386,24 +394,26 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 /** \brief start lpt pwm by external sync
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
- *  \param[in] eClk: clk source selection
- *  \param[in] freq: pwm frequency  in Hz
- *  \param[in] duty cycle: duty cycle(0 -> 100)
+ *  \param[in] ptLptPara: pointer of lpt parameter structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint32_t freq, uint32_t duty_cycle) 
+csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPara) 
 {
 	CSI_PARAM_CHK(ptLptBase, CSI_ERROR);
 	
 	csi_error_t tRet = CSI_OK;
 	uint32_t wLptClk = 0,wMult = 0 ,hwCmp = 0;
 	
-	if(freq == 0 )
+	if(ptLptPara->wFreq == 0 )
 		return CSI_ERROR;
-		
-	wLptClk = apt_get_lpt_clk(eClk);
-	wMult = wLptClk/freq;
-	wLptPrd = apt_set_lpt_clk(ptLptBase,eClk,wMult);	
+	
+	csi_clk_enable((uint32_t *)ptLptBase);
+	csp_lpt_soft_rst(ptLptBase);
+	csp_lpt_clk_enable(ptLptBase, ENABLE);
+	
+	wLptClk = apt_get_lpt_clk(ptLptPara->byClksrc);
+	wMult = wLptClk/ptLptPara->wFreq;
+	wLptPrd = apt_set_lpt_clk(ptLptBase,ptLptPara->byClksrc,wMult);	
 	if(wLptPrd == ERR_LPT_CLK)
 	{
 		tRet = CSI_UNSUPPORTED;
@@ -412,8 +422,14 @@ csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, 
 	{
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)wLptPrd);
 		
-		hwCmp = wLptPrd * duty_cycle / 100;		//cmp value = period * (duty cycle) 
-		
+		if(ptLptPara->byCycle >= 100)
+		{
+			hwCmp = wLptPrd + 1;
+		}
+		else
+		{
+			hwCmp = wLptPrd*ptLptPara->byCycle/100;		
+		}
 		csp_lpt_prdr_ldmode(ptLptBase, LPT_PRDLD_IM);
 		csp_lpt_cmp_ldmode(ptLptBase, LPT_CMPLD_IM);
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)wLptPrd);
@@ -425,6 +441,7 @@ csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, 
 
 }
 
+
 /** \brief change lpt duty cycle
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
@@ -435,7 +452,14 @@ csi_error_t csi_lpt_change_duty(csp_lpt_t *ptLptBase, uint32_t duty_cycle)
 {
 	uint16_t hwCmp;
 	
-	hwCmp = wLptPrd*duty_cycle/100;
+	if(duty_cycle >= 100)
+	{
+		hwCmp = wLptPrd + 1;
+	}
+	else
+	{
+		hwCmp = wLptPrd*duty_cycle/100;		
+	}
 	csp_lpt_set_cmp(ptLptBase, hwCmp);
 	return CSI_OK;
 }
@@ -464,6 +488,10 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_e eClk, uint
 {
 	uint32_t wLptClk =0, wMult = 0;
 	csi_error_t tRet = CSI_OK;
+	
+	csi_clk_enable((uint32_t *)ptLptBase);
+	csp_lpt_soft_rst(ptLptBase);
+	csp_lpt_clk_enable(ptLptBase, ENABLE);	
 	
 	wLptClk = apt_get_lpt_clk(eClk);
 	wMult = wLptClk/1000*wms;
