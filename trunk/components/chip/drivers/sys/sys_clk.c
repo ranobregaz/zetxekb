@@ -127,28 +127,11 @@ csi_error_t soc_sysclk_config(void)
  * 
  *  \param[in] eCloSrc: source to output
  *  \param[in] eCloDiv: clo divider 
- *  \param[in] tPin: output pin
  *  \return csi_error_t.
  */
-csi_error_t soc_clo_config(clo_src_e eCloSrc, clo_div_e eCloDiv, pin_name_e ePin)
+csi_error_t soc_clo_config(clo_src_e eCloSrc, clo_div_e eCloDiv)
 { 	
 	csi_error_t ret = CSI_OK;
-	switch (ePin)
-	{
-		case (PA02):
-			csi_pin_set_mux(PA02, PA02_CLO);
-			break;
-		case (PA08):
-			csi_pin_set_mux(PA08, PA08_CLO);
-			break;
-		case (PA09):
-			csi_pin_set_mux(PA09, PA09_CLO);
-			break;
-		default:
-			ret = CSI_ERROR;
-			break;
-	}
-	
 	csp_set_clo_src(SYSCON, eCloSrc);
 	csp_set_clo_div(SYSCON, eCloDiv);
 	return ret;

@@ -136,10 +136,9 @@ csi_error_t soc_sysclk_config(void);
   \brief Clock output configuration
   \param[in] eCloSrc: source to output
   \param[in] eCloDiv: clo divider 
-  \param[in] tPin: output pin
   \return csi_error_t.
  */
-csi_error_t soc_clo_config(clo_src_e, clo_div_e, pin_name_e);
+csi_error_t soc_clo_config(clo_src_e, clo_div_e);
 
 /** 
   \brief to set clock status in PM mode 
