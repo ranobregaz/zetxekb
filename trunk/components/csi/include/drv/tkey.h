@@ -42,10 +42,6 @@ uint8_t 	byTkeyLowpowerMode;
 uint8_t 	byTkeypowerLevel;	
 uint8_t 	byTkeyWakeupLevel;	
 
-
-
-
-
 extern volatile uint16_t hwOffseData0Abs[17];
 extern volatile uint16_t hwOffseData1Abs[17];
 extern volatile uint16_t hwOffseData2Abs[17];

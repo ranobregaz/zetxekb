@@ -28,35 +28,34 @@
 extern "C" {
 #endif
 
-typedef struct csi_iic_slave_config csi_iic_slave_config_t;
+//typedef struct csi_iic_slave_config csi_iic_slave_config_t;
 
-struct csi_iic_slave_config {
-	uint16_t	hwSlaveAddr;			//IIC Slave address
-	uint8_t		bySpeedMode;			//IIC Speed mode
-	uint8_t		byAddrMode;				//IIC ADDR mode 7/10 bit
-	uint16_t	hwInterrput;			//IIC INTERRPUT SET
-	uint32_t	wSdaTimeout;			//IIC SDA timeout SET
-	uint32_t	wSclTimeout;			//IIC SCL timeout SET
-};
+typedef struct csi_iic_slave_config {
+	uint16_t	hwSlaveAddr;   //IIC Slave address
+	uint8_t		bySpeedMode;   //IIC Speed mode
+	uint8_t		byAddrMode;	   //IIC ADDR mode 7/10 bit
+	uint16_t	hwInterrput;   //IIC INTERRPUT SET
+	uint32_t	wSdaTimeout;   //IIC SDA timeout SET
+	uint32_t	wSclTimeout;   //IIC SCL timeout SET
+}csi_iic_slave_config_t;
 
-typedef struct csi_iic_master_config csi_iic_master_config_t;
+//typedef struct csi_iic_master_config csi_iic_master_config_t;
 
-struct csi_iic_master_config {
-	uint8_t		bySpeedMode;			//IIC Speed mode
-	uint8_t		byAddrMode;				//IIC ADDR mode 7/10 bit
-	uint8_t		byReStart;				//IIC restart enable/disable
-	uint16_t	hwInterrput;			//IIC INTERRPUT SET
-	uint32_t	wSdaTimeout;			//IIC SDA timeout SET
-	uint32_t	wSclTimeout;            //IIC SCL timeout SET
-};
+typedef struct csi_iic_master_config {
+	uint8_t		bySpeedMode;  //IIC Speed mode
+	uint8_t		byAddrMode;	  //IIC ADDR mode 7/10 bit
+	uint8_t		byReStart;	  //IIC restart enable/disable
+	uint16_t	hwInterrput;  //IIC INTERRPUT SET
+	uint32_t	wSdaTimeout;  //IIC SDA timeout SET
+	uint32_t	wSclTimeout;  //IIC SCL timeout SET
+}csi_iic_master_config_t;
 
 
-typedef struct {
-	
-	volatile uint8_t			*pbySlaveRxBuf;			//slave  receive buffer
-	volatile uint8_t			*pbySlaveTxBuf;			//slave  send buffer
-	uint16_t        hwRxSize;				//receive buffer size
-	uint16_t        hwTxSize;				//send buffer size	
+typedef struct {	
+	volatile uint8_t	*pbySlaveRxBuf;	//slave  receive buffer
+	volatile uint8_t	*pbySlaveTxBuf;	//slave  send buffer
+	uint16_t        hwRxSize;	//receive buffer size
+	uint16_t        hwTxSize;	//send buffer size	
 } csi_iic_slave_t;
 
 extern csi_iic_slave_t g_tSlave;	
@@ -146,32 +145,32 @@ void csi_iic_write_byte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wWriteA
  *  \param[in] wWriteAdds: Write address
  * 	\param[in] byWriteAddrNumByte: Write address length (unit byte)
  * 	\param[in] pbyIicData: pointer of Write data
- * 	\param[in] byNumByteToWrite: Write data length
+ * 	\param[in] wNumByteToWrite: Write data length
  *  \return none
  */ 
-void csi_iic_write_nbyte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wWriteAdds, uint8_t byWriteAddrNumByte,volatile uint8_t *pbyIicData,uint8_t byNumByteToWrite);
+void csi_iic_write_nbyte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wWriteAdds, uint8_t byWriteAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteToWrite);
 
 /** \brief  iic  master  read 1 byte data
  * 
  *  \param[in] ptIicBase: pointer of iic register structure
  * 	\param[in] wdevaddr: Addrress of slave device
  *  \param[in] wReadAdds: Read address
- * 	\param[in] byReadAddrNumByte: Read address length (unit byte)
+ * 	\param[in] wReadAddrNumByte: Read address length (unit byte)
  *  \return Read data \ref uint8_t
  */ 
-uint8_t csi_iic_read_byte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wReadAdds, uint8_t byReadAddrNumByte);
+uint8_t csi_iic_read_byte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wReadAdds, uint8_t wReadAddrNumByte);
 
 /** \brief  iic  master  read n byte data
  * 
  *  \param[in] ptIicBase: pointer of iic register structure
  * 	\param[in] wdevaddr: Addrress of slave device
  *  \param[in] wReadAdds: Read address
- * 	\param[in] byReadAddrNumByte: Read address length (unit byte)
+ * 	\param[in] wReadAddrNumByte: Read address length (unit byte)
  * 	\param[in] pbyIicData: Read the address pointer of the data storage array
- * 	\param[in] byNumByteRead: Read data length
+ * 	\param[in] wNumByteRead: Read data length
  *  \return none
  */ 
-void csi_iic_read_nbyte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wReadAdds, uint8_t byReadAddrNumByte,volatile uint8_t *pbyIicData,uint8_t byNumByteRead);
+void csi_iic_read_nbyte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wReadAdds, uint8_t wReadAddrNumByte,volatile uint8_t *pbyIicData,uint32_t wNumByteRead);
 
 
 /** \brief  IIC slave handler
@@ -180,7 +179,6 @@ void csi_iic_read_nbyte(csp_i2c_t *ptIicBase,uint32_t wdevaddr, uint32_t wReadAd
  *  \return none
  */ 
 void csi_iic_slave_receive_send(csp_i2c_t *ptIicBase);
-
 
 /** \brief  iic  master  read n byte data
  * 
