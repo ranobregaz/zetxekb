@@ -15,22 +15,344 @@
 #ifndef _EPT_H_
 #define _EPT_H_
 
-#include "stdint.h"
-#include "common.h"
+//#include "stdint.h"
+//#include "common.h"
+
+#include <drv/common.h>
+#include "csp.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-extern uint32_t g_ept_prd;
-typedef struct csi_ept csi_ept_t;
 
-struct csi_ept {
-    csi_dev_t      dev;
-    void           (*callback)(csi_ept_t *ptEpt, bool bCntDir, uint32_t wLckSt, uint32_t wBasicSt, void *arg);
-    void           *arg;
-    void           *priv;
+
+extern uint32_t g_ept_prd;
+
+typedef struct csi_ept_config csi_ept_config_t;
+struct csi_ept_config {
+    uint8_t		byWorkmod;          //Count or capture
+	uint8_t     byCountingMode;    //csi_ept_cntmd_e
+	uint8_t     byOneshotMode;     //Single or continuous
+	uint8_t     byStartSrc ;
+	uint8_t     byPscld;
+	uint8_t		byDutyCycle;		 //TIMER PWM OUTPUT duty cycle	
+	uint8_t     byCaptureCapLden;
+	uint8_t     byCaptureRearm;
+	uint8_t     byCaptureCapmd;
+	uint8_t     byCaptureStopWrap;
+	uint8_t     byCaptureLdaret;
+	uint8_t     byCaptureLdbret;
+	uint8_t     byCaptureLdcret;
+	uint8_t     byCaptureLddret;
+	uint8_t     byBurst;
+    uint8_t     byCgsrc;
+	uint8_t     byCgflt;
+	uint32_t	wFreq;				 //TIMER PWM OUTPUT frequency 
+	uint32_t    byInter;
 };
+
+typedef struct csi_ept_pwmconfig  csi_ept_pwmconfig_t;
+struct csi_ept_pwmconfig {
+	uint8_t		byWorkmod;          //Count or capture
+	uint8_t     byCountingMode;    //csi_ept_cntmd_e
+	uint8_t     byOneshotMode;     //Single or continuous
+	uint8_t     byStartSrc ;
+	uint8_t     byPscld;
+	uint8_t		byDutyCycle;		 //TIMER PWM OUTPUT duty cycle	
+	uint32_t	wFreq;				 //TIMER PWM OUTPUT frequency 
+	uint32_t    byInter;
+};
+
+typedef struct csi_ept_captureconfig  csi_ept_captureconfig_t;
+struct csi_ept_captureconfig {
+	uint8_t		byWorkmod;          //Count or capture
+	uint8_t     byCountingMode;     //csi_ept_cntmd_e
+	uint8_t     byOneshotMode;      //Single or continuous
+	uint8_t     byStartSrc ;
+	uint8_t     byPscld;
+	uint8_t		byDutyCycle;		 //TIMER PWM OUTPUT duty cycle	
+ 	uint8_t     byCaptureCapLden;
+	uint8_t     byCaptureRearm;
+	uint8_t     byCaptureCapmd;
+	uint8_t     byCaptureStopWrap;
+	uint8_t     byCaptureLdaret;
+	uint8_t     byCaptureLdbret;
+	uint8_t     byCaptureLdcret;
+	uint8_t     byCaptureLddret;
+	uint32_t    byInter;
+};
+
+//typedef struct  csi_ept_syncr_config  csi_ept_syncr_config_t; 
+//struct  csi_ept_syncr_config{
+//	uint8_t  syncen0;
+//	uint8_t  syncen1;
+//	uint8_t  syncen2;
+//	uint8_t  syncen3;
+//	uint8_t  syncen4;
+//	uint8_t  syncen5;	
+//	uint8_t  ostmd0;
+//	uint8_t  ostmd1;
+//	uint8_t  ostmd2;
+//	uint8_t  ostmd3;
+//	uint8_t  ostmd4;
+//	uint8_t  ostmd5;	
+//	uint8_t  rearm0;
+//	uint8_t  rearm1;
+//	uint8_t  rearm2;
+//	uint8_t  rearm3;
+//	uint8_t  rearm4;
+//	uint8_t  rearm5;
+//	uint8_t  arearm;
+//	uint8_t  Tx_rearm0;
+//	uint8_t  trgo0sel;
+//	uint8_t  trgo1sel;
+//};
+
+typedef struct csi_ept_pwmchannel_config      csi_ept_pwmchannel_config_t;
+struct csi_ept_pwmchannel_config {
+	
+    uint8_t		byActionZro;          //
+	uint8_t     byActionPrd;          //
+	uint8_t     byActionCau;          //
+    uint8_t     byActionCad;          //
+	uint8_t     byActionCbu;          //
+	uint8_t     byActionCbd;          //
+	uint8_t     byActionT1u;          //
+	uint8_t     byActionT1d;          //
+	uint8_t     byActionT2u;          //
+	uint8_t     byActionT2d;          //	
+    uint8_t     byChoiceCasel;
+	uint8_t     byChoiceCbsel;
+};
+
+//typedef struct csi_ept_dbldr_config      csi_ept_dbldr_config_t;
+//struct csi_ept_dbldr_config {
+//	
+//    uint8_t		bycfgdbcrshadoworimmediate;          //
+//	uint8_t     bycfgdbcrshadowLoadcontrol; 
+//         
+//	uint8_t     bycfgdbdtrshadoworimmediate;          
+//    uint8_t     bycfgdbdtrshadowLoadcontrol; 
+//		
+//	uint8_t     bycfgdbdtfshadoworimmediate;        
+//	uint8_t     bycfgdbdtfshadowLoadcontrol; 
+//       
+//	uint8_t     bycfgdckpscshadoworimmediate;          
+//	uint8_t     bycfgdckpscshadowLoadcontrol;     
+//};
+
+typedef struct csi_ept_deadzone_config   csi_ept_deadzone_config_t;
+struct  csi_ept_deadzone_config
+{	
+	uint8_t       byChxOuselS1S0      ;   //
+	uint8_t       byChxPolarityS3S2   ;   //
+	uint8_t       byChxInselS5S4      ;   //
+	uint8_t       byChxOutSwapS8S7    ;   //		
+	uint8_t      byDcksel;
+	uint8_t      byChaDedb;
+	uint8_t      byChbDedb;
+	uint8_t      byChcDedb;
+	uint16_t      hwDpsc;                 //
+	uint16_t      hwRisingEdgereGister ;  //
+	uint16_t      hwFallingEdgereGister;  //
+};
+
+
+
+typedef struct csi_ept_Chopper_config   csi_ept_Chopper_config_t;
+struct csi_ept_Chopper_config
+{
+    uint8_t  byOspwth             ;                
+	uint8_t  byCdiv               ;                
+	uint8_t  byCduty              ;              
+	uint8_t  byCasel              ;              
+	uint8_t  chen            ;              
+
+};
+typedef enum{
+	EPTCHAX = 0x1,
+	EPTCHAY,
+	EPTCHBX,
+	EPTCHBY,
+	EPTCHCX,
+	EPTCHCY
+}csi_ept_chx_e;
+
+
+typedef struct csi_ept_emergency_input_config   csi_ept_emergency_input_config_t;
+struct csi_ept_emergency_input_config
+{
+    uint8_t  ep0choiceebixint        ;
+    uint8_t  ep1choiceebixint        ;
+    uint8_t  ep2choiceebixint        ;
+    uint8_t  ep3choiceebixint        ;
+	uint8_t  ep4choiceebixint        ;
+	uint8_t  ep5choiceebixint        ;
+	uint8_t  ep6choiceebixint        ;
+	uint8_t  ep7choiceebixint        ;
+
+	uint8_t  fltpace0                  ;
+	uint8_t  fltpace1                  ;
+    uint8_t  POLPOSEBI0               ;
+	uint8_t  POLPOSEBI1               ;
+	uint8_t  POLPOSEBI2               ;
+	uint8_t  POLPOSEBI3               ;
+	uint8_t  POLPOSEBI4               ;
+	uint8_t  ep0lckmd                  ;        
+	uint8_t  ep1lckmd                  ;
+	uint8_t  ep2lckmd                  ;
+	uint8_t  ep3lckmd                  ;
+	uint8_t  ep4lckmd                  ;
+	uint8_t  ep5lckmd                  ;
+	uint8_t  ep6lckmd                  ;
+	uint8_t  ep7lckmd                  ;
+	uint8_t  osrshdw                    ;
+	uint8_t  osrldmd                    ;
+	uint8_t  slclrmd                    ;
+	uint8_t  emasync                    ;
+	uint8_t  cpufault                  ;                               
+	uint8_t  memfault                  ;                              
+	uint8_t  eomfault                  ;                               
+	uint8_t  emcoax                    ;                                          
+	uint8_t  emcobx                    ;
+	uint8_t  emcocx                    ;                                          
+	uint8_t  emcod                     ;
+	uint8_t  emcoay                    ;
+	uint8_t  emcoby                    ;
+	uint8_t  emcocy                    ;	
+	uint16_t orl0choiceepxorl       ;
+	uint32_t orl1choiceepxorl       ;
+};
+
+typedef struct  csi_ept_Event_trigger_config   csi_ept_Event_trigger_config_t;
+struct  csi_ept_Event_trigger_config{
+	uint8_t   trg0sel  ;
+	uint8_t   trg1sel  ;
+	uint8_t   trg2sel  ;
+	uint8_t   trg3sel  ;	
+	uint8_t   trg0en   ;
+	uint8_t   trg1en   ;
+	uint8_t   trg2en   ;
+	uint8_t   trg3en   ;	
+	uint8_t   cnt0initfrc;
+	uint8_t   cnt1initfrc;
+	uint8_t   cnt2initfrc;
+	uint8_t   cnt3initfrc;
+	uint8_t   cnt0initen;
+	uint8_t   cnt1initen;
+	uint8_t   cnt2initen;
+	uint8_t   cnt3initen;
+	uint8_t   trg0prd ;
+	uint8_t   trg1prd ;
+	uint8_t   trg2prd ;
+	uint8_t   trg3prd ;
+	uint8_t   cnt0init;
+	uint8_t   cnt1init;
+	uint8_t   cnt2init;
+	uint8_t   cnt3init;
+	
+	uint8_t fltipscld;
+	uint8_t fltckprs;
+	uint8_t srcsel;
+	uint8_t blkinv;
+	uint8_t alignmd;
+	uint8_t crossmd;
+	uint16_t offset;
+	uint16_t window;
+	
+};
+
+typedef struct csi_ept_Global_load_control_config    csi_ept_Global_load_control_config_t;
+struct csi_ept_Global_load_control_config{
+	
+	bool glden;
+    uint8_t gldmd;
+	bool ostmd;
+	bool gldprd;
+	bool prdren;
+	bool cmpaen;
+	bool cmpben;
+	bool cmpcen;
+	bool cmpden;
+    bool dbdtren;
+	bool dbdtfen;
+	bool dbcren;
+	bool aqcraen;
+	bool aqcrben;
+	bool aqcrcen;
+	bool aqcrden;
+	bool aqcsfen;
+	bool aqosren;
+	bool osrearm;
+	bool gfrcld;
+};
+
+typedef enum
+{
+	EPT_CAPTURE	= 0,		
+    EPT_WAVE 	= 1		
+}csi_ept_wave_e;
+
+typedef enum {
+	EPT_UPCNT = 0,
+	EPT_DNCNT,
+	EPT_UPDNCNT
+}csi_ept_cntmd_e;
+
+
+typedef enum{
+	EPT_OP_CONT = 0,
+	EPT_OP_OT,
+}csi_ept_opmd_e;
+
+typedef enum{
+    EPT_CHANNEL_A=1,
+	EPT_CHANNEL_B,
+	EPT_CHANNEL_C,
+	EPT_CHANNEL_D
+}csi_ept_channel_e;
+
+typedef enum{
+    SYNCIN0 =0,
+	SYNCIN1,
+	SYNCIN2,
+	SYNCIN3,
+	SYNCIN4,
+	SYNCIN5,
+	SYNCIN_other		
+}csi_ept_trgo0sel_e;
+
+typedef enum{
+    DBCR =0,
+	DBDTR,
+	DBDTF,
+	DCKPSC,		
+}csi_ept_dbdldr_e;
+
+typedef enum
+{
+	EPT_PWM_START_LOW	= 0,		//PWM start level is low 
+    EPT_PWM_START_HIGH 	= 1,		//PWM start level is high        
+	EPT_PWM_IDLE_LOW  	= 0,		//PWM idle level is low 
+    EPT_PWM_IDLE_HIGH	= 1 		//PWM idle level is high   	    
+}csi_ept_pwmlev_e;
+
+typedef enum {
+	EPT_AQCSF_NOW=0,
+	EPT_AQCSF_ZRO,
+	EPT_AQCSF_PRD,
+	EPT_AQCSF_ZRO_PRD
+}csp_ept_aqosf_e;
+
+typedef enum {
+	EM_AQCSF_NONE=0,
+	EM_AQCSF_L,
+	EM_AQCSF_H,
+	EM_AQCSF_NONE1
+}csp_ept_aqcsf_e;
+
+
 typedef enum {
 	EPT_CH_A = 0,
 	EPT_CH_B,
@@ -48,16 +370,6 @@ typedef enum{
 	EPT_STP_L
 }csi_ept_stopst_e;
 
-typedef enum {
-	EPT_UPCNT = 0,
-	EPT_DNCNT,
-	EPT_UPDNCNT
-}csi_gpt_cntmd_e;
-
-typedef enum{
-	EPT_OP_CONT = 0,
-	EPT_OP_OT,
-}csi_ept_opmd_e;
 typedef enum{
 	EPT_CAP_CONT = 0,
 	EPT_CAP_OT
@@ -170,68 +482,35 @@ typedef enum{
 	EPT_SYNC_OS
 }csi_ept_syncmode_e;
 
+typedef enum{
+	EPT_EVTRG_Disable = 0,
+	EPT_EVTRG_Enable
+}csi_ept_evtrg_e;
 
-/**
-  \brief       Initialize EPT Interface. Initializes the resources needed for the EPT interface
-  \param[in]   ptEpt    ept handle to operate
-  \param[in]   idx    ept idx
-  \return      error code \ref csi_error_t
-*/
-csi_error_t csi_ept_init(csi_ept_t *ptEpt, uint32_t idx);
+typedef enum{
+	EPT_EVTRG_trigger_Disable = 0,
+	EPT_Enable_trigger_start
+}csi_ept_evtrg_trigger_e;
 
-/**
-  \brief       De-initialize EPT Interface. stops operation and releases the software resources used by the interface
-  \param[in]   ptEpt    EPT handle to operate
-  \return      None
-*/
-void csi_ept_uninit(csi_ept_t *ptEpt);
+uint16_t csi_ept_get_prd(csp_ept_t *ptEpt);
 
-/**
- \brief set EPT frequency(All channels use the same the counter). 
-  * \param ptEpt 	EPT handle to operate
-  * \param wHz		frequency
-  * */
-csi_error_t csi_ept_set_freq(csi_ept_t *ptEpt, uint32_t wHz);
-
-/**
- \brief set EPT frequency(All channels use the same the counter). 
-  * \param ptEpt 	EPT handle to operate
-  * \param wHz		frequency
-  * */
-csi_error_t csi_ept_set_freq_edge_aligned(csi_ept_t *ptEpt, uint32_t wHz);
-
-/**
- \brief config pwm dual channel output mode. 
-  * CHnX active High ,ChnY active High
-*/
-csi_error_t csi_ept_set_ch_dualout_md1(csi_ept_t *ptEpt, csi_ept_chtype_e eCh,  uint32_t wDutyCycle, uint32_t wT1ns, uint32_t wT2ns);
 
 /**
  \brief config pwm dual channel output mode. 
   * CHnX active Low ,ChnY active Low
 */
-csi_error_t csi_ept_set_ch_dualout_md2(csi_ept_t *ptEpt, csi_ept_chtype_e eCh,  uint32_t wDutyCycle, uint32_t wT1ns, uint32_t wT2ns);
+csi_error_t csi_ept_set_ch_dualout_md2(csp_ept_t *ptEpt, csi_ept_chtype_e eCh,  uint32_t wDutyCycle, uint32_t wT1ns, uint32_t wT2ns);
 
-/**
- \brief config pwm dual channel output mode. 
-  * CHnX active High ,ChnY active Low
-*/
-csi_error_t csi_ept_set_ch_dualout_md3(csi_ept_t *ptEpt, csi_ept_chtype_e eCh, uint32_t wDutyCycle, uint32_t wT1ns, uint32_t wT2ns);
 
-/**
- \brief config pwm dual channel output mode. 
-  * CHnX active Low ,ChnY active Low
-*/
-csi_error_t csi_ept_set_ch_dualout_md4(csi_ept_t *ptEpt, csi_ept_chtype_e eCh, uint32_t wDutyCycle, uint32_t wT1ns, uint32_t wT2ns);
-
-uint16_t csi_ept_get_prd(csi_ept_t *ptEpt);
 
 /**
  \brief change ept output dutycycle. 
  \param ptEpt    ept handle to operate
  \param wActiveTime cmpx data
 */
-csi_error_t csi_ept_change_ch_duty(csi_ept_t *ptEpt, csi_ept_chtype_e eCh, uint32_t wActiveTime);
+csi_error_t csi_ept_change_ch_duty(csp_ept_t *ptEpt, csi_ept_chtype_e eCh, uint32_t wActiveTime);
+
+
 
 /**
  \brief config pwm single output mode1
@@ -245,46 +524,10 @@ csi_error_t csi_ept_change_ch_duty(csi_ept_t *ptEpt, csi_ept_chtype_e eCh, uint3
   * \return tRet   
 */
 
-csi_error_t csi_ept_set_singleout_md1(csi_ept_t *ptEpt, csi_ept_chtype_e eCh, uint32_t wDutyCycle);
-
-
-/**
- \brief config ptEpt single output mode2
-
-  * ChnX      _______       _______
-  *                 |______|
-  * 	
-  * \param ptEpt 	EPT handle to operate
-  * \param eCh		EPT output channel(EPT_CH_A/B/C/D)
-  * \param wDutyCycle output dutycycle (40 means 40%)
-  * \return tRet   
-*/
-
-csi_error_t csi_ept_set_singleout_md2(csi_ept_t *ptEpt, csi_ept_chtype_e eCh, uint32_t wDutyCycle);
-
-/**
- \brief config ptEpt single output mode1, edge aligned
-  * * Counter works in up and down mode
-  * \verbatim
-  *  	ChnX    	______
-  *  		_______|      
-  * \endverbatim	
-  * \param ptEpt 	EPT handle to operate
-  * \param eCh		EPT output channel(EPT_CH_A/B/C/D)
-  * \param wDutyCycle output dutycycle (40 means 40%)
-  * \return tRet   
-*/
-
-csi_error_t csi_ept_set_singleout_edge_aligned_md1(csi_ept_t *ptEpt, csi_ept_chtype_e eCh, uint32_t wDutyCycle);
+csi_error_t csi_ept_set_singleout_md1(csp_ept_t *ptEpt, csi_ept_chtype_e eCh, uint32_t wDutyCycle);
 
 
 
-
-/**
- \brief config pwm dual channel output mode. 
-  * CHnX active Low ,ChnY active Low
-*/
-void csi_ept_set_cp_ospwth(csi_ept_t *ptEpt, uint8_t byVal);
 
 /**
  \brief chopper configuration
@@ -294,7 +537,7 @@ void csi_ept_set_cp_ospwth(csi_ept_t *ptEpt, uint8_t byVal);
  \param byFirstWidth 	T = Tchop * byFirstWidth
  \return none 
 */
-void csi_ept_set_cp(csi_ept_t *ptEpt, uint8_t byCdiv, uint8_t byCduty, uint8_t byFirstWidth);
+void csi_ept_set_cp(csp_ept_t *ptEpt, uint8_t byCdiv, uint8_t byCduty, uint8_t byFirstWidth);
 
 /**
  \brief channeln chopper output enable 
@@ -302,72 +545,23 @@ void csi_ept_set_cp(csi_ept_t *ptEpt, uint8_t byCdiv, uint8_t byCduty, uint8_t b
  \param bEnableX/Y  ENABLE/DISABLE
  \return none
 */
-void csi_ept_cpa_enable(csi_ept_t *ptEpt, bool bEnableX, bool bEnableY);
-void csi_ept_cpb_enable(csi_ept_t *ptEpt, bool bEnableX, bool bEnableY);
-void csi_ept_cpc_enable(csi_ept_t *ptEpt, bool bEnableX, bool bEnableY);
-
-/**
- \brief channeln chopper output enable 
- \param ptEpt    ept handle to operate
- \param eEbi 	 external emergency input: EPT_EBI0~4 （EBI4 = LVD）
- \param ePol	 active polarity：EPT_EBI_POL_H/L
- \param eLckMode lock mode: EPT_EP_DIS/SLCK/HLCK
- \param eOutput  output when lock happens: EPT_EM_OUT_HZ/H/L/DIS
- \return none
-*/
-void csi_ept_set_em(csi_ept_t *ptEpt, csi_ept_ebi_e eEbi, csi_ept_ebipol_e ePol, csi_ept_ep_lckmd_e eLckMode, csi_ept_em_out_e eOutput, bool bIntEn);
-
-/**
- \brief clear harklock status
- \param ptEpt    ept handle to operate
- \return  eEbi 	 external emergency input: EPT_EBI0~3/EPT_EBILVD
-*/
-
-
-void csi_ept_debug_enable(csi_ept_t *ptEpt, bool bEnable);
-void csi_ept_clr_hdlck(csi_ept_t *ptEpt, csi_ept_ebi_e eEbi);
-
-void csi_ept_force_em(csi_ept_t *ptEpt, uint8_t byEp);
-void csi_ept_set_em_flt(csi_ept_t *ptEpt, uint8_t byVal);
-
-void csi_ept_set_start_mode(csi_ept_t *ptEpt, csi_ept_stmd_e eMode);
-csi_error_t csi_ept_set_phase(csi_ept_t *ptEpt, uint16_t bwVal);
-void csi_ept_set_os_mode(csi_ept_t *ptEpt, csi_ept_opmd_e eMode);
-void csi_ept_swstart(csi_ept_t *ptEpt);
-void csi_ept_set_stop_st(csi_ept_t *ptEpt, csi_ept_stopst_e eSt);
-void csi_ept_swstop(csi_ept_t *ptEpt);
-
-
-
-uint16_t csi_ept_capture_get_cap_data(csi_ept_t *ptEpt, uint8_t num);
-
- /** \brief  register ept interrupt callback function
- * 
- *  \param[in] ept: ept handle to operate
- *  \param[in] callback: gpio interrupt handle function
- *  \param[in] arg: para
- *  \return error code \ref csi_error_t
- */ 
-csi_error_t csi_ept_attach_callback(csi_ept_t *ptEpt, void *callback, void *arg);
-
- /** \brief  detach ept interrupt callback function
- *  \param[in] ept: ept handle to operate
- */ 
-void csi_ept_detach_callback(csi_ept_t *ptEpt);
+void csi_ept_cpa_enable(csp_ept_t *ptEpt, bool bEnableX, bool bEnableY);
+void csi_ept_cpb_enable(csp_ept_t *ptEpt, bool bEnableX, bool bEnableY);
+void csi_ept_cpc_enable(csp_ept_t *ptEpt, bool bEnableX, bool bEnableY);
 
 /**
  \brief get harklock status
  \param ptEpt    ept handle to operate
  \return uint8_t 0b_ _ _ _ _ _ _ _
 */
-uint8_t csi_ept_get_hdlck_st(csi_ept_t *ptEp);
+uint8_t csi_ept_get_hdlck_st(csp_ept_t *ptEp);
 
 /**
  \brief clear harklock status
  \param ptEpt    ept handle to operate
  \return  eEbi 	 external emergency input: EPT_EBI0~3/EPT_EBILVD
 */
-void csp_ept_clr_hdlck(csi_ept_t *ptEp, csi_ept_ebi_e eEbi);
+void csp_ept_clr_hdlck(csp_ept_t *ptEp, csi_ept_ebi_e eEbi);
 
 
 /**
@@ -377,7 +571,7 @@ void csp_ept_clr_hdlck(csi_ept_t *ptEp, csi_ept_ebi_e eEbi);
   \param 	eSrc	
   \param   byTime		output trigger when event happens the 'byTime'th time.
 */
-csi_error_t csi_ept_set_evtrg(csi_ept_t *ptEpt,uint8_t eCh,csi_ept_evtrg_src_e eSrc, uint8_t byTime);
+csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEpt,uint8_t eCh,csi_ept_evtrg_src_e eSrc, uint8_t byTime);
 
 /**
   \brief   enable/disable ept out trigger 
@@ -385,17 +579,34 @@ csi_error_t csi_ept_set_evtrg(csi_ept_t *ptEpt,uint8_t eCh,csi_ept_evtrg_src_e e
   \param 	eCh			0/1/2/3
   \param   bEnable		ENABLE/DISABLE
 */
-csi_error_t csi_ept_evtrg_enable(csi_ept_t *ptEpt, uint8_t byCh, bool bEnable);
+csi_error_t csi_ept_evtrg_enable(csp_ept_t *ptEpt, uint8_t byCh, bool bEnable);
 
 /**
-  \brief   set ept sync
-  \param   ptEpt       EPT handle to operate
+   \brief   set ept sync
+   \param   ptEpt       EPT handle to operate
    \param   bySync    sync select: 0/1/2/3
-   \param  csi_ept_syncmode_t  EPT_SYNC_CONT/EPT_SYNC_OS
-   \param  bARearmEnable auto rearm enable/disable
-  \return csi_error_t   
+   \param   csi_ept_syncmode_t  EPT_SYNC_CONT/EPT_SYNC_OS
+   \param   bARearmEnable auto rearm enable/disable
+   \return  csi_error_t   
 */
-csi_error_t csi_ept_set_sync(csi_ept_t *ptEpt, uint8_t bySync, csi_ept_syncmode_e tSyncMode, bool bARearmEnable);
+
+csi_error_t csi_ept_start(csp_ept_t *ptBtBase);
+csi_error_t csi_ept_config_init(csp_ept_t *ptBtBase, csi_ept_config_t *ptBtPwmCfg);
+csi_error_t csi_ept_channel_config(csp_ept_t *pteptBase, csi_ept_pwmchannel_config_t *tPwmCfg, csi_ept_channel_e changl);
+//csi_error_t csi_ept_syncr_config_init(csp_ept_t *ptEptBase,csi_ept_syncr_config_t *tPwmCfg);
+
+//csi_error_t csi_ept_dbldrloadcontrol_config(csp_ept_t *ptEptBase, csi_ept_dbldr_config_t *tCfg);
+csi_error_t csi_ept_dbcr_config(csp_ept_t *ptEptBase, csi_ept_deadzone_config_t *tCfg);
+csi_error_t csi_ept_choppercpcr_config(csp_ept_t *ptEptBase, csi_ept_Chopper_config_t *tCfg);
+csi_error_t csi_ept_emergency_config(csp_ept_t *ptEptBase, csi_ept_emergency_input_config_t *tCfg);
+csi_error_t  csi_ept_evtrg_config(csp_ept_t *ptEptBase, csi_ept_Event_trigger_config_t *tCfg);
+void csi_ept_emergency_interruption_en(csp_ept_t *ptEptBase, csp_ept_emint_e eEbi);
+uint16_t csi_ept_capture_get_cap_data(csp_ept_t *ptEpt, uint8_t num);
+csi_error_t csi_ept_continuous_software_waveform(csp_ept_t *ptEptBase, csi_ept_channel_e byCh, csp_ept_aqcsf_e bEnable);
+csi_error_t csi_ept_global_config(csp_ept_t *ptEptBase,csi_ept_Global_load_control_config_t *Global);
+csi_error_t  csi_ept_wave_init(csp_ept_t *ptEptBase, csi_ept_pwmconfig_t *pteptPwmCfg);
+csi_error_t csi_ept_dbldrload_config(csp_ept_t *ptEptBase, csi_ept_dbdldr_e byVal,csp_ept_shdw_e byWod,csp_ept_lddb_e byWod2);
+csi_error_t csi_ept_channelmode_config(csp_ept_t *ptEptBase,csi_ept_deadzone_config_t *tCfg,csi_ept_channel_e byCh);
 
 #ifdef __cplusplus
 }
