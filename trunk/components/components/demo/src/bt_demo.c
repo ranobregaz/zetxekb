@@ -28,7 +28,7 @@ int bt_timer_demo(void)
 {
 	int iRet = 0;
 			
-	csi_bt_timer_init(BT0, 1000);		//初始化BT0, 定时1000us； BT定时，默认采用PEND中断
+	csi_bt_timer_init(BT0, 10000);		//初始化BT0, 定时10000us； BT定时，默认采用PEND中断
 	csi_bt_start(BT0);					//启动定时器
 
 	return iRet;
