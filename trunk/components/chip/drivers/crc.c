@@ -22,14 +22,10 @@
  * \brief       Initialize CRC Interface. 1. Initializes the resources needed for the CRC interface  
  * \return      \ref csi_error_t
  */
-csi_error_t csi_crc_init(void)
+void csi_crc_init(void)
 {	
-    csi_error_t ret = CSI_OK; 
- 
 	csp_crc_clk_enable(CRC, ENABLE); //enable crc clock
 	csp_crc_rst(CRC);                //software reset
-	
-	return ret;
 }
 
 
