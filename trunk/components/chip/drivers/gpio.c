@@ -112,17 +112,17 @@ csi_error_t csi_gpio_port_dir(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpi
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
  *  \param[in] wPinMask: pin mask,0x0001~0xffff
- *  \param[in] eMode: pin pullnone/pullup/pulldown
+ *  \param[in] ePullMode: pin pullnone/pullup/pulldown
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_gpio_port_pull_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pull_mode_e eMode)
+csi_error_t csi_gpio_port_pull_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pull_mode_e ePullMode)
 {
 	csi_error_t	ret = CSI_OK;
 	uint32_t wPudrVal;
 	uint32_t wPullVal = (wPinMask & 0xffff);
 	uint32_t wPudrMask = 0;	
 	
-	switch(eMode)
+	switch(ePullMode)
 	{
 		case GPIO_PULLNONE:						//pullnone		
 			if(wPullVal)
@@ -169,15 +169,15 @@ csi_error_t csi_gpio_port_pull_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, c
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
  *  \param[in] wPinMask: pin mask,0x0001~0xffff
- *  \param[in] eMode: pin open drain/push pull(output mode) 
+ *  \param[in] eOutMode: pin open drain/push pull(output mode) 
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_gpio_port_output_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_output_mode_e eMode)
+csi_error_t csi_gpio_port_output_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_output_mode_e eOutMode)
 {
 	csi_error_t	ret = CSI_OK;
 	uint32_t hwOpdVal = (wPinMask & 0xffff);
 	
-	switch(eMode)
+	switch(eOutMode)
 	{
 		case GPIO_PUSH_PULL:						//push pull output
 			ptGpioBase->OMCR &= ~hwOpdVal;
@@ -196,10 +196,10 @@ csi_error_t csi_gpio_port_output_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask,
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
  *  \param[in] wPinMask: pin mask,0x0001~0xffff
- *  \param[in] eMode: pin input mode; TTL1/TTL2/COMS
+ *  \param[in] eInputMode: pin input mode; TTL1/TTL2/COMS
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_gpio_port_input_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_input_mode_e eMode)
+csi_error_t csi_gpio_port_input_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_input_mode_e eInputMode)
 {
 	csi_error_t	ret = CSI_OK;	
 	uint32_t wDscrVal;	
@@ -207,7 +207,7 @@ csi_error_t csi_gpio_port_input_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, 
 	uint32_t wDrvVal = wPinMask & 0xffff;
 	uint32_t hwOmcrVal = (wPinMask & 0xffff) << 16;
 	
-	switch (eMode)
+	switch (eInputMode)
 	{
 		case (GPIO_INPUT_TTL2):	
 			if(wDrvVal)
