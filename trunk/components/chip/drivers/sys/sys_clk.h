@@ -120,9 +120,9 @@ typedef enum {
 	EPT_SYS_CLK		= 49U
 } clk_module_t;
 
-//Global variable sysclkclk 
-extern uint32_t g_wSystemClk;
 
+//global variable: sysclkclk 
+extern uint32_t g_wSystemClk;
 
 
 /** 
@@ -174,7 +174,7 @@ uint32_t soc_get_coret_freq(void);
 
 /**
   \brief       Soc get bt frequence.
-  \param[in]   byIdx: id of bt
+  \param[in]   byIdx	id of bt
   \return      bt frequence
 */
 uint32_t soc_get_bt_freq(uint8_t byIdx);
