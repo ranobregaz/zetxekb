@@ -34,6 +34,8 @@ extern int iwdt_irq_demo(void);
 
 //etcb demo
 int etcb_one_trg_one_demo(void);
+int etcb_one_trg_more_demo(void);
+int etcb_more_trg_one_demo(void);
 
 //uart demo
 //uart send
@@ -54,6 +56,11 @@ int adc_samp_continuous_demo(void);
 int adc_samp_oneshot_int_demo(void);
 int adc_samp_continuous_int_demo(void);
 
+//sio demo
+//sio led
+int sio_led_rgb_demo(void);
+int sio_led_rgb_recv_rxfull_demo(void);
+int sio_led_rgb_recv_rxdone_demo(void);
 
 //lpt demo
 extern int lpt_timer_demo(void);
