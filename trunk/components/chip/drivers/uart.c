@@ -19,7 +19,7 @@
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
-csi_uart_transfer_t g_tUartTran[UART_IDX_NUM];	
+csi_uart_trans_t g_tUartTran[UART_IDX_NUM];	
 static uint32_t s_wCtrlRegBack = 0;	
 
 /** \brief get uart idx 
