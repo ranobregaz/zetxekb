@@ -15,9 +15,7 @@
 #include "drv/pin.h"
 #include <drv/irq.h>
 
-///to maximize the  speed
-uint32_t g_ept_prd;
-
+uint32_t gEptPrd;
 
 /** \brief
  * 
@@ -92,7 +90,7 @@ csi_error_t csi_ept_config_init(csp_ept_t *ptEptBase, csi_ept_config_t *pteptPwm
 		csi_irq_enable((uint32_t *)ptEptBase);							//enable  irq
 	}
 	
-	g_ept_prd=wPrdrLoad;
+	gEptPrd=wPrdrLoad;
 	
 	return CSI_OK;
 }
@@ -137,7 +135,7 @@ csi_error_t csi_ept_capture_init(csp_ept_t *ptEptBase, csi_ept_captureconfig_t *
 		csi_irq_enable((uint32_t *)ptEptBase);							//enable  irq
 	}
 	
-	g_ept_prd=wPrdrLoad;
+	gEptPrd=wPrdrLoad;
 	
 	return CSI_OK;
 }
@@ -185,7 +183,7 @@ csi_error_t  csi_ept_wave_init(csp_ept_t *ptEptBase, csi_ept_pwmconfig_t *pteptP
 		csi_irq_enable((uint32_t *)ptEptBase);							//enable  irq
 	}
 	
-	g_ept_prd=wPrdrLoad;
+	gEptPrd=wPrdrLoad;
 	
 	return CSI_OK;	
 }
@@ -469,7 +467,7 @@ uint16_t csi_ept_get_prdr(csp_ept_t *ptEpt)
 */
 csi_error_t csi_ept_change_ch_duty(csp_ept_t *ptEptBase, csi_ept_chtype_e eCh, uint32_t wActiveTime)
 { uint16_t  wCmpLoad;
-    wCmpLoad =g_ept_prd-(g_ept_prd * wActiveTime /100);
+    wCmpLoad =gEptPrd-(gEptPrd * wActiveTime /100);
 
 	switch (eCh)
 	{	
@@ -667,6 +665,11 @@ csi_error_t csi_ept_continuous_software_waveform(csp_ept_t *ptEptBase, csi_ept_c
     }		
 	return CSI_OK;
 }
+csi_error_t csi_ept_int_enable(csp_ept_t *ptEptBase, csp_ept_int_e eInt, bool bEnable)
+{  
+	csp_ept_int_enable(ptEptBase,eInt,bEnable);
+	return CSI_OK;
+}
 
 /** \brief ept sync input evtrg config  
  * 
@@ -783,6 +786,7 @@ csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_tr
 	return CSI_OK;
 }
 
+
 /** \brief ept evtrg cntxinit control
  * 
  *  \param[in] ptEptBase: pointer of ept register structure
@@ -793,13 +797,16 @@ csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_tr
  */
 csi_error_t csi_ept_set_evcntinit(csp_ept_t *ptEptBase, uint8_t byCntChx, uint8_t byCntVal, uint8_t byCntInitVal)
 {
-	
-	if(byCntChx > EPT_CNT3INIT)
-		return CSI_ERROR;
-	
-	csp_ept_set_trgprd(ptEptBase, byCntChx, byCntVal - 1);				//evtrg count
-	csp_ept_trg_cntxinit(ptEptBase, byCntChx, byCntInitVal);
-	csp_ept_trg_cntxiniten_enable(ptEptBase, byCntChx, ENABLE);
-	
-	return CSI_OK;
+
+ if(byCntChx > EPT_CNT3INIT)
+  return CSI_ERROR;
+ 
+ csp_ept_set_trgprd(ptEptBase, byCntChx, byCntVal - 1);    //evtrg count
+ csp_ept_trg_cntxinit(ptEptBase, byCntChx, byCntInitVal);
+ csp_ept_trg_cntxiniten_enable(ptEptBase, byCntChx, ENABLE);
+ 
+ return CSI_OK;
 }
+
+
+
