@@ -70,6 +70,16 @@ uint32_t ringbuffer_out(ringbuffer_t *ptFifo, void *out, uint16_t len);
 void ringbuffer_byte_in(ringbuffer_t *ptFifo, uint8_t in);
 
 /** 
+  \brief  gets one byte data from the FIFO.
+  \param  [in] ptFifo: The fifo to be used.
+  \param  [in] pOutBuf: Where the data must be copied.
+  \return The number of read bytes, 0/1
+  \note   This function copies at most @len bytes from the FIFO into
+  *       the @out and returns the number of copied bytes.
+  */
+uint8_t ringbuffer_byte_out(ringbuffer_t *ptFifo, void *pOutBuf);
+
+/** 
   \brief  Returns the size of the FIFO in bytes.
   \param  [in] ptFifo: The fifo to be used.
   \return The size of the FIFO.
