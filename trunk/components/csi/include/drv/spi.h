@@ -24,11 +24,6 @@
 extern "C" {
 #endif
 
-
-
-#define		SPI_MASTER_SEL			//主机或者从机
-#define		SPI_SYNC_SEL			//同步或者异步
-
 //#define		SPICS_CLR		*(uint32_t *)(0x60002010)=(uint32_t)0x20		//PB0.5低
 //#define		SPICS_SET		*(uint32_t *)(0x6000200c)=(uint32_t)0x20	    //PB0.5高
 
@@ -106,6 +101,7 @@ typedef struct
     uint8_t             byRxSize;        ///< Input  data size specified by user
 	uint8_t             byRxFifoLength;  ///< receive fifo length
 	uint8_t             byInter;  		 ///< interrupt
+	uint8_t             byWorkMode;      ///< master or slave
     csi_state_t         tState;          ///< Peripheral state
 }csi_spi_transmit_t;
 extern csi_spi_transmit_t g_tSpiTransmit; 
@@ -113,7 +109,7 @@ extern csi_spi_transmit_t g_tSpiTransmit;
 /** \brief initialize spi data structure
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] ptSpiCfg: user spi parameter config
+ *  \param[in] ptSpiCfg: pointer ofuser spi parameter config
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_spi_init(csp_spi_t *ptSpiBase,csi_spi_config_t *ptSpiCfg);
@@ -238,9 +234,10 @@ csi_error_t csi_spi_send_receive_async(csp_spi_t *ptSpiBase, void *pDataout, voi
  * 
  *  \param[in] eRxLen:rx fifo length
  *  \param[in] byInter:interrupt source
+ *  \param[in] eMode:master or slave
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_spi_Internal_variables_init(spi_rxifl_e eRxLen,uint8_t byInter);
+csi_error_t csi_spi_Internal_variables_init(spi_rxifl_e eRxLen,uint8_t byInter,csi_spi_mode_e eMode);
 
 //interrupt
 /** \brief spi interrupt handle function
