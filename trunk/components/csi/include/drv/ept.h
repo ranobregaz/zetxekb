@@ -617,6 +617,15 @@ void csp_ept_clr_hdlck(csp_ept_t *ptEp, csi_ept_ebi_e eEbi);
 void csi_ept_set_sync(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, csi_ept_trgmode_e eTrgMode, csi_ept_arearm_e eAutoRearm);
 
 /** 
+  \brief 	   ept extsync input select
+  \param[in]   ptEptBase	pointer of ept register structure
+  \param[in]   eTrgin		ept sync evtrg input channel(0~5)
+  \param[in]   byTrgChx		trgxsel channel(0~1)
+  \return 	   error code \ref csi_error_t
+ */
+csi_error_t csi_ept_set_extsync_chnl(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, uint8_t byTrgChx);
+
+/** 
   \brief 	   ept sync input filter config  
   \param[in]   ptEptBase	pointer of ept register structure
   \param[in]   ptFilter		pointer of sync input filter parameter config structure
@@ -637,20 +646,19 @@ void csi_ept_rearm_sync(csp_ept_t *ptEptBase,csi_ept_trgin_e eTrgin);
   \param[in]   ptEptBase	pointer of ept register structure
   \param[in]   byTrgOut		evtrg out port(0~3)
   \param[in]   eTrgSrc		evtrg source(1~15) 
-  \param[in]   byTrgCnt		evtrg count value
   \return	   error code \ref csi_error_t
  */
-csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_trgsrc_e eTrgSrc, uint8_t byTrgCnt);
+csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_trgsrc_e eTrgSrc);
 
 /** 
   \brief 	   ept evtrg cntxinit control
   \param[in]   ptEptBase	pointer of ept register structure
   \param[in]   eCntxInit	evtrg countinit channel(0~3)
-  \param[in]   byCntInitVal	evtrg cntxinit value
   \param[in]   bEnable		cntxiniten enable/disable
+  \param[in]   byCntInitVal	evtrg cntxinit value
   \return 	   error code \ref csi_error_t
  */
-csi_error_t csi_ept_set_evcntinit(csp_ept_t *ptEptBase, csi_ept_cntinit_e eCntxInit, uint8_t byCntInitVal, bool bEnable);
+csi_error_t csi_ept_set_evcntinit(csp_ept_t *ptEptBase, csi_ept_cntinit_e eCntxInit, uint8_t byCntVal, uint8_t byCntInitVal);
 
 /**
   \brief   enable/disable ept out trigger 
