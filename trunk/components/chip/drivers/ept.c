@@ -706,7 +706,7 @@ csi_error_t csi_ept_set_sync_filter(csp_ept_t *ptEptBase, csi_ept_filter_config_
 }
 /** \brief rearm ept sync evtrg  
  * 
- *  \param[in] ptBtBase: pointer of ept register structure
+ *  \param[in] ptEptBase: pointer of ept register structure
  *  \param[in] eTrgin: ept sync evtrg input channel(0~5)
  *  \return none
  */
@@ -716,10 +716,10 @@ void csi_ept_rearm_sync(csp_ept_t *ptEptBase,csi_ept_trgin_e eTrgin)
 }
 /** \brief ept evtrg output config
  * 
- *  \param[in] ptBtBase:pointer of ept register structure
+ *  \param[in] ptEptBase: pointer of ept register structure
  *  \param[in] byTrgOut: evtrg out port(0~3)
  *  \param[in] eTrgSrc: evtrg source(1~15) 
- *  \param[in] byTrgCnt: evtrg count 
+ *  \param[in] byTrgCnt: evtrg count value
  *  \return error code \ref csi_error_t
  */
 csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_trgsrc_e eTrgSrc, uint8_t byTrgCnt)
@@ -760,4 +760,22 @@ csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_tr
 	return CSI_OK;
 }
 
-
+/** \brief ept evtrg cntxinit control
+ * 
+ *  \param[in] ptEptBase: pointer of ept register structure
+ *  \param[in] eCntxInit: evtrg countinit channel(0~3)
+ *  \param[in] byCntInitVal: evtrg cntxinit value
+ *  \param[in] bEnable: cntxiniten enable/disable
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_ept_set_evcntinit(csp_ept_t *ptEptBase, csi_ept_cntinit_e eCntxInit, uint8_t byCntInitVal, bool bEnable)
+{
+	
+	if(eCntxInit > EPT_CNT3INIT)
+		return CSI_ERROR;
+	
+	csp_ept_trg_cntxiniten_enable(ptEptBase, eCntxInit, bEnable);
+	csp_ept_trg_cntxinit(ptEptBase, eCntxInit, byCntInitVal);
+	
+	return CSI_OK;
+}
