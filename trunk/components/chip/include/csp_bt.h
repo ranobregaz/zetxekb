@@ -344,4 +344,9 @@ static inline uint32_t csp_bt_get_risr(csp_bt_t *ptBtBase)
 {
 	return ptBtBase->RISR;
 }
+
+static inline uint32_t csp_bt_get_imcr(csp_bt_t *ptBtBase)
+{
+	return ptBtBase->IMCR;
+}
 #endif

@@ -94,7 +94,7 @@ void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc, bool bEnable
 		csi_irq_enable(ptBtBase);
 	}
 	else {
-		if (eIntSrc == csp_bt_get_isr(ptBtBase)) {
+		if (eIntSrc == csp_bt_get_imcr(ptBtBase)) {
 			csi_irq_disable(ptBtBase);
 		}
 	}
