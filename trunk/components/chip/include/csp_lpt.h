@@ -263,10 +263,10 @@ typedef enum
 ******************************************************************************/
 typedef enum
 {
-    LPT_TRGEV_INT  = 	(0),  	       
-	LPT_MATCH_INT = 	(1),	
-	LPT_PEND_INT  = 	(2), 
-	LPT_NONE_INT = 	    (3) 	       
+    LPT_TRGEV_INT  = 	(1<<0),  	       
+	LPT_MATCH_INT = 	(1<<1),	
+	LPT_PEND_INT  = 	(1<<2), 
+	LPT_NONE_INT = 	    (1<<3) 	       
 }lpt_int_e;
 
 /******************************************************************************
@@ -320,12 +320,17 @@ typedef enum
 /******************************************************************************
 ********************** LPT inline Functions Declaration ***********************
 ******************************************************************************/
+static inline uint32_t csp_lpt_get_imcr(csp_lpt_t *ptLptBase)
+{
+	return ptLptBase->IMCR; 
+}
+
 static inline void csp_lpt_int_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable)
 {
 	if(bEnable)
-		ptLptBase->IMCR |= 0x1 << eLptInt; 
+		ptLptBase->IMCR |= eLptInt; 
 	else
-		ptLptBase->IMCR &= ~(0x1 <<eLptInt); 
+		ptLptBase->IMCR &= ~eLptInt; 
 }
 
 static inline void csp_lpt_data_update(csp_lpt_t *ptLptBase,uint16_t hwPrdr, uint16_t hwCmp)

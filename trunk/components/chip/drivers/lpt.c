@@ -123,6 +123,29 @@ static uint32_t apt_get_lpt_prd(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk,uint3
 	return hwLptPrd;	
 }
 
+/**
+  \brief       Enable lpt power manage
+  \param[in]   ptLptBase:pointer of lpt register structure
+  \param[in]   eLptInt:irq mode
+  \param[in]   bEnable:lpt irq enable or disable
+*/
+void csi_lpt_int_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable)
+{
+	csp_lpt_int_enable(ptLptBase, eLptInt, bEnable);
+	
+	if (bEnable) 
+	{
+		csi_irq_enable((uint32_t *)ptLptBase);
+	}
+	else 
+	{
+		if (eLptInt == csp_lpt_get_imcr(ptLptBase)) 
+		{
+			csi_irq_disable((uint32_t *)ptLptBase);
+		}
+	}
+}
+
 /** \brief initialize lpt data structure
  *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] eClk: clk source selection
@@ -153,19 +176,7 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk, uint3
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)wLptPrd);
 	}
 	csi_lpt_int_enable(ptLptBase,LPT_PEND_INT,ENABLE);	 //选用MATCH中断 
-	csi_irq_enable((uint32_t*)ptLptBase);	
 	return tRet;	
-}
-
-/**
-  \brief       Enable lpt power manage
-  \param[in]   ptLptBase:pointer of lpt register structure
-  \param[in]   eLptInt:irq mode
-  \param[in]   bEnable:lpt irq enable or disable
-*/
-void csi_lpt_int_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable)
-{
-	csp_lpt_int_enable(ptLptBase, eLptInt, bEnable);
 }
 
 /** \brief de-initialize lpt interface
@@ -367,7 +378,6 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 		if(ptLptPara->byInter != LPT_NONE_INT)
 		{
 			csi_lpt_int_enable(ptLptBase,ptLptPara->byInter,ENABLE);	 //选用MATCH中断 
-			csi_irq_enable((uint32_t*)ptLptBase);	
 		}
 	}
 	return tRet;	
