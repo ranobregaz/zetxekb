@@ -24,8 +24,8 @@ extern "C" {
  * \brief    ETB channel trigger mode
  */
 typedef enum {
-    ETB_HARDWARE_TRG  	= 0,		//etb channel inout is hardware trigger.
-    ETB_SOFTWARE_TRG               	//etb channel inout is software trigger.
+    ETB_HARDWARE_TRG  	= 0,	//etb channel inout is hardware trigger.
+    ETB_SOFTWARE_TRG            //etb channel inout is software trigger.
 } csi_etb_trg_mode_e;
 
 /**
@@ -33,9 +33,9 @@ typedef enum {
  * \brief    ETB channel trigger type
  */
 typedef enum {
-    ETB_ONE_TRG_ONE	= 0,      		//one device trig one deivce
-    ETB_ONE_TRG_MORE,          		//one device trig two for more device
-    ETB_MORE_TRG_ONE           		//two or more device trig one deivce
+    ETB_ONE_TRG_ONE	= 0,      //one device trig one deivce
+    ETB_ONE_TRG_MORE,         //one device trig two for more device
+    ETB_MORE_TRG_ONE          //two or more device trig one deivce
 } csi_etb_ch_type_e;
 
 /**
@@ -114,14 +114,14 @@ typedef enum{
 }csi_etb_dst_e;
 
 typedef struct {
-    uint8_t               bySrcIp;		//a specific number represent a location in an source trigger location map to trigger other ip(s).
-	uint8_t               bySrcIp1; 
-	uint8_t               bySrcIp2; 
-    uint8_t               byDstIp;     	//a specific number represent an location in an dest trigger map to wait signal(s) from source ip(s) or location(s).
-	uint8_t               byDstIp1;
-	uint8_t               byDstIp2;  
-    csi_etb_trg_mode_e    eTrgMode;		//the input source is hardware trigger or software trigger.
-    csi_etb_ch_type_e     eChType;    	//channel type
+    uint8_t			bySrcIp;			//a specific number represent a location in an source trigger location map to trigger other ip(s).
+	uint8_t         bySrcIp1; 
+	uint8_t         bySrcIp2; 
+    uint8_t         byDstIp;     		//a specific number represent an location in an dest trigger map to wait signal(s) from source ip(s) or location(s).
+	uint8_t         byDstIp1;
+	uint8_t         byDstIp2;  
+    uint8_t    		byTrgMode;			//the input source is hardware trigger or software trigger.
+    uint8_t     	byChType;    		//channel type
 } csi_etb_config_t;
 
 /**
@@ -139,7 +139,7 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType);
 
 /**
   \brief       free an etb channel
-  \param[in]   eChId		etb channel work mode
+  \param[in]   eChId		etb channel id number
   \return      none
 */
 void csi_etb_ch_free(csi_etb_chid_e eChId);

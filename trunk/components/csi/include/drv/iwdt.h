@@ -20,18 +20,18 @@ extern "C" {
 #endif
 
 /**
- * \enum     csi_iwdt_intv_e
- * \brief    IWDT interrupt timer(timer out) select
+ * \enum     csi_iwdt_alarm_e
+ * \brief    IWDT interrupt alarm timer(timer out) select
  */
 typedef enum{
-	IWDT_INT_1_8 	= 0,
-	IWDT_INT_2_8,
-	IWDT_INT_3_8, 
-	IWDT_INT_4_8, 
-	IWDT_INT_5_8, 
-	IWDT_INT_6_8, 
-	IWDT_INT_7_8
-}csi_iwdt_into_e;
+	IWDT_ALARMTO_1_8 	= 0,
+	IWDT_ALARMTO_2_8,
+	IWDT_ALARMTO_3_8, 
+	IWDT_ALARMTO_4_8, 
+	IWDT_ALARMTO_5_8, 
+	IWDT_ALARMTO_6_8, 
+	IWDT_ALARMTO_7_8
+}csi_iwdt_alarm_e;
 
 /**
  * \enum     csi_iwdt_tv_e
@@ -106,7 +106,7 @@ bool csi_iwdt_is_running(void);
   \param[in]   bEnable		enable/disable irq
   \return 	   none
  */
-void csi_iwdt_irq_enable(csi_iwdt_into_e eIntTo, bool bEnable);
+void csi_iwdt_irq_enable(csi_iwdt_alarm_e eIntTo, bool bEnable);
 
 /**
   \brief       enable or disable iwdt when stop in debug mode

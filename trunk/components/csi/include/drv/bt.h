@@ -24,11 +24,11 @@ extern "C" {
 /// \struct csi_bt_pwm_config_t
 /// \brief  bt pwm parameter configuration, open to users  
 typedef struct {
-	uint8_t		byIdleLevel;		//TIMER PWM OUTPUT idel level
-	uint8_t		byStartLevel;		//TIMER PWM OUTPUT start Level
-	uint8_t		byInter;			//TIMER PWM interrupt source select
-	uint8_t		byDutyCycle;		//TIMER PWM OUTPUT duty cycle
-	uint32_t	wFreq;				//TIMER PWM OUTPUT frequency
+	uint8_t		byIdleLevel;	//PWM idel level
+	uint8_t		byStartLevel;	//PWM start Level
+	uint8_t		byInter;		//PWM interrupt source 
+	uint8_t		byDutyCycle;	//PWM duty cycle
+	uint32_t	wFreq;			//PWM frequency
 } csi_bt_pwm_config_t;
 
 /**
@@ -37,10 +37,10 @@ typedef struct {
  */
 typedef enum
 {
-	BT_PWM_START_LOW	= 0,		//PWM start level is low 
-    BT_PWM_START_HIGH 	= 1,		//PWM start level is high        
-	BT_PWM_IDLE_LOW  	= 0,		//PWM idle level is low 
-    BT_PWM_IDLE_HIGH	= 1 		//PWM idle level is high   	    
+	BT_PWM_START_LOW	= 0,	//PWM start level is low 
+    BT_PWM_START_HIGH 	= 1,	//PWM start level is high        
+	BT_PWM_IDLE_LOW  	= 0,	//PWM idle level is low 
+    BT_PWM_IDLE_HIGH	= 1 	//PWM idle level is high   	    
 }csi_bt_pwmlev_e;
 
 /**
@@ -48,8 +48,8 @@ typedef enum
  * \brief    BT count mode  
  */
 typedef enum{
-	BT_CNT_ONEPULSE	= 0,			//one pulse 	
-	BT_CNT_CONTINUOUS				//continuous		
+	BT_CNT_ONEPULSE	= 0,		//one pulse 	
+	BT_CNT_CONTINUOUS			//continuous		
 }csi_bt_cntmode_e;
 
 /**
@@ -57,8 +57,8 @@ typedef enum{
  * \brief    BT sync trigger input 
  */
 typedef enum{
-	BT_TRGIN_SYNCEN0	= 0,		//BT sync trigger input0		
-	BT_TRGIN_SYNCEN1				//BT sync trigger input1			
+	BT_TRGIN_SYNCEN0	= 0,	//sync evtrr input0		
+	BT_TRGIN_SYNCEN1			//sync evtrg input1			
 }csi_bt_trgin_e;
 
 /**
@@ -66,9 +66,9 @@ typedef enum{
  * \brief    BT sync trigger mode 
  */
 typedef enum{
-	BT_TRG_CONTINU	= 0,			//BT continuous trigger mode 
-	BT_TRG_ONCE					
-}csi_bt_trgmode_e;					//BT once trigger mode 
+	BT_TRG_CONTINU	= 0,		//continuous trg mode 
+	BT_TRG_ONCE					//once trg mode 				
+}csi_bt_trgmode_e;			
 
 /**
  * \enum     csi_bt_trgsrc_e
@@ -76,10 +76,10 @@ typedef enum{
  */
 typedef enum
 {
-	BT_TRGSRC_DIS	= 0,  			//BT none trigger	       
-	BT_TRGSRC_PEND,					//BT PEND as trigger event	
-	BT_TRGSRC_CMP,					//BT CMP as trigger event		
-	BT_TRGSRC_OVF					//BT CMP as trigger event	         
+	BT_TRGSRC_DIS	= 0,  		//none trigger	       
+	BT_TRGSRC_PEND,				//PEND as trigger event	
+	BT_TRGSRC_CMP,				//CMP as trigger event		
+	BT_TRGSRC_OVF				//CMP as trigger event	         
 }csi_bt_trgsrc_e;
 
 /**
@@ -88,11 +88,11 @@ typedef enum
  */
 typedef enum
 {
-	BT_INTSRC_NONE   =	(0x00ul << 0), 		//NONE interrupt
-	BT_INTSRC_PEND   =	(0x01ul << 0),		//PEND interrupt
-	BT_INTSRC_CMP    =	(0x01ul << 1),		//CMP interrupt   
-	BT_INTSRC_OVF    =	(0x01ul << 2), 		//OVF interrupt
-	BT_INTSRC_EVTRG  =	(0x01ul << 3)		//EVTRG interrupt
+	BT_INTSRC_NONE   =	(0x00ul << 0), 	//NONE interrupt
+	BT_INTSRC_PEND   =	(0x01ul << 0),	//PEND interrupt
+	BT_INTSRC_CMP    =	(0x01ul << 1),	//CMP interrupt   
+	BT_INTSRC_OVF    =	(0x01ul << 2), 	//OVF interrupt
+	BT_INTSRC_EVTRG  =	(0x01ul << 3)	//EVTRG interrupt
 }csi_bt_intsrc_e;
 
 /**

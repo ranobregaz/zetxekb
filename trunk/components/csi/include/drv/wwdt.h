@@ -48,7 +48,7 @@ void csi_wwdt_open(void);
   \param[in]   none
   \return 	   error code \ref csi_error_t
  */ 
-csi_error_t csi_wwdt_close(void);
+//csi_error_t csi_wwdt_close(void);
 
 /**
   \brief       feed the wwdt

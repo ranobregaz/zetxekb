@@ -29,8 +29,8 @@ extern "C" {
  */
 typedef enum
 {
-	ADC_CONV_ONESHOT		= 0,		//one shot mode
-	ADC_CONV_CONTINU		= 1			//continuous mode	    
+	ADC_CONV_ONESHOT		= 0,	//one shot mode
+	ADC_CONV_CONTINU		= 1		//continuous mode	    
 }csi_adc_conv_mode_e;
 
 /**
@@ -38,9 +38,9 @@ typedef enum
  * \brief   adc working status
  */
 typedef enum{
-	ADC_STATE_IDLE			= 0,		//idle		
-	ADC_STATE_DOING,					//working
-	ADC_STATE_DONE						//complete	
+	ADC_STATE_IDLE			= 0,	//idle		
+	ADC_STATE_DOING,				//working
+	ADC_STATE_DONE					//complete	
 }csi_adc_state_e;
 
 /**
@@ -65,7 +65,7 @@ typedef enum{
  * \brief   adc fixed voltage reference source
  */
 typedef enum{
-	ADC_FVR2048 			= 0,
+	ADC_FVR2048 		= 0,
 	ADC_FVR4096
 }csi_adc_fvrsel_e;
 
@@ -173,8 +173,8 @@ typedef enum{
  * \brief   adc sync trigger mode
  */
 typedef enum{
-	ADC_TRG_CONTINU		= 0,		//continuous trigger mode
-	ADC_TRG_ONETIME					//one time trigger mode				
+	ADC_TRG_CONTINU		= 0,	//continuous trG mode
+	ADC_TRG_ONCE				//once trg mode				
 }csi_adc_trgmode_e;
 
 /**
@@ -222,7 +222,7 @@ typedef enum{
  * \brief   adc interrupt source
  */
 typedef enum{
-	ADC_INTSRC_NONE		= (0x00uL << 0),			//no interrupt
+	ADC_INTSRC_NONE		= (0x00uL << 0),		//no interrupt
 	ADC_INTSRC_EOC		= (0x01uL << 0),
 	ADC_INTSRC_READY	= (0x01uL << 1),
 	ADC_INTSRC_OVR		= (0x01uL << 2),
@@ -231,13 +231,13 @@ typedef enum{
 	ADC_INTSRC_CMP1H	= (0x01uL << 6),
 	ADC_INTSRC_CMP1L	= (0x01uL << 7),
 	
-	ADC_INTSRC_SEQ0		= (0x01uL << 16),			//SEQX0-15     
+	ADC_INTSRC_SEQ0		= (0x01uL << 16),		//SEQX0-15     
 	ADC_INTSRC_SEQ1  	= (0x01uL << 17),     
 	ADC_INTSRC_SEQ2  	= (0x01uL << 18),     
 	ADC_INTSRC_SEQ3  	= (0x01uL << 19),     
 	ADC_INTSRC_SEQ4  	= (0x01uL << 20),     
 	ADC_INTSRC_SEQ5  	= (0x01uL << 21),     
-	ADC_INTSRC_SEQ6 	 = (0x01uL << 22),     
+	ADC_INTSRC_SEQ6 	= (0x01uL << 22),     
 	ADC_INTSRC_SEQ7  	= (0x01uL << 23),     
 	ADC_INTSRC_SEQ8  	= (0x01uL << 24),     
 	ADC_INTSRC_SEQ9  	= (0x01uL << 25),     
