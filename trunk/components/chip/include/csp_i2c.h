@@ -235,6 +235,7 @@ typedef enum
 ******************************************************************************/  
 typedef enum
 {
+	I2C_INTSRC_NONE     	= (0x00ul << 0),
 	I2C_RX_UNDER_INT		= (0x01ul << 0),   //I2C Interrupt Status  
 	I2C_RX_OVER_INT         = (0x01ul << 1),   //I2C Interrupt Status   
 	I2C_RX_FULL_INT         = (0x01ul << 2),   //I2C Interrupt Status         

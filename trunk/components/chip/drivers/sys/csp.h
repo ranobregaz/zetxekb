@@ -32,6 +32,7 @@
 #include "csp_uart.h"
 #include "csp_wwdt.h"
 #include "core_801.h"
+#include "csp_tkey.h"
 
 typedef csp_syscon_t 	csp_iwdt_t;
 
@@ -39,7 +40,7 @@ extern VIC_Type  		*CK801INT;
 extern CORET_Type 		*CK801CORET;
 extern csp_ifc_t 		*IFC;
 extern csp_syscon_t 	*SYSCON;
-extern csp_etb_t   		*ETCB;
+extern csp_etb_t   	*ETCB;
 extern csp_adc_t 		*ADC0;
 extern csp_gpio_t 		*GPIOA0, *GPIOB0;
 extern csp_igrp_t		*GPIOGRP;
@@ -47,7 +48,7 @@ extern csp_uart_t 		*UART0, *UART1, *UART2;
 extern csp_spi_t  		*SPI0;
 extern csp_sio_t  		*SIO0;
 extern csp_i2c_t  		*I2C0;
-extern csp_cnta_t  		*CA0;
+extern csp_cnta_t  	*CA0;
 extern csp_gpta_t 		*GPT0;
 extern csp_ept_t 		*EPT0;
 extern csp_lpt_t 		*LPT;
@@ -57,6 +58,7 @@ extern csp_bt_t  		*BT1;
 extern csp_crc_t 		*CRC;
 extern csp_rtc_t 		*RTC;
 extern csp_iwdt_t		*IWDT;
+extern csp_tkey_t		*TKEY;
 
 #endif
 

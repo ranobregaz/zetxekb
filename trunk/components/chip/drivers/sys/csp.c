@@ -38,3 +38,4 @@ csp_bt_t  		*BT1 	   	= (csp_bt_t *)(APB_BT1_BASE) ;
 csp_crc_t 		*CRC      	= (csp_crc_t *)(AHB_CRC_BASE);
 csp_rtc_t 		*RTC      	= (csp_rtc_t *)(APB_RTC_BASE);
 csp_iwdt_t 		*IWDT		= (csp_iwdt_t *)(APB_SYS_BASE);
+csp_tkey_t		*TKEY		= (csp_tkey_t *)(APB_TKEY_BASE);
