@@ -190,7 +190,7 @@ int adc_samp_continuous_demo(void)
 #else 
 		//if(ADC_DATA_DEPTH > 1)
 		{
-			uint8_t j;
+			uint32_t j;
 			
 			//读ADC采样序列，整个采样序列所有通道读到采样buffer 
 			if(csi_adc_read_seqx(ADC0) == CSI_OK)									//采样通道读取完成，ADC value 保持在 buffer中 
@@ -362,7 +362,7 @@ int adc_samp_continuous_int_demo(void)
 #else
 	//if(ADC_DATA_DEPTH > 1)
 	{
-		uint8_t j;
+		uint32_t j;
 		if(csi_adc_get_status(ADC0) == ADC_STATE_DONE)			//采样通道读取完成，ADC value 保持在 buffer中 
 		{
 			csi_adc_stop(ADC0);									//停止ADC
