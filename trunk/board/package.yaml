@@ -86,8 +86,8 @@ build_config:
   include:
     - include
   internal_include: ~
-  cflag: -O2  -g3  -Wall  -ffunction-sections -nostdlib -Wpointer-arith -Wl,-EL -fdata-sections -fdata-sections -g
-  cxxflag: -O2  -g3  -Wall  -ffunction-sections -nostdlib -Wpointer-arith -Wl,-EL -fdata-sections -fdata-sections -g
+  cflag: -Og  -g3  -Wall  -ffunction-sections -nostdlib -Wpointer-arith -Wl,-EL -fdata-sections -fdata-sections -g
+  cxxflag: -Og  -g3  -Wall  -ffunction-sections -nostdlib -Wpointer-arith -Wl,-EL -fdata-sections -fdata-sections -g
   asmflag: ""
   define: ~
   libs: ~
