@@ -90,4 +90,15 @@ extern void iic_master_demo(void);
 extern void iic_master_slave_demo(void);
 extern void iic_slave_demo(void);
 
+//cnta demo
+extern int cnta_timer_demo(void);
+extern int cnta_pwm_demo(void);
+
+//spi demo
+extern int spi_sync_sendbuff(void);
+extern int spi_async_sendbuff(void);
+extern int spi_w25q16jvsiq_write_read(void);
+extern int spi_sync_test_speed(void);
+extern int spi_sync_async_master_slave(void);
+
 #endif
