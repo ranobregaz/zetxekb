@@ -92,7 +92,7 @@ static void apt_spi_int_set(csp_spi_t *ptSpiBase,spi_int_e eSpiInt)
 /** \brief initialize spi data structure
  * 
  *  \param[in] ptSpiBase: pointer of spi register structure
- *  \param[in] ptSpiCfg: user spi parameter config
+ *  \param[in] ptSpiCfg: pointer of user spi parameter config
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_spi_init(csp_spi_t *ptSpiBase,csi_spi_config_t *ptSpiCfg)
@@ -110,7 +110,7 @@ csi_error_t csi_spi_init(csp_spi_t *ptSpiBase,csi_spi_config_t *ptSpiCfg)
 	csi_spi_frame_len(ptSpiBase, ptSpiCfg->eSpiFrameLen);	   //格式帧长度设置
 	csi_spi_baud(ptSpiBase, ptSpiCfg->dwSpiBaud);              //通信速率
 	apt_spi_int_set(ptSpiBase,ptSpiCfg->byInter); //中断配置
-	csi_spi_Internal_variables_init(ptSpiCfg->eSpiRxFifoLevel,ptSpiCfg->byInter);//内部使用，客户无需更改			
+	csi_spi_Internal_variables_init(ptSpiCfg->eSpiRxFifoLevel,ptSpiCfg->byInter,ptSpiCfg->eSpiMode);//内部使用，客户无需更改			
 							
 	csp_spi_en(ptSpiBase);							           //打开spi
 	
@@ -129,7 +129,7 @@ csi_error_t csi_spi_uninit(csp_spi_t *ptSpiBase)
 	csi_clk_disable((uint32_t *)ptSpiBase);	
 	csi_irq_disable((uint32_t *)ptSpiBase);
 	csp_spi_default_init(ptSpiBase);
-	csi_spi_Internal_variables_init(SPI_RXFIFO_1_2,SPI_NONE_INT);
+	csi_spi_Internal_variables_init(SPI_RXFIFO_1_2,SPI_NONE_INT,SPI_MASTER);
 	
 	return tRet;	
 }
@@ -538,9 +538,10 @@ csi_error_t csi_spi_send_receive_async(csp_spi_t *ptSpiBase, void *pDataout, voi
  * 
  *  \param[in] eRxLen:rx fifo length
  *  \param[in] byInter:interrupt source
+ *  \param[in] eMode:master or slave
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_spi_Internal_variables_init(spi_rxifl_e eRxLen,uint8_t byInter)
+csi_error_t csi_spi_Internal_variables_init(spi_rxifl_e eRxLen,uint8_t byInter,csi_spi_mode_e eMode)
 {
 	g_tSpiTransmit.pbyRxData =NULL;
 	g_tSpiTransmit.byRxSize =0;
@@ -548,6 +549,7 @@ csi_error_t csi_spi_Internal_variables_init(spi_rxifl_e eRxLen,uint8_t byInter)
 	g_tSpiTransmit.byTxSize =0;
 	g_tSpiTransmit.byRxFifoLength = (uint8_t)eRxLen;
 	g_tSpiTransmit.byInter = byInter;
+	g_tSpiTransmit.byWorkMode = (uint8_t)eMode;
 	g_tSpiTransmit.tState.writeable = 1;
 	g_tSpiTransmit.tState.readable  = 1;
 	g_tSpiTransmit.tState.error = 0;
@@ -693,25 +695,24 @@ __attribute__((weak)) void spi_irqhandler(csp_spi_t *ptSpiBase)
 	if(wStatus & SPI_RXIM_INT)
 	{
 		//for reference
-		#ifdef SPI_MASTER_SEL
-			#ifndef SPI_SYNC_SEL
-				//apt_spi_intr_recv_data(ptSpiBase);//when use"csi_spi_send_receive_async"function need open
-				for(uint8_t byIdx = 0; byIdx < g_tSpiTransmit.byRxFifoLength; byIdx++)
-				{
-					
-					while(!(csp_spi_get_sr(SPI0) & SPI_RNE));	//receive not empty:read
-					receive_data[byIdx] = csp_spi_get_data(SPI0);						
-				}
-			#endif
-		#else
-			#ifndef SPI_SYNC_SEL
-				for(uint8_t byIdx = 0; byIdx < g_tSpiTransmit.byRxFifoLength; byIdx++)
-				{
-					receive_data[byIdx] = csi_spi_receive_slave(SPI0);
-					csi_spi_send_slave(SPI0, receive_data[byIdx]);
-				}
-			#endif
-		#endif
+		if(0==g_tSpiTransmit.byWorkMode)
+		{
+			//apt_spi_intr_recv_data(ptSpiBase);//when use"csi_spi_send_receive_async"function need open
+			for(uint8_t byIdx = 0; byIdx < g_tSpiTransmit.byRxFifoLength; byIdx++)
+			{
+				
+				while(!(csp_spi_get_sr(SPI0) & SPI_RNE));	//receive not empty:read
+				receive_data[byIdx] = csp_spi_get_data(SPI0);						
+			}
+		}
+		else
+		{
+			for(uint8_t byIdx = 0; byIdx < g_tSpiTransmit.byRxFifoLength; byIdx++)
+			{
+				receive_data[byIdx] = csi_spi_receive_slave(SPI0);
+				csi_spi_send_slave(SPI0, receive_data[byIdx]);
+			}
+		}
 	}
 	//fifo tx 
 	if(wStatus & SPI_TXIM_INT)		
