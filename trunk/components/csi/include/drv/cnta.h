@@ -140,7 +140,7 @@ void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t datah, uint16_t d
  *  \param[in] hw_updata: cadata reg auto updata control
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cnta_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e tcpend_rem, csi_cnta_tcmatch_e tcmatch_rem,csi_cnta_hw_updata_e hw_updata);
+csi_error_t csi_cnta_bt0_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e tcpend_rem, csi_cnta_tcmatch_e tcmatch_rem,csi_cnta_hw_updata_e hw_updata);
 //---------------------------------------------------------------------------------------------------------------------------------------------
 
 #ifdef __cplusplus
