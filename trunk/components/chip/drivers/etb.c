@@ -194,13 +194,13 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
 				
             break;
         case ETB_ONE_TRG_ONE:
-            for (ret_ch = 3; ret_ch < 32; ret_ch++) 
+            for (ret_ch = 3; ret_ch < 8; ret_ch++) 
 			{
                 if (check_is_alloced(ret_ch) != -1)
                     break;
             }
 
-            if (ret_ch == 32) 
+            if (ret_ch == 8) 
                 ret = CSI_ERROR;
 			else 
                 ret = ret_ch;
