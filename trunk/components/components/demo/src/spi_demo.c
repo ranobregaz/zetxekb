@@ -167,7 +167,7 @@ void spi_master_sync_send_sync_receive(void)//主机同步发，同步收
 	
 	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA1; //clk空闲电平为0，相位为在第二个边沿采集数据
 	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
-	t_SpiConfig.dwSpiBaud = 2000000; 						//通讯速率2兆			
+	t_SpiConfig.dwSpiBaud = 1000000; 						//通讯速率2兆			
     t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
 	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断	
 	csi_spi_init(SPI0,&t_SpiConfig);				
@@ -198,7 +198,7 @@ void spi_slave_sync_send_sync_receive(void)//从机同步发，同步收
 	
 	t_SpiConfig.eSpiPolarityPhase = SPI_FORMAT_CPOL0_CPHA1; //clk空闲电平为0，相位为在第二个边沿采集数据
 	t_SpiConfig.eSpiFrameLen = SPI_FRAME_LEN_8;             //帧数据长度为8bit
-	t_SpiConfig.dwSpiBaud = 2000000; 						//通讯速率2兆			
+	t_SpiConfig.dwSpiBaud = 1000000; 						//通讯速率2兆			
     t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
 	t_SpiConfig.byInter = (uint8_t)SPI_NONE_INT;			//初始配置无中断	
 	csi_spi_init(SPI0,&t_SpiConfig);				
@@ -224,7 +224,6 @@ void spi_slave_sync_send_sync_receive(void)//从机同步发，同步收
 void spi_master_sync_send_async_receive(void)//主机同步发，异步收
 {
 	uint8_t bySendData[17] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
-	uint8_t byReceData[17] = {0};
 	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
 	
 	t_SpiConfig.eSpiMode = SPI_MASTER;					//作为主机
@@ -241,7 +240,7 @@ void spi_master_sync_send_async_receive(void)//主机同步发，异步收
 	while(1)
 	{
 		csi_spi_nss_low(PB05);
-		csi_spi_send_receive(SPI0, bySendData, byReceData, 16);
+		csi_spi_send(SPI0, bySendData,16);
 		csi_spi_nss_high(PB05);
 		mdelay(100);
 		nop;
