@@ -37,7 +37,7 @@ int crc_demo(void)
 	volatile uint32_t temp1 = 0;
 	int iRet = 0;
 	
-	iRet = csi_crc_init();                              //CRC module initialization
+	csi_crc_init();                              //CRC module initialization
 	
 	temp1 = csi_crc32_be(0xffffffff, byTransData, 3);	//initialization value 0xffffffff, data length 3
 	if (temp1 != 0xcb6faba1)                            //Determine the result of conversion
