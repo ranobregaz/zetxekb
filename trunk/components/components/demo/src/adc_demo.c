@@ -17,7 +17,8 @@
 
 /* externs function--------------------------------------------------------*/
 //ADC通道采样深度(每通道采样数据次数)，连续转换模式时支持
-#define		ADC_DATA_DEPTH		0x03	
+//单次转换模式时，需将次参数配置为1	
+#define		ADC_DATA_DEPTH		0x01	
 	
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
@@ -34,16 +35,16 @@ const csi_adc_seq_t tSeqCfg[] =
 }; 
 
 //采样序列的通道数
-const volatile uint8_t byChnlNum = sizeof(tSeqCfg)/sizeof(tSeqCfg[0]);
+volatile uint8_t byChnlNum = sizeof(tSeqCfg)/sizeof(tSeqCfg[0]);
 
 //ADC value buffer
 //连续转换模式，支持采样深度设置(每通道采样N次), N = ADC_DATA_DEPTH
+//单次转换模式，ADC_DATA_DEPTH = 1
 #if ADC_DATA_DEPTH > 1
 	volatile uint16_t	g_hwAdcBuf[sizeof(tSeqCfg)/sizeof(tSeqCfg[0])][ADC_DATA_DEPTH];
 #else
 	volatile uint16_t	g_hwAdcBuf[sizeof(tSeqCfg)/sizeof(tSeqCfg[0])];
 #endif
-
 
 
 /** \brief ADC sample,one shot mode, ADC_DATA_DEPTH = 1
@@ -59,11 +60,12 @@ int adc_samp_oneshot_demo(void)
 	uint8_t i;
 	csi_adc_config_t tAdcConfig;
 	
+	//adc 输入管脚配置
 	csi_pin_set_mux(PA09, PA09_ADC_AIN10);				//ADC GPIO作为输入通道
 	csi_pin_set_mux(PA010, PA010_ADC_AIN11);
 	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
 	
-	
+	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 0x02;							//ADC clk两分频：clk = pclk/2
 	tAdcConfig.bySampHold = 0x06;						//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_ONESHOT;			//ADC 转换模式： 单次转换；
@@ -75,7 +77,6 @@ int adc_samp_oneshot_demo(void)
 	csi_adc_set_seqx(ADC0, tAdcConfig.ptSeqCfg, byChnlNum);		//配置ADC采样序列
 	csi_adc_set_buffer((uint16_t *)g_hwAdcBuf, 1);				//传递ADC采样buffer，ADC采样值存放于此buffer中
 	csi_adc_start(ADC0);										//启动ADC
-	
 	
 	do
 	{
@@ -91,20 +92,18 @@ int adc_samp_oneshot_demo(void)
 		}
 		
 		//单个通道分别读取
-		uint16_t byValue[3] = {0};
-			
 		iRet = csi_adc_start(ADC0);						//单次转换模式，序列转换完成后自动停止。若重新采样序列通道，需要重新启动ADC
 		if(iRet < 0)
 			my_printf("ADC start failure ...\n");
 			
-		byValue[0] = csi_adc_read_channel(ADC0, 0);
-		my_printf("ADC channel 0 value of seq: %d \n", byValue[0]);
+		g_hwAdcBuf[0] = csi_adc_read_channel(ADC0, 0);
+		my_printf("ADC channel 0 value of seq: %d \n", g_hwAdcBuf[0]);
 		
-		byValue[1] = csi_adc_read_channel(ADC0, 1);
-		my_printf("ADC channel 1 value of seq: %d \n", byValue[1]);
+		g_hwAdcBuf[1] = csi_adc_read_channel(ADC0, 1);
+		my_printf("ADC channel 1 value of seq: %d \n", g_hwAdcBuf[1]);
 		
-		byValue[2] = csi_adc_read_channel(ADC0, 2);
-		my_printf("ADC channel 2 value of seq: %d \n", byValue[2]);
+		g_hwAdcBuf[2] = csi_adc_read_channel(ADC0, 2);
+		my_printf("ADC channel 2 value of seq: %d \n", g_hwAdcBuf[2]);
 		
 		nop;
 		nop;
@@ -128,11 +127,12 @@ int adc_samp_continuous_demo(void)
 	
 	csi_adc_config_t tAdcConfig;
 	
+	//adc 输入管脚配置
 	csi_pin_set_mux(PA09, PA09_ADC_AIN10);				//ADC GPIO作为输入通道
 	csi_pin_set_mux(PA010, PA010_ADC_AIN11);
 	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
 	
-	
+	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 0x02;							//ADC clk两分频：clk = pclk/2
 	tAdcConfig.bySampHold = 0x06;						//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_CONTINU;			//ADC 转换模式： 连续转换
@@ -248,11 +248,12 @@ int adc_samp_oneshot_int_demo(void)
 	uint8_t i;
 	csi_adc_config_t tAdcConfig;
 	
+	//adc 输入管脚配置
 	csi_pin_set_mux(PA09, PA09_ADC_AIN10);						//ADC GPIO作为输入通道
 	csi_pin_set_mux(PA010, PA010_ADC_AIN11);
 	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
 	
-	
+	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_ONESHOT;					//ADC 转换模式： 单次转换；
@@ -307,11 +308,12 @@ int adc_samp_continuous_int_demo(void)
 	uint8_t i;
 	csi_adc_config_t tAdcConfig;
 	
+	//adc 输入管脚配置
 	csi_pin_set_mux(PA09, PA09_ADC_AIN10);						//ADC GPIO作为输入通道
 	csi_pin_set_mux(PA010, PA010_ADC_AIN11);
 	csi_pin_set_mux(PA011, PA011_ADC_AIN12);
 	
-	
+	//adc 参数配置初始化
 	tAdcConfig.byClkDiv = 0x02;									//ADC clk两分频：clk = pclk/2
 	tAdcConfig.bySampHold = 0x06;								//ADC 采样时间： time = 16 + 6 = 22(ADC clk周期)
 	tAdcConfig.byConvMode = ADC_CONV_CONTINU;					//ADC 转换模式： 连续转换；
