@@ -28,7 +28,7 @@
  *  \param[in] none
  *  \return error code
  */
- csi_error_t spi_sync_sendbuff(void)
+ int spi_sync_sendbuff(void)
 {
 	int iRet = 0;
 	uint8_t byData[8] = {1,2,3,4,5,6,7,8};
@@ -66,9 +66,9 @@
  *  \param[in] none
  *  \return error code
  */
- csi_error_t spi_async_sendbuff(void)
+ int spi_async_sendbuff(void)
 {
-	int tRet = 0;
+	int iRet = 0;
 	uint8_t bySendData[8] = {9,10,11,12,13,14,15,16};
 	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
 	
@@ -78,8 +78,8 @@
 	t_SpiConfig.dwSpiBaud = 12000000; 						//通讯速率12兆			
     t_SpiConfig.eSpiRxFifoLevel = SPI_RXFIFO_1_2;  			//接收fifo中断阈值，1/2*8=4个
 	t_SpiConfig.byInter = (uint8_t)SPI_TXIM_INT;			//发送使用中断	  	
-	tRet = csi_spi_init(SPI0,&t_SpiConfig);	
-	if(tRet < 0)
+	iRet = csi_spi_init(SPI0,&t_SpiConfig);	
+	if(iRet < 0)
 	{
 		return -1;
 	}
@@ -90,12 +90,12 @@
 	while(1)
 	{
 		SPICS_CLR;
-		tRet = csi_spi_send_async(SPI0, (void *) bySendData, 8);//send first
+		iRet = csi_spi_send_async(SPI0, (void *) bySendData, 8);//send first
 		//SPICS_SET;  //SPICS_SET when send interrupt complete
 		mdelay(100);		
 		nop;
 	}
-	return tRet;
+	return iRet;
 }
 
 /** \brief spi speed test
@@ -103,7 +103,7 @@
  *  \param[in] none
  *  \return error code
  */
-csi_error_t spi_sync_test_speed(void)
+int spi_sync_test_speed(void)
 {
 	int iRet = 0;
 	uint8_t bySendData[17] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17};
@@ -434,7 +434,7 @@ void SPI_flash_write_bytes(uint8_t *pbyBuf, uint32_t wAddr, uint16_t hwNum)
  *  \param[in] none
  *  \return error code
  */
-csi_error_t spi_w25q16jvsiq_write_read(void)
+int spi_w25q16jvsiq_write_read(void)
 {
 	int iRet = 0;	
 	csi_spi_config_t t_SpiConfig;  //spi初始化参数配置结构体
