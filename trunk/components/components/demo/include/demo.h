@@ -104,7 +104,10 @@ extern int spi_sync_sendbuff(void);
 extern int spi_async_sendbuff(void);
 extern int spi_w25q16jvsiq_write_read(void);
 extern int spi_sync_test_speed(void);
-extern int spi_sync_async_master_slave(void);
+extern void spi_master_sync_send_sync_receive(void); //主机示例1
+extern void spi_slave_sync_send_sync_receive(void);  //从机示例1
+extern void spi_master_sync_send_async_receive(void);//主机示例2
+extern void spi_slave_async_send_async_receive(void);//从机示例2
 
 //touch demo
 extern void touch_lowpower_demo(void);
