@@ -26,7 +26,7 @@
 /* Private variablesr-------------------------------------------------*/
 
 static csi_spi_mode_e	work_mode	=	SPI_MASTER;
-csi_spi_send_receive_t g_tSpiTransmit;
+csi_spi_para_config_t g_tSpiTransmit;
 
 /** \brief init spi gpio 
  * 
@@ -44,7 +44,7 @@ static void apt_spi_gpio_init(void)
 	csi_pin_set_mux(PB04,PB04_SPI_SCK);								//PB04 = SPI_SCK
 	csi_pin_set_mux(PA015,PA015_SPI_MISO);							//PA15 = SPI_MISO
 	csi_pin_set_mux(PA014,PA014_SPI_MOSI);							//PA14 = SPI_MOSI
-	SPICS_SET;														//NSS init high	
+	SPICS_SET;													    //NSS init high	
 }
 
 /** \brief initialize spi data structure
@@ -56,8 +56,8 @@ csi_error_t csi_spi_init(csp_spi_t *ptSpiBase)
 {
 	csi_error_t tRet = CSI_OK;
 	
-	apt_spi_gpio_init();
-	csi_spi_paraconfig_init(ptSpiBase, apt_spi_event);
+	apt_spi_gpio_init();//spi gpio config
+	csi_spi_paraconfig_init(ptSpiBase, apt_spi_event);//spi parameter config
 	
 	csi_clk_enable((uint32_t *)ptSpiBase);				//spi peripheral clk enable
 	csp_spi_default_init(ptSpiBase);					//reset all registers
@@ -67,7 +67,12 @@ csi_error_t csi_spi_init(csp_spi_t *ptSpiBase)
 	csi_spi_cp_format(ptSpiBase, g_tSpiTransmit.eSpiPolarityPhase);	
 	csi_spi_frame_len(ptSpiBase, g_tSpiTransmit.eSpiFrameLen);	
 	csi_spi_baud(ptSpiBase, g_tSpiTransmit.dwSpiBaud);
-	//csp_spi_set_int(ptSpiBase, SPI_RXIM_INT | SPI_RTIM_INT,true);//enable rx fifo int,when as slave use
+	
+	#ifndef	SPI_SYNC_SEL
+		//csp_spi_set_int(ptSpiBase, SPI_RXIM_INT | SPI_RTIM_INT,true);//enable rx fifo int
+		csp_spi_set_int(ptSpiBase, SPI_RXIM_INT,true);
+	#endif
+	
 	csp_spi_en(ptSpiBase);							//enable spi
 	
 	return tRet;
@@ -963,12 +968,29 @@ static void apt_spi_intr_send_data(csp_spi_t *ptSpiBase)
 __attribute__((weak)) void spi_irqhandler(csp_spi_t *ptSpiBase)
 {	
 	uint32_t status = csp_spi_get_isr(ptSpiBase);
-	
+	uint8_t receive_data[4];
 	//fifo rx 
 	if(status & SPI_RXIM_INT)
 	{
 		//You can replace it with your own function handling,The following is for reference only
-		apt_spi_intr_recv_data(ptSpiBase);
+		#ifdef SPI_MASTER_SEL
+			#ifndef SPI_SYNC_SEL
+				//apt_spi_intr_recv_data(ptSpiBase);//when use"csi_spi_send_receive_async"function
+				for(uint8_t i = 0; i < g_tSpiTransmit.eSpiRxFifoLevel; i++)
+				{
+					receive_data[i] = csi_spi_receive_slave(SPI0);						
+				    //csi_uart_putc(UART1, receive_data[i]);
+				}
+			#endif
+		#else
+			#ifndef SPI_SYNC_SEL
+				for(uint8_t i = 0; i < g_tSpiTransmit.eSpiRxFifoLevel; i++)
+				{
+					receive_data[i] = csi_spi_receive_slave(SPI0);
+					csi_spi_send_slave(SPI0, receive_data[i]);
+				}
+			#endif
+		#endif
 	}
 	//fifo tx 
 	if(status & SPI_TXIM_INT)		
@@ -991,7 +1013,7 @@ __attribute__((weak)) void spi_irqhandler(csp_spi_t *ptSpiBase)
 		//You can replace it with your own function handling,The following is for reference only
 		csp_spi_clr_isr(ptSpiBase, SPI_RTIM_INT);
 		
-		for(uint8_t i = 0; i < 3; i++)
+		for(uint8_t i = 0; i < g_tSpiTransmit.eSpiRxFifoLevel-1; i++)
 		{
 			if(csp_spi_get_data_size(ptSpiBase) == SPI_DSS_16)			//16bit(two bite)
 			{
