@@ -18,6 +18,10 @@
 #include <drv/pin.h>
 #include "board_config.h"
 #include "csp.h"
+
+#include "drv/ept.h"
+#include <drv/gpio.h>
+
 #include "rtc.h"
 
 /* externs function--------------------------------------------------------*/
@@ -87,9 +91,54 @@ void ADCIntHandler(void)
 		
 }
 
+
+#define		PINMASK_PA02		(0x01ul << 2)	
+uint32_t val_BUFF[4];
+
 void EPT0IntHandler(void) 
 {	
-    csp_ept_clr_int(EPT0, 0xffffffff);
+	if(((csp_ept_get_emmisr(EPT0) & EPT_INT_EP7))==EPT_INT_EP7)
+	{
+	 g_byAdcDone+=1;
+	 
+	 csp_ept_clr_emint(EPT0,EPT_INT_EP7);	
+	}
+	
+	if(((csp_ept_get_misr(EPT0) & EPTINT_TRGEV0))==EPTINT_TRGEV0)
+	{	csi_gpio_port_write(GPIOA0,(0x01ul << 2), 0);//gpio_port low	
+	  g_byAdcDone+=1;
+	  csp_ept_clr_int(EPT0, EPTINT_TRGEV0);
+	    csi_gpio_port_write(GPIOA0, (0x01ul << 2), 1);//gpio_port high		
+	}
+	
+    if(((csp_ept_get_misr(EPT0) & EPTINT_CAPLD0))==EPTINT_CAPLD0)
+	{		
+	 g_byAdcDone+=1;
+		
+		
+	 csp_ept_clr_int(EPT0, EPTINT_CAPLD0);			
+	}
+	if(((csp_ept_get_misr(EPT0) & EPTINT_CAPLD1))==EPTINT_CAPLD1)
+	{		
+	    g_byAdcDone+=1;
+	 csp_ept_clr_int(EPT0, EPTINT_CAPLD1);			
+	}
+	if(((csp_ept_get_misr(EPT0) & EPTINT_CAPLD2))==EPTINT_CAPLD2)
+	{		
+	    g_byAdcDone+=1;
+	 csp_ept_clr_int(EPT0, EPTINT_CAPLD2);			
+	}
+	if(((csp_ept_get_misr(EPT0) & EPTINT_CAPLD3))==EPTINT_CAPLD3)
+	{		
+	    g_byAdcDone+=1;
+		val_BUFF[0]=csp_ept_get_cmpa(EPT0);
+		val_BUFF[1]=csp_ept_get_cmpb(EPT0);
+		val_BUFF[2]=csp_ept_get_cmpc(EPT0);
+		val_BUFF[3]=csp_ept_get_cmpd(EPT0);
+//		csp_ept_set_crrearm(EPT0);
+	 csp_ept_clr_int(EPT0, EPTINT_CAPLD3);			
+	}
+	
 }
 void EPT0EMIntHandler(void)
 {
