@@ -61,20 +61,19 @@
 * CR : ADC12 Control Register
 ******************************************************************************/
 #define ADC12_BUFSEL_POS	17
-#define ADC12_BUFSEL_MSK	(0x1<<ADC12_BUFSEL_POS)
+#define ADC12_BUFSEL_MSK	(0x03ul << ADC12_BUFSEL_POS)
 #define ADC12_BUFEN_POS		16
-#define ADC12_BUFEN_MSK		(0x1<<ADC12_BUFEN_POS)
-
+#define ADC12_BUFEN_MSK		(0x01ul << ADC12_BUFEN_POS)
 
 #define ADC12_FVRSEL_POS	25
-#define ADC12_FVRSEL_MSK	(0x1<<ADC12_FVRSEL_POS)
+#define ADC12_FVRSEL_MSK	(0x01ul << ADC12_FVRSEL_POS)
 #define ADC12_FVREN_POS		24
-#define ADC12_FVREN_MSK		(0x1<<ADC12_FVREN_POS)
-typedef enum {	
-	AVR_2048 =0,
-	AVR_4096
-}adc_fvrsel_e;
+#define ADC12_FVREN_MSK		(0x01ul << ADC12_FVREN_POS)
 
+typedef enum {	
+	ADC12_FVR_2048 		= 0,
+	ADC12_FVR_4096
+}adc_fvrsel_e;
 
 typedef enum
 {
@@ -92,15 +91,15 @@ typedef enum
 #define ADC12_VREF_MSK 	(0x0ful << ADC12_VREF_POS) 
 typedef enum{
 	VERF_VDD_VSS 		= (0x00ul),
-	VREF_VREFP_VSS		= (0x01ul ),
-	VREF_FVR2048_VSS	= (0x02ul ),
-	VREF_FVR4096_VSS	= (0x03ul ),
-	VREF_INTVREF_VSS	= (0x04ul ),
-	VREF_VDD_VREFN		= (0x08ul ),
-	VREF_VREFP_VREFN	= (0x09ul ),
-	VREF_FVR2048_VREFN	= (0x0aul ),
-	VREF_FVR4096_VREFN	= (0x0bul ),
-	VREF_INTVREF_VREFN	= (0x0cul )
+	VREF_VREFP_VSS		= (0x01ul),
+	VREF_FVR2048_VSS	= (0x02ul),
+	VREF_FVR4096_VSS	= (0x03ul),
+	VREF_INTVREF_VSS	= (0x04ul),
+	VREF_VDD_VREFN		= (0x08ul),
+	VREF_VREFP_VREFN	= (0x09ul),
+	VREF_FVR2048_VREFN	= (0x0aul),
+	VREF_FVR4096_VREFN	= (0x0bul),
+	VREF_INTVREF_VREFN	= (0x0cul)
 }adc_vref_e;
 
 #define ADC12_BIT_POS 	(31) 
@@ -234,39 +233,67 @@ typedef enum{
 * CSR, SR, IER, IDR, IMR : ADC12 Status Registers and Interrupt Registers
 ******************************************************************************/
 /* SR, IER, IDR, IMR Registers only                                          */
-
 #define ADC12_SEQ_POS		(16)
 #define ADC12_SEQ_MSK 		(0xffff << ADC12_SEQ_POS)
-#define ADC12_SEQ(val)   	( val + ADC12_SEQ_POS)    
+#define ADC12_SEQ(val)   	(0x01ul << (val + ADC12_SEQ_POS))    
+
+#define ADC12_SEQ_IDX_POS	(10)
+#define ADC12_SEQ_IDX_MSK 	(0x0F << ADC12_SEQ_IDX_POS)
 
 typedef enum{
-	ADC12_EOC		= 0,
-	ADC12_READY		= 1,
-	ADC12_OVR		= 2,
-	ADC12_CMP0H		= 4,
-	ADC12_CMP0L		= 5,
-	ADC12_CMP1H		= 6,
-	ADC12_CMP1L		= 7,
+	ADC12_EOC			= (0x01uL << 0),
+	ADC12_READY			= (0x01uL << 1),
+	ADC12_OVR			= (0x01uL << 2),
+	ADC12_CMP0H			= (0x01uL << 4),
+	ADC12_CMP0L			= (0x01uL << 5),
+	ADC12_CMP1H			= (0x01uL << 6),
+	ADC12_CMP1L			= (0x01uL << 7),
+	ADC12_ADCENS    	= (0x01uL << 8),  			//adc enable status   
+	ADC12_CTCVS     	= (0x01uL << 9), 			//adc mode 
 	
-	ADC12_SEQ0		= 16,			//SEQX0-15     
-	ADC12_SEQ1  	= 17,     
-	ADC12_SEQ2  	= 18,     
-	ADC12_SEQ3  	= 19,     
-	ADC12_SEQ4  	= 20,     
-	ADC12_SEQ5  	= 21,     
-	ADC12_SEQ6 	 	= 22,     
-	ADC12_SEQ7  	= 23,     
-	ADC12_SEQ8  	= 24,     
-	ADC12_SEQ9  	= 25,     
-	ADC12_SEQ10  	= 26,     
-	ADC12_SEQ11   	= 27,     
-	ADC12_SEQ12   	= 28,     
-	ADC12_SEQ13   	= 29,     
-	ADC12_SEQ14   	= 30,     
-	ADC12_SEQ15   	= 31,
+	ADC12_SEQ0			= (0x01uL << 16),			//SEQX0-15     
+	ADC12_SEQ1  		= (0x01uL << 17),     
+	ADC12_SEQ2  		= (0x01uL << 18),     
+	ADC12_SEQ3  		= (0x01uL << 19),     
+	ADC12_SEQ4  		= (0x01uL << 20),     
+	ADC12_SEQ5  		= (0x01uL << 21),     
+	ADC12_SEQ6 	 		= (0x01uL << 22),     
+	ADC12_SEQ7  		= (0x01uL << 23),     
+	ADC12_SEQ8  		= (0x01uL << 24),     
+	ADC12_SEQ9  		= (0x01uL << 25),     
+	ADC12_SEQ10  		= (0x01uL << 26),     
+	ADC12_SEQ11   		= (0x01uL << 27),     
+	ADC12_SEQ12   		= (0x01uL << 28),     
+	ADC12_SEQ13   		= (0x01uL << 29),     
+	ADC12_SEQ14   		= (0x01uL << 30),    
+	ADC12_SEQ15   		= (0x01uL << 30)
+}adc_sr_e;
 
-	ADC12_ADCENS    = 8,  			//adc enable status   
-	ADC12_CTCVS     = 9 			//adc mode 
+typedef enum{
+	ADC12_EOC_INT		= (0x01uL << 0),
+	ADC12_READY_INT		= (0x01uL << 1),
+	ADC12_OVR_INT		= (0x01uL << 2),
+	ADC12_CMP0H_INT		= (0x01uL << 4),
+	ADC12_CMP0L_INT		= (0x01uL << 5),
+	ADC12_CMP1H_INT		= (0x01uL << 6),
+	ADC12_CMP1L_INT		= (0x01uL << 7),
+	
+	ADC12_SEQ0_INT		= (0x01uL << 16),			//SEQX0-15     
+	ADC12_SEQ1_INT  	= (0x01uL << 17),     
+	ADC12_SEQ2_INT  	= (0x01uL << 18),     
+	ADC12_SEQ3_INT  	= (0x01uL << 19),     
+	ADC12_SEQ4_INT  	= (0x01uL << 20),     
+	ADC12_SEQ5_INT  	= (0x01uL << 21),     
+	ADC12_SEQ6_INT 	 	= (0x01uL << 22),     
+	ADC12_SEQ7_INT  	= (0x01uL << 23),     
+	ADC12_SEQ8_INT  	= (0x01uL << 24),     
+	ADC12_SEQ9_INT  	= (0x01uL << 25),     
+	ADC12_SEQ10_INT  	= (0x01uL << 26),     
+	ADC12_SEQ11_INT   	= (0x01uL << 27),     
+	ADC12_SEQ12_INT   	= (0x01uL << 28),     
+	ADC12_SEQ13_INT   	= (0x01uL << 29),     
+	ADC12_SEQ14_INT   	= (0x01uL << 30),     
+	ADC12_SEQ15_INT   	= (0x01uL << 31)
 }adc_int_e;
 
 /******************************************************************************
@@ -424,23 +451,22 @@ typedef enum{
 /******************************************************************************
 ********************* ADC12 External Functions Declaration ********************
 ******************************************************************************/
-extern void csp_adc_set_clk(csp_adc_t *ptAdcBase, bool bEnable);
-extern void csp_adc_set_dbgen(csp_adc_t *ptAdcBase, bool bEnable);
-extern void csp_adc_set_seqx(csp_adc_t *ptAdcBase, uint8_t bySeqx,adc_chnl_e eAdcChnl, adc_cnt_e eCvcnt,
-									adc_avg_e eAvgSel,bool eAvgctrl, adc_trg_src_e eSrc);
-extern void csp_adc_set_int(csp_adc_t *ptAdcBase,adc_int_e eAdcInt,bool bEnable);
-extern void csp_adc_set_clk_div(csp_adc_t *ptAdcBase, uint8_t byDiv);
-extern uint8_t  csp_adc_get_clk_div(csp_adc_t *ptAdcBase);
-extern uint32_t csp_adc_get_conv_mode(csp_adc_t *ptAdcBase);
-extern void csp_adc_set_vref(csp_adc_t *ptAdcBase, adc_vref_e eVrefSel);
-extern void csp_adc_set_cmp0(csp_adc_t *ptAdcBase, uint32_t wCmpData, uint8_t byCmpChnl);
-extern void csp_adc_set_cmp1(csp_adc_t *ptAdcBase, uint32_t wCmpData, uint8_t byCmpChnl);
-
-extern void csp_adc_set_sync_delay(csp_adc_t *ptAdcBase, adc_sync_e eTrgIn, uint8_t byDelay);
-extern void csp_adc_set_sync(csp_adc_t *ptAdcBase, adc_sync_e eTrgIn, adc_evtrg_mode_e eTrgMode, bool bEnChnl);
-extern void csp_adc_set_evtrg(csp_adc_t *ptAdcBase, adc_evtrg_src_e eEvSrc, adc_evtrg_out_e eEvOut);
-extern void csp_adc_evtrg_en(csp_adc_t *ptAdcBase, adc_evtrg_out_e eEvOut);
-extern void csp_adc_evtrg_dis(csp_adc_t *ptAdcBase, adc_evtrg_out_e eEvOut);
+//extern void csp_adc_set_clk(csp_adc_t *ptAdcBase, bool bEnable);
+//extern void csp_adc_set_dbgen(csp_adc_t *ptAdcBase, bool bEnable);
+//extern void csp_adc_set_seqx(csp_adc_t *ptAdcBase, uint8_t bySeqx,adc_chnl_e eAdcChnl, adc_cnt_e eCvcnt,
+//									adc_avg_e eAvgSel,bool eAvgctrl, adc_trg_src_e eSrc);
+//extern void csp_adc_set_int(csp_adc_t *ptAdcBase,adc_int_e eAdcInt,bool bEnable);
+//extern uint8_t  csp_adc_get_clk_div(csp_adc_t *ptAdcBase);
+//extern uint32_t csp_adc_get_conv_mode(csp_adc_t *ptAdcBase);
+//extern void csp_adc_set_vref(csp_adc_t *ptAdcBase, adc_vref_e eVrefSel);
+//extern void csp_adc_set_cmp0(csp_adc_t *ptAdcBase, uint32_t wCmpData, uint8_t byCmpChnl);
+//extern void csp_adc_set_cmp1(csp_adc_t *ptAdcBase, uint32_t wCmpData, uint8_t byCmpChnl);
+//
+//extern void csp_adc_set_sync_delay(csp_adc_t *ptAdcBase, adc_sync_e eTrgIn, uint8_t byDelay);
+//extern void csp_adc_set_sync(csp_adc_t *ptAdcBase, adc_sync_e eTrgIn, adc_evtrg_mode_e eTrgMode, bool bEnChnl);
+//extern void csp_adc_set_evtrg(csp_adc_t *ptAdcBase, adc_evtrg_src_e eEvSrc, adc_evtrg_out_e eEvOut);
+//extern void csp_adc_evtrg_en(csp_adc_t *ptAdcBase, adc_evtrg_out_e eEvOut);
+//extern void csp_adc_evtrg_dis(csp_adc_t *ptAdcBase, adc_evtrg_out_e eEvOut);
 
 /******************************************************************************
 ********************* ADC12 inline Functions Declaration **********************
@@ -453,7 +479,19 @@ static inline void csp_adc_set_resolution(csp_adc_t *ptAdcBase, adc_resolution_e
 {
 	ptAdcBase->CR &= (ptAdcBase->CR & (~ADC12_BIT_MSK)) | (eBitNum << ADC12_BIT_POS);
 }
+static inline void csp_adc_set_clk_div(csp_adc_t *ptAdcBase, uint8_t byDiv)
+{
+	ptAdcBase->MR = (ptAdcBase->MR & (~ADC12_PRLVAL_MASK)) | (byDiv >> 1);
+}
+static inline uint32_t csp_adc_get_clk_div(csp_adc_t *ptAdcBase)
+{
+	return ((ptAdcBase->MR & ADC12_PRLVAL_MASK) >> 1);
+}
+static inline void csp_adc_set_vref(csp_adc_t *ptAdcBase, adc_vref_e eVrefSel)
+{
+	ptAdcBase->CR =  (ptAdcBase->CR & (~ADC12_VREF_MSK)) | (eVrefSel<<ADC12_VREF_POS);
 
+}
 static inline void csp_adc_bufout_enable(csp_adc_t *ptAdcBase, bool bEnable)
 {
 	ptAdcBase -> CR = (ptAdcBase->CR & ~ADC12_BUFEN_MSK)| (bEnable << ADC12_BUFEN_POS);
@@ -483,29 +521,61 @@ static inline void csp_adc_trgsrc_sel(csp_adc_t *ptAdcBase,uint8_t bychnl,adc_tr
 	ptAdcBase->SEQ[bychnl] = (ptAdcBase->SEQ[bychnl] & (~ADC12_TRG_MSK)) | (eTrgSrc<<ADC12_TRG_POS);
 }
 
+static inline void csp_adc_set_seqx(csp_adc_t *ptAdcBase, uint8_t bySeqNum, adc_chnl_e eAdcChnl, 
+				adc_cnt_e eCvcnt,adc_avg_e eAvgSel, bool eAvgctrl, adc_trg_src_e eSrc)
+{
+	ptAdcBase->SEQ[bySeqNum] = eAdcChnl | (eCvcnt<<ADC12_CVCNT_P0S) | (eAvgSel <<ADC12_AVGSEL_POS) | 
+				(eAvgctrl<<ADC12_AVGEN_POS) | (eSrc << ADC12_TRG_POS);
+}
+
+static inline void csp_adc_set_cmp0(csp_adc_t *ptAdcBase, uint32_t wCmpData, uint8_t byCmpChnl)
+{
+	ptAdcBase->CMP0 = wCmpData;
+	ptAdcBase->MR = (ptAdcBase->MR & (~ADC12_NBRCMP0_MASK)) | ADC12_NBRCMP0(byCmpChnl);
+} 
+
+static inline void csp_adc_set_cmp1(csp_adc_t *ptAdcBase, uint32_t wCmpData, uint8_t byCmpChnl)
+{
+	ptAdcBase->CMP1 = wCmpData;
+	ptAdcBase->MR = (ptAdcBase->MR & (~ADC12_NBRCMP1_MASK)) | ADC12_NBRCMP1(byCmpChnl);
+} 
+
+static inline void csp_adc_clk_en(csp_adc_t *ptAdcBase)
+{
+	ptAdcBase->ECR = ADC12_CLKEN;
+	while(!(ptAdcBase->PMSR & ADC12_CLKEN));	
+}
+
+static inline void csp_adc_clk_dis(csp_adc_t *ptAdcBase)
+{
+	ptAdcBase->DCR = ADC12_CLKEN;
+	while((ptAdcBase->PMSR & ADC12_CLKEN));	
+}
 /*************************************************************************
  * @brief  adc sr imr csr handle
 ****************************************************************************/
-static inline void csp_adc_clr_status(csp_adc_t *ptAdcBase,adc_int_e eAdcInt)
+static inline uint8_t csp_adc_get_seq_idx(csp_adc_t *ptAdcBase)
 {
-	ptAdcBase->CSR = (0x01ul << eAdcInt);
+	return (uint8_t)((ptAdcBase->SR & ADC12_SEQ_IDX_MSK) >> ADC12_SEQ_IDX_POS);
 }
-static inline uint32_t csp_adc_get_status(csp_adc_t *ptAdcBase, adc_int_e eAdcInt)
-{
-	return (uint32_t)((ptAdcBase->SR >> eAdcInt) & 0x01ul);
-}
-static inline uint32_t csp_adc_get_imr(csp_adc_t *ptAdcBase,adc_int_e eAdcInt)
-{
-	return (uint32_t)((ptAdcBase->IMR >> eAdcInt) & 0x01ul);
-}
-
-static inline uint32_t csp_adc_get_status_all(csp_adc_t *ptAdcBase)
+static inline uint32_t csp_adc_get_sr(csp_adc_t *ptAdcBase)
 {
 	return (uint32_t)(ptAdcBase->SR);
 }
-static inline uint32_t csp_adc_get_imr_all(csp_adc_t *ptAdcBase)
+static inline void csp_adc_clr_sr(csp_adc_t *ptAdcBase,adc_sr_e eAdcSr)
+{
+	ptAdcBase->CSR =  eAdcSr;
+}
+static inline uint32_t csp_adc_get_isr(csp_adc_t *ptAdcBase)
 {
 	return (uint32_t)(ptAdcBase->IMR);
+}
+static inline void csp_adc_int_enable(csp_adc_t *ptAdcBase, adc_int_e eAdcInt, bool bEnable)
+{
+	if(bEnable)
+		ptAdcBase->IER |= eAdcInt; 
+	else
+		ptAdcBase->IDR |= eAdcInt; 
 }
 /*************************************************************************
  * @brief  adc cr control: start/stop/en/dis/swtrg
@@ -534,7 +604,7 @@ static inline void csp_adc_cmd_ctrl(csp_adc_t *ptAdcBase,adc_cr_e eCrCtrl)
 {
 	ptAdcBase->CR |= 0x1<<eCrCtrl;
 }
-static inline void csp_adc_swrst(csp_adc_t *ptAdcBase)
+static inline void csp_adc_soft_rst(csp_adc_t *ptAdcBase)
 {
 	ptAdcBase->CR |= 0x1<<ADC12_SWRST;
 }
