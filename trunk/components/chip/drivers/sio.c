@@ -9,6 +9,9 @@
  * </table>
  * *********************************************************************
 */
+#include <string.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include <sys_clk.h>
 #include <drv/sio.h>
 #include <drv/irq.h>
@@ -32,7 +35,7 @@ csi_sio_trans_t g_tSioTran;
  */
 void apt_sio_irqhandler(csp_sio_t *ptSioBase)
 {
-	volatile uint32_t wStatus = csp_sio_get_isr(ptSioBase) & 0x2a;
+	volatile uint32_t wStatus = csp_sio_get_isr(ptSioBase) & 0x3a;
 	
 	switch(wStatus)
 	{
@@ -43,28 +46,25 @@ void apt_sio_irqhandler(csp_sio_t *ptSioBase)
 			if(NULL == g_tSioTran.pwData || 0 == g_tSioTran.hwSize)
 			{
 				csp_sio_get_rxbuf(ptSioBase);
-				g_tSioTran.byRxStat = SIO_STATE_ERROR;					//receive error
+				g_tSioTran.byRxStat = SIO_STATE_ERROR;				//receive error
 			}
 			else
 			{
-				*g_tSioTran.pwData = csp_sio_get_rxbuf(ptSioBase);		//receive data
-				g_tSioTran.hwSize --;
-				g_tSioTran.pwData ++;
-				g_tSioTran.hwTranLen ++;
-				
-				if(0 == g_tSioTran.hwSize)						
-				{
-					g_tSioTran.byRxStat = SIO_STATE_FULL;				//receive complete
-				}
+				*(g_tSioTran.pwData + g_tSioTran.hwTranLen) = csp_sio_get_rxbuf(ptSioBase);	//receive data
+				if(g_tSioTran.hwTranLen < g_tSioTran.hwSize)
+					g_tSioTran.hwTranLen ++;
+				else
+					g_tSioTran.byRxStat = SIO_STATE_FULL;			//receive buf full, g_tSioTran.hwTranLen = receive data len = receive buf len
 			}
 			break;
 		case SIO_TIMEOUT:
 			csp_sio_clr_isr(ptSioBase, SIO_TIMEOUT);
 			break;
-		case SIO_BREAK:
+		case SIO_BREAK:												//receive break interrupt ,reset receive module
 			csp_sio_clr_isr(ptSioBase, SIO_BREAK);
 			break;
 		default:
+			csp_sio_clr_isr(ptSioBase, SIO_BREAK | SIO_RXDNE | SIO_RXBUFFULL | SIO_TIMEOUT);
 			break;
 	}
 }
@@ -73,17 +73,17 @@ void apt_sio_irqhandler(csp_sio_t *ptSioBase)
  *  \param[in] ptSioBase: pointer of sio register structure
  *  \return none
  */
-static void apt_sio_default_init(csp_sio_t *ptSioBase)
-{
-	ptSioBase->CR 		= SIO_RESET_VALUE;
-	ptSioBase->TXCR0 	= SIO_RESET_VALUE;
-	ptSioBase->TXCR1 	= SIO_RESET_VALUE;
-	ptSioBase->RXCR0 	= SIO_RESET_VALUE;
-	ptSioBase->RXCR1 	= SIO_RESET_VALUE;
-	ptSioBase->RXCR2 	= SIO_RESET_VALUE;
-	ptSioBase->IMCR 	= SIO_RESET_VALUE;
-	ptSioBase->ICR 		= SIO_RESET_VALUE;
-}
+//static void apt_sio_default_init(csp_sio_t *ptSioBase)
+//{
+//	ptSioBase->CR 		= SIO_RESET_VALUE;
+//	ptSioBase->TXCR0 	= SIO_RESET_VALUE;
+//	ptSioBase->TXCR1 	= SIO_RESET_VALUE;
+//	ptSioBase->RXCR0 	= SIO_RESET_VALUE;
+//	ptSioBase->RXCR1 	= SIO_RESET_VALUE;
+//	ptSioBase->RXCR2 	= SIO_RESET_VALUE;
+//	ptSioBase->IMCR 	= SIO_RESET_VALUE;
+//	ptSioBase->ICR 		= SIO_RESET_VALUE;
+//}
 /** \brief Init sio tx, Initializes the resources needed for the sio instance 
  * 
  *  \param[in] ptSioBase: pointer of sio register structure
@@ -95,7 +95,6 @@ csi_error_t csi_sio_tx_init(csp_sio_t *ptSioBase, csi_sio_tx_config_t *ptTxCfg)
 	uint16_t hwClkDiv;
 	
 	csi_clk_enable((uint32_t *)ptSioBase);		//sio peripheral clk en
-	apt_sio_default_init(ptSioBase);			//sio reg default
 	csp_sio_clk_en(ptSioBase);					//enable clk
 	csp_sio_set_mode(ptSioBase, SIO_MODE_TX);	//sio tx mode
 	
@@ -116,7 +115,7 @@ csi_error_t csi_sio_tx_init(csp_sio_t *ptSioBase, csi_sio_tx_config_t *ptTxCfg)
 	
 	if(ptTxCfg->byInter)	
 	{	
-		g_tSioTran.bySendMode = SIO_TX_MODE_INT;						//interrupt
+		g_tSioTran.bySendMode = SIO_TX_MODE_INT;						//interrupt, unsupport
 		csi_irq_enable((uint32_t*)ptSioBase);							//enable sio irq 
 	}
 	else
@@ -136,7 +135,6 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
 	uint16_t hwClkDiv;
 	
 	csi_clk_enable((uint32_t *)ptSioBase);		//sio peripheral clk en
-	apt_sio_default_init(ptSioBase);			//sio reg default
 	csp_sio_clk_en(ptSioBase);					//enable clk
 	csp_sio_set_mode(ptSioBase, SIO_MODE_RX);	//sio rx mode
 	
@@ -156,14 +154,18 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
 	
 	if(ptRxCfg->byInter)	
 	{
+		g_tSioTran.byRecvMode = SIO_RX_MODE_INT;						//interrupt mode						
 		if(ptRxCfg->byInter & SIO_INTSRC_RXDNE)							//RXDONE  interrupt				
 		{
+			
 			if(ptRxCfg->byRxCnt > 32)									//byRxCnt > 32 ,the mode work error
 				return CSI_ERROR;
 		}
 		csp_sio_int_enable(ptSioBase, ptRxCfg->byInter, ENABLE);		//enable sio interrupt
 		csi_irq_enable((uint32_t*)ptSioBase);							//enable sio irq 
 	}
+	else
+		g_tSioTran.byRecvMode = SIO_RX_MODE_POLL;						//polling mode, unsupport
 
 	return CSI_OK;
 }
@@ -173,11 +175,16 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
  *  \param[in] eBkLev: break reset detect level
  *  \param[in] byBkCnt: break reset detect period
  *  \param[in] bEnable: ENABLE/DISABLE
- *  \return none
+ *  \return error code \ref csi_error_t
 */
-void csi_sio_break_rst(csp_sio_t *ptSioBase, csi_sio_bklev_e eBkLev, uint8_t byBkCnt, bool bEnable)
+csi_error_t csi_sio_break_rst(csp_sio_t *ptSioBase, csi_sio_bklev_e eBkLev, uint8_t byBkCnt, bool bEnable)
 {
-	csp_sio_set_break(ptSioBase, bEnable, eBkLev, byBkCnt);
+	if(byBkCnt == 0)
+		return CSI_ERROR;
+		
+	csp_sio_set_break(ptSioBase, bEnable, eBkLev, byBkCnt - 1);
+
+	return CSI_OK; 
 }
 
 /** \brief sio receive timeout reset config
@@ -185,11 +192,42 @@ void csi_sio_break_rst(csp_sio_t *ptSioBase, csi_sio_bklev_e eBkLev, uint8_t byB
  *  \param[in] ptSioBase: pointer of sio register structure
  *  \param[in] byBkCnt: break reset detect period
  *  \param[in] bEnable: ENABLE/DISABLE
+ *  \return error code \ref csi_error_t
+*/
+csi_error_t csi_sio_timeout_rst(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable)
+{
+	if(byToCnt == 0)
+		return CSI_ERROR;
+		
+	csp_sio_set_torst(ptSioBase, bEnable, byToCnt - 1);
+	
+	return CSI_OK; 
+}
+/** \brief sio transfer mode set,send(tx)/receive(rx)
+ * 
+ *  \param[in] ptSioBase: pointer of sio register structure
+ *  \param[in] eTransMd: sio transfer mode, send(tx)/receive(rx)
  *  \return none
 */
-void csi_sio_timeout_rst(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable)
+void csi_sio_set_mode(csp_sio_t *ptSioBase, csi_sio_mode_e eTransMd)
 {
-	csp_sio_set_torst(ptSioBase, bEnable, byToCnt);
+	csp_sio_set_mode(ptSioBase, eTransMd);
+}
+/** \brief enable/disable sio interrupt 
+ * 
+ *  \param[in] ptSioBase: pointer of sio register structure
+ *  \param[in] eIntSrc: sio interrupt source
+ *  \param[in] bEnable: enable/disable interrupt
+ *  \return none
+ */
+void csi_sio_int_enable(csp_sio_t *ptSioBase, csi_sio_intsrc_e eIntSrc, bool bEnable)
+{
+	csp_sio_int_enable(ptSioBase, eIntSrc, bEnable);
+	
+	if(bEnable)
+		csi_irq_enable((uint32_t *)ptSioBase);
+	else
+		csi_irq_disable((uint32_t *)ptSioBase);
 }
 /** \brief send data from sio, this function is polling mode(sync mode)
  * 
@@ -212,14 +250,46 @@ int32_t csi_sio_send(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSi
 				while(!(csp_sio_get_risr(ptSioBase) & SIO_TXBUFEMPT));	
 			}
 			while(!(csp_sio_get_risr(ptSioBase) & SIO_TXDNE));
-			//csp_sio_clr_isr(ptSioBase, SIO_TXDNE);
+			csp_sio_clr_isr(ptSioBase, SIO_TXDNE);
 			return i;
-		case SIO_TX_MODE_INT:											//sio send interrupt mode, unsupport
-			return CSI_UNSUPPORTED;
+		case SIO_TX_MODE_INT:
+			return CSI_UNSUPPORTED;										//sio send interrupt mode, unsupport
 		default:
-			return CSI_ERROR;
+			return 0;
 	}
 }
+
+//static void delay_ums(unsigned int t)
+//{
+//	volatile unsigned int i,j ,k=0;
+//	j = 20* t;
+//	for ( i = 0; i < j; i++ )
+//	{
+//		k++;
+//	}
+//}
+/** \brief send data from sio, this function is polling mode(sync mode), with delay between bytes 
+ * 
+ * \param[in] ptSioBase: pointer of sio register structure
+ * \param[in] pwData: pointer to buffer with data to send 
+ * \param[in] hwSize: send data size
+ * \param[in] hwDelay: delay between bytes 
+ * \return error code \ref csi_error_t or receive data size
+*/
+//int32_t csi_sio_send_space(csp_sio_t *ptSioBase, const uint32_t *pwData, uint16_t hwSize, uint16_t hwDelay)
+//{
+//	uint16_t  i;
+//	
+//	for(i = 0; i < hwSize; i++)									
+//	{
+//		csp_sio_set_txbuf(ptSioBase,pwData[i]);
+//		while(!(csp_sio_get_risr(ptSioBase) & SIO_TXBUFEMPT));	
+//		delay_ums(hwDelay);
+//	}
+//	while(!(csp_sio_get_risr(ptSioBase) & SIO_TXDNE));
+//
+//	return i;
+//}
 /** \brief set sio receive data buffer and length
  * 
  *  \param[in] pwData: pointer of sio transport data buffer
@@ -242,15 +312,29 @@ csi_error_t csi_sio_set_buffer(uint32_t *pwData, uint16_t hwLen)
 /** \brief receive data to sio transmitter, asynchronism mode
  * 
  * \param[in] ptSioBase: pointer of sio register structure
- * \return receive data length
+ * \param[in] pwRecv: pointer of sio receive data
+ * \param[in] hwLen: length receive data
+ * \return error code \ref csi_error_t or receive data len
 */
-uint16_t csi_sio_receive(csp_sio_t *ptSioBase)
+int32_t csi_sio_receive(csp_sio_t *ptSioBase, uint32_t *pwRecv, uint16_t hwLen)
 {
-	
-	if(csi_sio_get_recv_status() == SIO_STATE_FULL)
-		return g_tSioTran.hwTranLen;
-	else
-		return 0;
+	switch(g_tSioTran.byRecvMode)
+	{
+		case SIO_RX_MODE_INT:
+			if(g_tSioTran.hwTranLen >= hwLen)		//sio receive interrupt 		
+			{
+				memcpy((void *)pwRecv, (void *)g_tSioTran.pwData, 4 * hwLen);
+				g_tSioTran.hwTranLen = 0;
+				g_tSioTran.byRxStat  = SIO_STATE_IDLE;
+				return hwLen;
+			}
+			else
+				return 0;
+			case SIO_RX_MODE_POLL:	
+				return CSI_UNSUPPORTED;;			//sio receive polling mode, unsupport
+		default:
+			return 0;
+	}
 }
 /** \brief get the status of sio receive 
  * 
