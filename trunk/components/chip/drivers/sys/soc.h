@@ -25,50 +25,50 @@ extern "C" {
 
 
 #ifndef ISOSC_VALU
-#define ISOSC_VALUE				27000U
+#define ISOSC_VALUE			27000U
 #endif
 
 #ifndef EMOSC_VALUE
-#define EMOSC_VALUE             2000000U
+#define EMOSC_VALUE         2000000U
 #endif
 
 #ifndef EMOSC_32K_VALUE
-#define EMOSC_32K_VALUE         32000U
+#define EMOSC_32K_VALUE		32000U
 #endif
 
 #ifndef IMOSC_5M_VALUE
-#define IMOSC_5M_VALUE			5556000U
+#define IMOSC_5M_VALUE		5556000U
 #endif
 #ifndef IMOSC_4M_VALUE
-#define IMOSC_4M_VALUE          4194000U
+#define IMOSC_4M_VALUE      4194000U
 #endif
 #ifndef IMOSC_2M_VALUE
-#define IMOSC_2M_VALUE          2094000U
+#define IMOSC_2M_VALUE      2094000U
 #endif
 #ifndef IMOSC_131K_VALUE
-#define IMOSC_131K_VALUE        131000U
+#define IMOSC_131K_VALUE	131000U
 #endif
 
 #ifndef HFOSC_48M_VALUE
-#define HFOSC_48M_VALUE         48000000U
+#define HFOSC_48M_VALUE     48000000U
 #endif
 #ifndef HFOSC_24M_VALUE
-#define HFOSC_24M_VALUE         24000000U
+#define HFOSC_24M_VALUE     24000000U
 #endif
 #ifndef HFOSC_12M_VALUE
-#define HFOSC_12M_VALUE         12000000U
+#define HFOSC_12M_VALUE     12000000U
 #endif
 #ifndef HFOSC_6M_VALUE
-#define HFOSC_6M_VALUE          6000000U
+#define HFOSC_6M_VALUE      6000000U
 #endif
 
 //UARTx id number
-#define UART_IDX_NUM   			3
-#define UART_RECV_MAX_LEN		256
+#define UART_IDX_NUM   		3
+#define UART_RECV_MAX_LEN	256
 
 //FLASH
-#define PFLASH_PAGES	256
-#define DFLASH_PAGES	32
+#define PFLASH_PAGES		256
+#define DFLASH_PAGES		32
 
 typedef enum {
 	
