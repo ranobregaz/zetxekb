@@ -90,8 +90,8 @@ build_config:
     - include
     - drivers/sys
   internal_include: ~
-  cflag: -O0  -g3 -Wno-unused-function
-  cxxflag: -O0  -g3 -Wno-unused-function
+  cflag: -Og  -g3 -Wno-unused-function
+  cxxflag: -Og  -g3 -Wno-unused-function
   asmflag: ""
   define:
     - NO_MORE_DEFINE
