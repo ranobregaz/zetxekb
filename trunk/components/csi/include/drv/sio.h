@@ -185,8 +185,8 @@ typedef enum {
 	SIO_STATE_SEND,				//sio sending 
 	SIO_STATE_FULL,				//sio receive complete(full)
 	SIO_STATE_DONE,				//sio send complete
-	SIO_STATE_ERROR,			//sio send complete
-	SIO_STATE_TIMEOUT			//sio send complete
+	SIO_STATE_ERROR,			//sio recv/send error
+	SIO_STATE_TIMEOUT			//sio receive timeout
 } csi_sio_state_e;
 
 /**
@@ -195,11 +195,11 @@ typedef enum {
  */
 typedef enum{
 	//send mode
-	SIO_TX_MODE_POLL	=	0,		//tx polling mode, no interrupt
-	SIO_TX_MODE_INT		=	1,		//tx use interrupt mode
+	SIO_TX_MODE_POLL	=	0,	//tx polling mode, no interrupt
+	SIO_TX_MODE_INT		=	1,	//tx use interrupt mode
 	//receive
-	SIO_RX_MODE_POLL	=	0,		//rx use polling mode, no interrupt
-	SIO_RX_MODE_INT		=	1,		//rx use interrupt mode(RXDONE or RXBUFFULL)
+	SIO_RX_MODE_POLL	=	0,	//rx use polling mode, no interrupt
+	SIO_RX_MODE_INT		=	1,	//rx use interrupt mode(RXDONE or RXBUFFULL)
 }csi_sio_wkmode_e;
 		
 /**
@@ -207,45 +207,44 @@ typedef enum{
  * \brief    SIO send/receive 
  */
 typedef enum{
-	SIO_SEND_MODE		=	0,		//sio send(tx) mode
-	SIO_RECV_MODE		=	1,		//sio receive(rx) mode
+	SIO_SEND_MODE		=	0,	//send(tx) mode
+	SIO_RECV_MODE		=	1,	//receive(rx) mode
 }csi_sio_mode_e;
 
 /// \struct csi_sio_tx_config_t
 /// \brief  sio parameter configuration, open to users  
 typedef struct {
-	uint8_t			byD0Len;		//D0 send length (1~8)bit, all 0 sequence(out low(0)) 
-	uint8_t			byD1Len;		//D1 send length (1~8)bit, all 1 sequence(out high(1)) 
-	uint8_t			byDLLen;		//DL send length (1~8)bit
-	uint8_t			byDHLen;		//DH send length (1~8)bit
-	uint8_t			byDLLsq;		//DL data sequence (0~0xff),send sequence bit0 - bitdatahlen
-	uint8_t			byDHHsq;		//DH data sequence (0~0xff),send sequence bit0 - bitdatallen
-	uint8_t			byTxDir; 		//sio output dir, LSB OR MSB
-	uint8_t			byIdleLev;		//idle sio ouput state	
-	uint8_t			byTxCnt;		//sio tx bit count, Mux Num = 256bit(32bytes)	 
-	uint8_t			byTxBufLen;		//sio tx buffer length, Max Len = 16bit(2bytes)	
-	uint8_t			byInter;		//sio interrupt
-	uint8_t			byTxMode;		//sio tx mode
-	uint32_t		wTxFreq;		//sio tx frequency 
+	uint8_t			byD0Len;	//D0 send length (1~8)个bit, all 0 sequence(out low(0)) 
+	uint8_t			byD1Len;	//D1 send length (1~8)个bit, all 1 sequence(out high(1)) 
+	uint8_t			byDLLen;	//DL send length (1~8)个bit
+	uint8_t			byDHLen;	//DH send length (1~8)个bit
+	uint8_t			byDLLsq;	//DL data sequence (0~0xff),send sequence bit0 - bitdatahlen
+	uint8_t			byDHHsq;	//DH data sequence (0~0xff),send sequence bit0 - bitdatallen
+	uint8_t			byTxDir; 	//sio output dir, LSB OR MSB
+	uint8_t			byIdleLev;	//idle sio ouput state	
+	uint8_t			byTxCnt;	//sio tx bit count, Mux Num = 256bit(32bytes)	 
+	uint8_t			byTxBufLen;	//sio tx buffer length, Max Len = 16bit(2bytes)	
+	uint8_t			byInter;	//sio interrupt
+	uint32_t		wTxFreq;	//sio tx frequency 
 } csi_sio_tx_config_t;;
 
 
 /// \struct csi_sio_tx_config_t
 /// \brief  sio parameter configuration, open to users  
 typedef struct {
-	uint8_t			byDebPerLen;		//debounce period length, (1~8)period
-	uint8_t			byDebClkDiv;		//debounce clk div,
-	uint8_t			byTrgEdge;			//receive samping trigger edge
-	uint8_t			byTrgMode;			//receive samping trigger mode
-	uint8_t			bySpMode;			//receive samping mode
-	uint8_t			bySpBitLen;			//receive samping one bit count length
-	uint8_t			bySpExtra;			//receive samping extract select
-	uint8_t			byHithr;			//extract high Threshold 
-	uint8_t			byRxDir;			//sio receive dir, LSB OR MSB
-	uint8_t			byRxCnt;			//sio rx bit count, Mux Num = 256bit(32bytes)	 
-	uint8_t			byRxBufLen;			//sio rx buffer length, Max Len = 32bit(4bytes)
-	uint8_t			byInter;			//sio interrupt
-	uint32_t		wRxFreq;			//sio tx frequency 
+	uint8_t			byDebPerLen;	//debounce period length, (1~8)period
+	uint8_t			byDebClkDiv;	//debounce clk div,
+	uint8_t			byTrgEdge;		//receive samping trigger edge
+	uint8_t			byTrgMode;		//receive samping trigger mode
+	uint8_t			bySpMode;		//receive samping mode
+	uint8_t			bySpBitLen;		//receive samping one bit count length
+	uint8_t			bySpExtra;		//receive samping extract select
+	uint8_t			byHithr;		//extract high Threshold 
+	uint8_t			byRxDir;		//sio receive dir, LSB OR MSB
+	uint8_t			byRxCnt;		//sio rx bit count, Mux Num = 256bit(32bytes)	 
+	uint8_t			byRxBufLen;		//sio rx buffer length, Max Len = 32bit(4bytes)
+	uint8_t			byInter;		//sio interrupt
+	uint32_t		wRxFreq;		//sio tx frequency 
 } csi_sio_rx_config_t;;
 
 /// \struct csi_sio_transfer_t
@@ -286,10 +285,10 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg);
 /** 
   \brief 	   sio transfer mode set,send(tx)/receive(rx)
   \param[in]   ptSioBase	pointer of sio register structure
-  \param[in]   eTransMd		sio transfer mode, send(tx)/receive(rx)
+  \param[in]   eWorkMd		sio working mode, send(tx)/receive(rx)
   \return 	   none
 */
-void csi_sio_set_mode(csp_sio_t *ptSioBase, csi_sio_mode_e eTransMd);
+void csi_sio_set_mode(csp_sio_t *ptSioBase, csi_sio_mode_e eWorkMd);
 
 /** 
   \brief 	   enable/disable sio interrupt 
