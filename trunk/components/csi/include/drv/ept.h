@@ -5,7 +5,7 @@
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-9-8 <td>V0.0  <td>WNN   <td>initial
- * <tr><td> 2021-1-2 <td>V0.1 <td>LJY   <td>modify on 110
+ * <tr><td> 2021-1-2 <td>V0.1  <td>LJY   <td>modify on 110
  * <tr><td> 2021-1-8 <td>V0.2  <td>WNN   <td>adapt to 102
  * </table>
  * *********************************************************************
@@ -125,7 +125,7 @@ struct csi_ept_Chopper_config
 	uint8_t  byCdiv               ;                
 	uint8_t  byCduty              ;              
 	uint8_t  byCasel              ;              
-	uint8_t  chen            ;              
+	      
 
 };
 typedef enum{
