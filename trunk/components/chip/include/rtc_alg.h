@@ -25,23 +25,23 @@ extern "C" {
 #define RTC_TIME_BASE_YEAR                          (2000)                                 //< Year,      Effective range[1970,2099]
 
 #define RTC_TIME_MAX_VAL_YEAR                       (199)                                  ///< Year,     Maximum value
-#define RTC_TIME_MAX_VAL_MON                        (11)                                   ///< Month,    Maximum value
+#define RTC_TIME_MAX_VAL_MON                        (12)                                   ///< Month,    Maximum value
 #define RTC_TIME_MAX_VAL_DAY                        (31)                                   ///< Day,      Maximum value
 #define RTC_TIME_MAX_VAL_HOUR                       (23)                                   ///< Hour,     Maximum value
 #define RTC_TIME_MAX_VAL_MIN                        (59)                                   ///< Minute,   Maximum value
 #define RTC_TIME_MAX_VAL_SEC                        (59)                                   ///< Second,   Maximum value
 
 #define RTC_TIME_MIN_VAL_YEAR                       (0)                                   ///< Year,     Minimum value
-#define RTC_TIME_MIN_VAL_MON                        (0)                                    ///< Month,    Minimum value    
+#define RTC_TIME_MIN_VAL_MON                        (1)                                    ///< Month,    Minimum value    
 #define RTC_TIME_MIN_VAL_DAY                        (1)                                    ///< Day,      Minimum value
 #define RTC_TIME_MIN_VAL_HOUR                       (0)                                    ///< Hour,     Minimum value
 #define RTC_TIME_MIN_VAL_MIN                        (0)                                    ///< Minute,   Minimum value    
 #define RTC_TIME_MIN_VAL_SEC                        (0)                                    ///< Second,   Minimum value  
 
 #define RTC_TIME_DEFAULT_VAL_YEAR                   (70)                                   ///< Year,     Dafault min value
-#define RTC_TIME_DEFAULT_VAL_MON                    (0)                                    ///< Month,    Dafault min value
+#define RTC_TIME_DEFAULT_VAL_MON                    (1)                                    ///< Month,    Dafault min value
 #define RTC_TIME_DEFAULT_VAL_DAY                    (1)                                    ///< Day,      Dafault min value
-#define RTC_TIME_DEFAULT_VAL_HOUR                   (8)                                    ///< Hour,     Dafault min value
+#define RTC_TIME_DEFAULT_VAL_HOUR                   (0)                                    ///< Hour,     Dafault min value
 #define RTC_TIME_DEFAULT_VAL_MIN                    (0)                                    ///< Minute,   Dafault min value
 #define RTC_TIME_DEFAULT_VAL_SEC                    (0)                                    ///< Second,   Dafault min value
 
@@ -88,6 +88,8 @@ void     clock_utc2calendar(time_t days, int *year, int *month, int *day);
 int32_t  clock_check_tm_ok(const struct tm *rtctime);
 
 int32_t clock_update_basetime(const struct tm *rtctime);
+
+int get_week_by_date(const struct tm *rtctime);
 
 #ifdef __cplusplus
 }

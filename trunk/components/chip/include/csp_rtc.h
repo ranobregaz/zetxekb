@@ -139,10 +139,15 @@ typedef struct {
 
 #define RTC_FMT_POS			(5)
 #define RTC_FMT_MSK			(0x1ul << RTC_FMT_POS)
-#define RTC_24FMT			(0ul << RTC_FMT_POS)
-#define RTC_12FMT			(0x1ul << RTC_FMT_POS)
+typedef enum {
+	RTC_24FMT = 0,
+	RTC_12FMT
+}rtc_fmt_e;
+
 #define RTC_OSEL_POS		(10ul)
 #define RTC_OSEL_MSK		(0x7 << RTC_OSEL_POS)
+
+
 typedef enum {
 	RTC_OUT_ALMA_PULSE = 0,
 	RTC_OUT_ALMA_HIGH,
@@ -207,6 +212,7 @@ typedef enum{
 #define RTC_ALM_DAYU(n) ((n) << 24)
 #define RTC_ALM_DAYT(n) ((n) << 28)
 
+
 #define RTC_ALM_HOR_POS (16ul)
 #define RTC_ALM_HOR_MSK	(0x3f << RTC_ALM_HOR_POS)
 #define RTC_ALM_HORT_POS	(20)
@@ -238,24 +244,25 @@ typedef enum{
 #define RTC_ALM_SECU(n) ((n) << 4)
 #define RTC_ALM_SECT(n) ((n) << 0)
 
-#define RTC_ALM_MSK 	(0x80808080)
+#define RTC_ALM_MODE 	(0xC0808080)
 
 ///SSR
 #define RTC_SSR_MSK		(0xffff)
 
 /// Interrupt Related
-typedef enum{
-	RTC_INT_ALRA = 0x1,
-	RTC_INT_ALRB = 0x2,
-	RTC_INT_CPRD = 0x4,
-	RTC_INT_TRGEV0 = 0x8,
-	RTC_INT_TRGEV1 = 0x10
-}rtc_int_e;
 #define ALRA_INT_POS 	(0)
 #define ALRB_INT_POS	(1)
 #define CPRD_INT_POS	(2)
 #define TRGEV0_INT_POS	(3)
 #define TRGEV1_INT_POS	(4)
+typedef enum{
+	RTC_INT_ALMA = 0x1 << ALRA_INT_POS,
+	RTC_INT_ALMB = 0x1 << ALRB_INT_POS,
+	RTC_INT_CPRD = 0x1 <<CPRD_INT_POS,
+	RTC_INT_TRGEV0 = 0x1 <<TRGEV0_INT_POS,
+	RTC_INT_TRGEV1 = 0x1 <<TRGEV1_INT_POS
+}rtc_int_e;
+
 
 ///KEY
 #define RTC_KEY		(0xca53)
@@ -310,21 +317,18 @@ static inline void csp_rtc_ers_key(csp_rtc_t *ptRtcBase)
 }
 
 
-static inline void csp_rtc_set_fmt(csp_rtc_t *ptRtcBase, bool bFmt)
+static inline void csp_rtc_set_fmt(csp_rtc_t *ptRtcBase, rtc_fmt_e bFmt)
 {
 	ptRtcBase->KEY = 0xCA53;
 	ptRtcBase->CR = (ptRtcBase->CR & (~RTC_FMT_MSK)) | (bFmt << RTC_FMT_POS);
 	ptRtcBase->KEY = 0x0;
 	while(ptRtcBase->CR & RTC_BSY);
 }
-
-static inline void csp_rtc_init_mode(csp_rtc_t *ptRtcBase)
+static inline rtc_fmt_e csp_rtc_get_fmt(csp_rtc_t *ptRtcBase)
 {
-	ptRtcBase->KEY = 0xCA53;
-	ptRtcBase->CR |= RTC_INIT;
-	ptRtcBase->KEY = 0x0;
-	while(ptRtcBase->CR & RTC_BSY);
+	return (((ptRtcBase->CR) & RTC_FMT_MSK) >> RTC_FMT_POS);
 }
+
 static inline void csp_rtc_debug_enable(csp_rtc_t *ptRtcBase, bool bEnable)
 {
 	ptRtcBase->KEY = 0xCA53;
@@ -478,9 +482,9 @@ static inline void csp_rtc_alm_enable(csp_rtc_t *ptRtcBase, uint8_t byAlm, bool 
 static inline void csp_rtc_alm_set_day(csp_rtc_t *ptRtcBase, uint8_t byAlm,  uint8_t byVal)
 {
 	if (byAlm == RTC_ALMA)
-		ptRtcBase->ALRA = (ptRtcBase->ALRA & (~RTC_ALM_DAY_MSK)) |  (byVal << RTC_ALM_DAYU_POS);
+		ptRtcBase->ALRA = (ptRtcBase->ALRA & (~RTC_ALM_DAY_MSK)) |   (byVal << RTC_ALM_DAYU_POS);
 	else
-		ptRtcBase->ALRB = (ptRtcBase->ALRB & (~RTC_ALM_DAY_MSK)) |  (byVal << RTC_ALM_DAYU_POS);
+		ptRtcBase->ALRB = (ptRtcBase->ALRB & (~RTC_ALM_DAY_MSK)) |   (byVal << RTC_ALM_DAYU_POS);
 }
 
 static inline void csp_rtc_alm_set_hour(csp_rtc_t *ptRtcBase, uint8_t byAlm, uint8_t byPm, uint8_t byVal)
@@ -548,25 +552,33 @@ static inline bool csp_rtc_alm_read_dmsk(csp_rtc_t *ptRtcBase, uint8_t byAlm)
 		return ( (ptRtcBase->ALRB & RTC_ALM_DMSK_MSK) >> RTC_ALM_DMSK_POS);
 }
 
+static inline bool csp_rtc_alm_read_wdsel(csp_rtc_t *ptRtcBase, uint8_t byAlm)
+{
+	if (byAlm == RTC_ALMA)
+		return ( (ptRtcBase->ALRA & RTC_ALM_WDSEL_MSK) >> RTC_ALM_WDSEL_POS);
+	else
+		return ( (ptRtcBase->ALRB & RTC_ALM_WDSEL_MSK) >> RTC_ALM_WDSEL_POS);
+}
 
-static inline void csp_rtc_alm_set_msk(csp_rtc_t *ptRtcBase, uint8_t byAlm, bool bDmsk, bool bHmsk, bool bMmsk, bool bSmsk)
+
+static inline void csp_rtc_alm_set_mode(csp_rtc_t *ptRtcBase, uint8_t byAlm, bool bWdsel, bool bDmsk, bool bHmsk, bool bMmsk, bool bSmsk)
 {
 	ptRtcBase->KEY = 0xCA53;
 	if (byAlm == RTC_ALMA)
-		ptRtcBase->ALRA = (ptRtcBase->ALRA & (~RTC_ALM_MSK)) | (bDmsk << RTC_ALM_DMSK_POS) | (bHmsk << RTC_ALM_HMSK_POS) | (bSmsk << RTC_ALM_SMSK_POS);
+		ptRtcBase->ALRA = (ptRtcBase->ALRA & (~RTC_ALM_MODE)) | bWdsel << RTC_ALM_WDSEL_POS |(bDmsk << RTC_ALM_DMSK_POS) | (bHmsk << RTC_ALM_HMSK_POS) | (bSmsk << RTC_ALM_SMSK_POS);
 	else
-		ptRtcBase->ALRB = (ptRtcBase->ALRB & (~RTC_ALM_MSK)) | (bDmsk << RTC_ALM_DMSK_POS) | (bHmsk << RTC_ALM_HMSK_POS) | (bSmsk << RTC_ALM_SMSK_POS);
+		ptRtcBase->ALRB = (ptRtcBase->ALRB & (~RTC_ALM_MODE)) | (bDmsk << RTC_ALM_DMSK_POS) | (bHmsk << RTC_ALM_HMSK_POS) | (bSmsk << RTC_ALM_SMSK_POS);
 	ptRtcBase->KEY = 0x0;
 }
 
 static inline void csp_rtc_int_enable(csp_rtc_t *ptRtcBase, rtc_int_e eInt, bool bEnable)
 {
-	ptRtcBase->KEY = 0xCA53;	
+	//ptRtcBase->KEY = 0xCA53;	
 	if (bEnable)
 		ptRtcBase->IMCR |= eInt;
 	else
 		ptRtcBase->IMCR &= ~eInt;
-	ptRtcBase->KEY = 0x0;
+	//ptRtcBase->KEY = 0x0;
 }
 
 
@@ -580,6 +592,10 @@ static inline uint32_t csp_rtc_get_int_st(csp_rtc_t *ptRtcBase)
 	return (ptRtcBase->MISR);
 }
 
+static inline uint32_t csp_rtc_get_imcr(csp_rtc_t *ptRtcBase)
+{
+	return (ptRtcBase->IMCR);
+}
 static inline void csp_rtc_swf_trg(csp_rtc_t *ptRtcBase, uint8_t byTrg)
 {
 	ptRtcBase -> EVSWF = 0x1 << byTrg;

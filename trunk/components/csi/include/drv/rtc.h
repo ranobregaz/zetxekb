@@ -14,10 +14,24 @@
 #define _DRV_RTC_H_
 
 #include <drv/common.h>
+#include "csp_rtc.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif  
+
+typedef struct  {
+	uint8_t		byClkSrc;	/// clock source
+	uint8_t		byFmt;		//  timer format
+} csi_rtc_config_t;
+
+typedef struct {
+	uint8_t		byAlmMode;	///mode = 0:  day       hour min sec 
+							///mode = 1:  weekday   hour min sec
+							///mode = 2:            hour min sec
+	uint8_t		byAlmSt;	// 0: not yet
+							// 1: time up
+}csi_rtc_alm_t;
 
 /****** RTC time *****/
 typedef struct {
@@ -26,9 +40,10 @@ typedef struct {
     int tm_hour;            ///< Hour.        [0-23]
     int tm_mday;            ///< Day.         [1-31]
     int tm_mon;             ///< Month.       [0-11]
-    int tm_year;            ///< Year-1900.   [70- ]      !NOTE:100=2000       
-    int tm_wday;            ///< Day of week. [0-6 ]      !NOTE:Sunday = 0     
+    int tm_year;            ///< Year-1900.   [70- ]      !NOTE:100=2000    
+	int tm_wday;			/// weekday		  [1-7]	     
     int tm_yday;            ///< Days in year.[0-365]     !NOTE:January 1st = 0
+	int tm_isdst;			/// Non-0 if daylight savings time is in effect
 } csi_rtc_time_t;
 
 /****** definition for rtc *****/
@@ -84,11 +99,12 @@ typedef enum{
 
 /**
   \brief       Initialize RTC Interface. Initializes the resources needed for the RTC interface
-  \param[in]   rtc    rtc handle to operate
-  \param[in]   idx    rtc index
-  \return      error code \ref csi_error_t
+  \param       ptRtc    rtc handle
+  \param	   eOsc		clock source 
+  \param       eFmt     rtc format: RTC_24FMT/RTC_12FMT
+  \return      none
 */
-csi_error_t csi_rtc_init(csi_rtc_t *rtc, uint32_t idx);
+void csi_rtc_init(csp_rtc_t *ptRtc, csi_rtc_config_t *tConfig);
 
 /**
   \brief       De-initialize RTC Interface. stops operation and releases the software resources used by the interface
@@ -103,47 +119,78 @@ void csi_rtc_uninit(csi_rtc_t *rtc);
   \param[in]   rtctime    pointer to rtc time
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_rtc_set_time(csi_rtc_t *rtc, const csi_rtc_time_t *rtctime);
+csi_error_t csi_rtc_set_time(csp_rtc_t *rtc, csi_rtc_time_t *rtctime);
 
 /**
-  \brief       Set system date but no wait
-  \param[in]   rtc        rtc handle to operate
-  \param[in]   rtctime    pointer to rtc time
-  \return      error code \ref csi_error_t
+  \brief       To set/change RTC format
+  \param       rtc handle rtc handle to operate
+  \param       eFmt \ref rtc_fmt_e    
+  \return      none
 */
-csi_error_t csi_rtc_set_time_no_wait(csi_rtc_t *rtc, const csi_rtc_time_t *rtctime);
+
+/**
+  \brief       To start RTC 
+  \param       rtc handle rtc handle to operate
+  \return      none
+*/
+void csi_rtc_start(csp_rtc_t *ptRtc);
+
+
+
+
+/**
+  \brief       To set/change RTC format
+  \param       rtc handle rtc handle to operate
+  \param       eFmt \ref rtc_fmt_e    
+  \return      none
+*/
+void csi_rtc_change_fmt(csp_rtc_t *ptRtc,  rtc_fmt_e eFmt);
+
+/**
+  \brief   RTC interrupt enable/disable
+  \param   ptRtc      handle rtc handle to operate
+  \param   eIntSrc	  interrupt source	
+  \param   bEnable    ENABLE/DISABLE 
+  \return  none
+*/
+void csi_rtc_int_enable(csp_rtc_t *ptRtc, rtc_int_e eIntSrc, bool bEnable);
 
 /**
   \brief       Get system date
   \param[in]   rtc        rtc handle to operate
   \param[out]  rtctime    pointer to rtc time
-  \return      error code \ref csi_error_t
+  \return      none
 */
-csi_error_t csi_rtc_get_time(csi_rtc_t *rtc, csi_rtc_time_t *rtctime);
+void csi_rtc_get_time(csp_rtc_t *rtc, csi_rtc_time_t *rtctime);
 
 /**
   \brief       Get alarm remaining time
   \param[in]   rtc    rtc handle to operate
+  \param	   byAlm  RTC_ALMA/RTC_ALMB
   \return      the remaining time(s)
 */
-uint32_t csi_rtc_get_alarm_remaining_time(csi_rtc_t *rtc);
+uint32_t csi_rtc_get_alarm_remaining_time(csp_rtc_t *rtc, uint8_t byAlm);
 
 /**
-  \brief       Config RTC alarm timer
-  \param[in]   rtc         rtc handle to operate
-  \param[in]   rtctime     time to wake up
-  \param[in]   callback    callback function
-  \param[in]   arg         callback's param
-  \return      error code \ref csi_error_t
+  \brief   Config RTC alarm
+  \param   ptRtc      handle rtc handle to operate
+  \param   byAlm	  RTC_ALMA/RTC_ALMB
+  \param   rtctime    alarm time(s) 
+  \param   byMode	  	0: day       hour min sec
+						1: weekday   hour min sec
+						2:           hour min sec
+
+  \return  error code \ref csi_error_t
 */
-csi_error_t csi_rtc_set_alarm(csi_rtc_t *rtc, const csi_rtc_time_t *rtctime, void *callback, void *arg);
+csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, csi_rtc_time_t *tpRtcTime);
 
 /**
   \brief       Cancel the rtc alarm
-  \param[in]   rtc    rtc handle to operate
-  \return      error code \ref csi_error_t
+  \param       ptRtc    rtc handle to operate
+  \param       byAlm	RTC_ALMA/RTC_ALMB
+  \return      none
 */
-csi_error_t csi_rtc_cancel_alarm(csi_rtc_t *rtc);
+void csi_rtc_cancel_alarm(csp_rtc_t *ptRtc, uint8_t byAlm);
 
 /**
   \brief       Judge rtc is running
@@ -154,18 +201,6 @@ csi_error_t csi_rtc_cancel_alarm(csi_rtc_t *rtc);
 */
 bool csi_rtc_is_running(csi_rtc_t *rtc);
 
-/**
-  \brief       Enable rtc power manage
-  \param[in]   rtc    rtc handle to operate
-  \return      error code
-*/
-csi_error_t csi_rtc_enable_pm(csi_rtc_t *rtc);
-
-/**
-  \brief       Disable rtc power manage
-  \param[in]   rtc    rtc handle to operate
-*/
-void csi_rtc_disable_pm(csi_rtc_t *rtc);
 
 /**
   \brief    use rtc as a timer
@@ -173,15 +208,25 @@ void csi_rtc_disable_pm(csi_rtc_t *rtc);
   \param 	ePrd    time interval of the timer.
   \param[in]   rtc    rtc handle to operate
 */
-void csi_rtc_start_as_timer(csi_rtc_t *rtc, void *callback, csi_rtc_timer_e ePrd);
+void csi_rtc_start_as_timer(csp_rtc_t *ptRtc, csi_rtc_timer_e ePrd);
 
 /**
   \brief       Config RTC alarm ture timer
-  \param[in]   rtc      handle rtc handle to operate
+  \param[in]   ptRtc      handle rtc handle to operate
   \param[in]   eOut     rtc output
-  \return      error code \ref csi_error_t
+  \return      none
 */
-csi_error_t csi_rtc_set_alarm_out(csi_rtc_t *rtc, csi_rtc_osel_e eOut);
+void csi_rtc_set_alarm_out(csp_rtc_t *ptRtc, csi_rtc_osel_e eOut);
+
+/** \brief evtrg source output config  
+ * 
+ *  \param[in] ptRtc: RTC handle to operate
+ *  \param[in] byEvtrg: rtc evtrg channel(1~4) 
+ *  \param[in] eTrgSrc: rtc evtrg source
+ *  \param[in] trg_prd: event count period 
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_rtc_set_evtrg(csp_rtc_t *ptRtc, uint8_t byEvtrg, csi_rtc_trgsrc_e eTrgSrc, uint8_t byTrgPrd);
 
 
 #ifdef __cplusplus
