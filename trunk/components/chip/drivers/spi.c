@@ -688,9 +688,7 @@ static void apt_spi_intr_send_data(csp_spi_t *ptSpiBase)
 __attribute__((weak)) void spi_irqhandler(csp_spi_t *ptSpiBase)
 {	
 	uint32_t wStatus = csp_spi_get_isr(ptSpiBase);
-	#ifndef SPI_SYNC_SEL
-		uint8_t receive_data[4];
-	#endif
+	uint8_t receive_data[4];
 	//fifo rx 
 	if(wStatus & SPI_RXIM_INT)
 	{
@@ -702,7 +700,8 @@ __attribute__((weak)) void spi_irqhandler(csp_spi_t *ptSpiBase)
 			{
 				
 				while(!(csp_spi_get_sr(SPI0) & SPI_RNE));	//receive not empty:read
-				receive_data[byIdx] = csp_spi_get_data(SPI0);						
+				receive_data[byIdx] = csp_spi_get_data(SPI0);
+				//csi_uart_putc(UART0, receive_data[byIdx]);						
 			}
 		}
 		else
