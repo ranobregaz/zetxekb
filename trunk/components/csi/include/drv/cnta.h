@@ -59,14 +59,14 @@ typedef enum
 	MATCH_CARRIERON_DIS	= 0,
 	MATCH_CARRIERON_CLR, 
 	MATCH_CARRIERON_SET       
-}csi_cnta_tcmatch_t;
+}csi_cnta_tcmatch_e;
 
 typedef enum
 {
 	PEND_CARRIERON_DIS	= 0,
 	PEND_CARRIERON_CLR, 
 	PEND_CARRIERON_SET      
-}csi_cnta_tcpend_t;
+}csi_cnta_tcpend_e;
 
 typedef enum
 {
@@ -78,11 +78,11 @@ typedef enum
 	CNTA_HW_DIS			= (0x00ul),
 	CNTA_HW_TCMATCH		= (0x01ul), 
 	CNTA_HW_TCPEND		= (0x02ul)       
-}csi_cnta_hw_updata_t;
+}csi_cnta_hw_updata_e;
 
 /** \brief initialize cnta data structure
  * 
- *  \param[in] ptCntaBase: handle cnta handle to operate
+ *  \param[in] ptCntaBase: pointer of cnta register structure
  *  \param[in] ptContaTimerCfg:point of timer parameter config
  *  \return error code \ref csi_error_t
  */ 
@@ -90,35 +90,35 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_conta_timer_config_t 
 
 /** \brief start cnta
  * 
- *  \param[in] ptCntaBase: handle cnta handle to operate
+ *  \param[in] ptCntaBase: pointer of cnta register structure
  *  \return none
  */ 
 void csi_cnta_start(csp_cnta_t *ptCntaBase);
 
 /**
   \brief       Stop cnta
-  \param[in]   ptCntaBase    handle cnta handle to operate
+  \param[in]   ptCntaBase    pointer of cnta register structure
   \return      None
 */
 void csi_cnta_stop(csp_cnta_t *ptCntaBase);
 
 /**
   \brief       Get cnta datah value
-  \param[in]   ptCntaBase    handle cnta handle to operate
-  \return      cnta    load value
+  \param[in]   ptCntaBase    pointer of cnta register structure
+  \return      cnta datah load value
 */
 uint32_t csi_cnta_get_datah_value(csp_cnta_t *cnta);
 
 /** \brief get cnta datal load value
  * 
- *  \param[in] ptCntaBase: handle cnta handle to operate
- *  \return none
+ *  \param[in] ptCntaBase: pointer of cnta register structure
+ *  \return cnta datal load value
  */ 
 uint32_t csi_cnta_get_datal_value(csp_cnta_t *ptCntaBase);
 
 /** \brief cnta pwm init 
  * 
- *  \param[in] ptCntaBase: handle cnta handle to operate
+ *  \param[in] ptCntaBase: pointer of cnta register structure
  *  \param[in] ptContaPwmCfg:point of pwm parameter config
  *  \return error code \ref csi_error_t
  */ 
@@ -126,21 +126,21 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_conta_pwm_config_t *ptC
 
 /**
   \brief       updata cnta pwm freq para
-  \param[in]   ptCntaBase   cnta handle to operate.
+  \param[in]   ptCntaBase   cnta handle to operate. 
   \param[in]   datah    	pwm ouput high time long 
   \param[in]   datal   		pwm ouput low time long 
-  \param[in] sw_updata:    cadata reg soft updata control
+  \param[in] sw_updata:     data reg soft updata control
 */
 void csi_cnta_pwm_para_updata(csp_cnta_t *ptCntaBase, uint16_t datah, uint16_t datal, csi_cnta_sw_updata_t sw_updata);
 
 /** \brief set cnta tc sync 
- *  \param[in] ptCntaBase: handle cnta handle to operate
+ *  \param[in] ptCntaBase: pointer of cnta register structure
  *  \param[in] tcpend_rem: carrieron control of tc pend end 
  *  \param[in] tcmatch_rem: carrieron control of tc pulse match 
  *  \param[in] hw_updata: cadata reg auto updata control
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_cnta_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_t tcpend_rem, csi_cnta_tcmatch_t tcmatch_rem,csi_cnta_hw_updata_t hw_updata);
+csi_error_t csi_cnta_set_sync(csp_cnta_t *ptCntaBase, csi_cnta_tcpend_e tcpend_rem, csi_cnta_tcmatch_e tcmatch_rem,csi_cnta_hw_updata_e hw_updata);
 //---------------------------------------------------------------------------------------------------------------------------------------------
 
 #ifdef __cplusplus
