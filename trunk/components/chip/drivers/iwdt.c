@@ -43,15 +43,15 @@ csi_error_t csi_iwdt_init(csi_iwdt_to_e eTimeOut)
 			break;
 		case IWDT_TO_512: 	byOvt = 0x2; s_wIwdtTimeout = 512;
 			break;
-		case IWDT_TO_1000: 	byOvt = 0x3; s_wIwdtTimeout = 1024;
+		case IWDT_TO_1024: 	byOvt = 0x3; s_wIwdtTimeout = 1024;
 			break;
-		case IWDT_TO_2000:	byOvt = 0x4; s_wIwdtTimeout = 2048;
+		case IWDT_TO_2048:	byOvt = 0x4; s_wIwdtTimeout = 2048;
 			break;
-		case IWDT_TO_3100:	byOvt = 0x5; s_wIwdtTimeout = 3072;
+		case IWDT_TO_3072:	byOvt = 0x5; s_wIwdtTimeout = 3072;
 			break;
-		case IWDT_TO_4100: 	byOvt = 0x6; s_wIwdtTimeout = 4096;
+		case IWDT_TO_4096: 	byOvt = 0x6; s_wIwdtTimeout = 4096;
 			break;
-		case IWDT_TO_8200:
+		case IWDT_TO_8192:
 		default:	byOvt = 0x7; s_wIwdtTimeout = 8192;
 			break;
 	}
