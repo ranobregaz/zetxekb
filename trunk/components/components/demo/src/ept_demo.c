@@ -270,12 +270,12 @@ int ept_demo12(void)
 //------------------------------------------------------------------------------------------------------------------------		
 csi_ept_pwmconfig_t tPwmCfg;								  
 	tPwmCfg.byWorkmod        = EPT_WAVE;                        //WAVE  波形模式
-	tPwmCfg.byCountingMode   = EPT_DNCNT;                       //CNYMD  //计数方向
+	tPwmCfg.byCountingMode   = EPT_UPDNCNT;                       //CNYMD  //计数方向
 	tPwmCfg.byOneshotMode    = EPT_OP_CONT;                     //OPM    //单次或连续(工作方式)
 	tPwmCfg.byStartSrc       = EPT_SYNC_START;					//软件使能同步触发使能控制（RSSR中START控制位）//启动方式
 	tPwmCfg.byPscld          = EPT_LDPSCR_ZRO;                  //PSCR(分频)活动寄存器载入控制。活动寄存器在配置条件满足时，从影子寄存器载入更新值		
 	tPwmCfg.byDutyCycle 	 = 50;								//pwm ouput duty cycle//PWM初始值			
-	tPwmCfg.wFreq 			 = 10000;							//pwm ouput frequency	
+	tPwmCfg.wFreq 			 = 150;							//pwm ouput frequency	
     
 	tPwmCfg.byInter 		 = EPTINT_PEND;                     //interrupt
 	csi_ept_wave_init(EPT0, &tPwmCfg);
