@@ -786,20 +786,20 @@ csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_tr
 /** \brief ept evtrg cntxinit control
  * 
  *  \param[in] ptEptBase: pointer of ept register structure
- *  \param[in] eCntxInit: evtrg countinit channel(0~3)
+ *  \param[in] byCntChx: evtrg countinit channel(0~3)
  *  \param[in] byCntVal: evtrg cnt value
  *  \param[in] byCntInitVal: evtrg cntxinit value
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_ept_set_evcntinit(csp_ept_t *ptEptBase, csi_ept_cntinit_e eCntxInit, uint8_t byCntVal, uint8_t byCntInitVal)
+csi_error_t csi_ept_set_evcntinit(csp_ept_t *ptEptBase, uint8_t byCntChx, uint8_t byCntVal, uint8_t byCntInitVal)
 {
 	
-	if(eCntxInit > EPT_CNT3INIT)
+	if(byCntChx > EPT_CNT3INIT)
 		return CSI_ERROR;
 	
-	csp_ept_set_trgprd(ptEptBase, eCntxInit, byCntVal - 1);				//evtrg count
-	csp_ept_trg_cntxinit(ptEptBase, eCntxInit, byCntInitVal);
-	csp_ept_trg_cntxiniten_enable(ptEptBase, eCntxInit, ENABLE);
+	csp_ept_set_trgprd(ptEptBase, byCntChx, byCntVal - 1);				//evtrg count
+	csp_ept_trg_cntxinit(ptEptBase, byCntChx, byCntInitVal);
+	csp_ept_trg_cntxiniten_enable(ptEptBase, byCntChx, ENABLE);
 	
 	return CSI_OK;
 }
