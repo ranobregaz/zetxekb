@@ -30,33 +30,22 @@ int etcb_one_trg_one_demo(void)
 	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				//ETB 参数配置结构体	
 		
-	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  		//one channel trigger one channel
-	tEtbConfig.bySrcIp  = ETB_ETP0_TRGOUT0 ;  	//
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  		//单个源触发单个目标
+	tEtbConfig.bySrcIp  = ETB_ETP0_TRGOUT0 ;  	//EPT0 触发输出0作为触发源
 	tEtbConfig.bySrcIp1 = 0xff;      
 	tEtbConfig.bySrcIp2 = 0xff;
-	tEtbConfig.byDstIp =  ETB_EPT0_SYNCIN2;   	//
+	tEtbConfig.byDstIp =  ETB_EPT0_SYNCIN2;   	//EPT0 同步输入2作为目标事件
 	tEtbConfig.byDstIp1 = 0xff;
 	tEtbConfig.byDstIp2 = 0xff;
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
    
 	csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.eChType);
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//自动获取空闲通道号,ch >= 0 获取成功
+	if(ch < 0)
+		return -1;								//ch < 0,则获取通道号失败
+		
 	iRet = csi_etb_ch_config(ch, &tEtbConfig);
 		
-//	//para config
-//	tEtbConfig.eChType 	= ETB_ONE_TRG_ONE;		//单个源触发单个目标
-//	tEtbConfig.bySrcIp 	= ETB_EXI_TRGOUT0;		//外部中断组0作为触发源
-//	tEtbConfig.bySrcIp1 = 0xff;						
-//	tEtbConfig.bySrcIp2 = 0xff;
-//	tEtbConfig.byDstIp 	= ETB_BT0_SYNCIN0;		//BT0 同步输入0作为目标事件
-//	tEtbConfig.byDstIp1 = 0xff;
-//	tEtbConfig.byDstIp2 = 0xff;
-//	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
-//	
-//	csi_etb_init();								//初始化(使能)ETB
-//	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//获取ETB空闲通道
-//	iRet = csi_etb_ch_config(ch,&tEtbConfig);	//配置并启动ETB通道
-			
 	return iRet;
 }
 
@@ -82,7 +71,9 @@ int etcb_one_trg_more_demo(void)
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
 	
 	csi_etb_init();								//初始化(使能)ETB
-	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//获取ETB空闲通道
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//获取ETB空闲通道，ch >= 0 获取成功
+	if(ch < 0)
+		return -1;								//ch < 0,则获取通道号失败
 	iRet = csi_etb_ch_config(ch,&tEtbConfig);	//配置并启动ETB通道
 			
 	return iRet;
@@ -110,7 +101,10 @@ int etcb_more_trg_one_demo(void)
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
 	
 	csi_etb_init();								//初始化(使能)ETB
-	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//获取ETB空闲通道
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//获取ETB空闲通道，ch >= 0 获取成功
+	if(ch < 0)
+		return -1;								//ch < 0,则获取通道号失败
+		
 	iRet = csi_etb_ch_config(ch,&tEtbConfig);	//配置并启动ETB通道
 			
 	return iRet;
