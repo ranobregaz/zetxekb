@@ -164,7 +164,13 @@ typedef enum {
 	SIO_STATE_DONE				//uart send complete
 } csi_sio_state_e;
 
-
+typedef enum
+{
+	TXBUF_D0     		=	0x00,  
+	TXBUF_D1    		=	0x01,      
+	TXBUF_DL   			=	0x02, 
+	TXBUF_DH			=	0x03
+}csi_sio_txbuf_data_e;  
 
 //sio tx data structure
 typedef struct{
@@ -325,7 +331,7 @@ void csi_sio_timeout_rst(csp_sio_t *ptSioBase, uint8_t byToCnt ,bool bEnable);
   \param[in]   size   size of data buffer
   \return      error code \ref csi_error_t
 */
-uint8_t csi_sio_send(csp_sio_t *ptSioBase, const void *pData, uint8_t bySize);
+uint8_t csi_sio_send(csp_sio_t *ptSioBase, uint32_t *pData, uint8_t bySize);
 
 /** 
   \brief set sio transport data buffer
