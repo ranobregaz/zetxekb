@@ -201,9 +201,8 @@ int uart_recv_intr_demo(void)
 {
 	int iRet = 0;
 	uint8_t  byRxBuf[32];
-	uint16_t hwRecvNum = 1;
+	uint16_t hwRecvNum = 12;
 	volatile uint16_t hwRecvLen;
-	
 	
 	csi_uart_config_t tUartConfig;				//UART1 参数配置结构体
 	
@@ -211,17 +210,13 @@ int uart_recv_intr_demo(void)
 	csi_pin_set_mux(PB00, PB00_UART1_TX);		//UART1 TX管脚配置
 	csi_pin_pull_mode(PA013,GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
 	
-	//接收缓存配置
-	//实例化g_tRingbuf 结构体变量
-	//UARTx ptRingBuf 指针初始化
-	g_tRingbuf.pbyBuf = g_byRxBuf;				//循环buffer 缓存区地址指针赋值，指向g_byRxBuf
-	g_tRingbuf.hwSize = sizeof(g_byRxBuf);		//获取循环buffer存储空间
-	g_tUartTran[1].ptRingBuf = &g_tRingbuf;		//UART1循环buffer指针赋值 	
-	ringbuffer_reset(g_tUartTran[1].ptRingBuf);	//初始化循环buffer
+	//接收缓存配置，实例化接收ringbuf，将ringbuf接收数据缓存指向用户定义的的接收buffer(g_byRxBuf)
+	//需要传入参数：串口设备/ringbuf结构体指针/接收buffer/接收buffer长度
+	csi_uart_set_buffer(UART1, &g_tRingbuf, g_byRxBuf, sizeof(g_byRxBuf));
 	
-	tUartConfig.byParity = UART_PARITY_NONE;	//校验位，奇校验
+	tUartConfig.byParity = UART_PARITY_ODD;		//校验位，奇校验
 	tUartConfig.wBaudRate = 115200;				//波特率，115200
-	tUartConfig.wInter = UART_INTSRC_RXFIFO;	//串口接收中断打开，使用RXFIFO中断
+	tUartConfig.wInter = UART_INTSRC_RXFIFO;	//串口接收中断打开，使用RXFIFO中断(默认推荐使用)
 	tUartConfig.byTxMode = UART_TX_MODE_POLL;	//发送模式：轮询模式
 	tUartConfig.byRxMode = UART_RX_MODE_INT_FIX;//接收模式：中断指定接收模式
 	
@@ -270,13 +265,9 @@ int uart_recv_dynamic_demo(void)
 	csi_pin_set_mux(PB00, PB00_UART1_TX);		//UART1 TX管脚配置
 	csi_pin_pull_mode(PA013,GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
 	
-	//接收缓存配置
-	//实例化g_tRingbuf 结构体变量
-	g_tRingbuf.pbyBuf = g_byRxBuf;				//循环buffer 缓存区地址指针赋值，指向g_byRxBuf
-	g_tRingbuf.hwSize = sizeof(g_byRxBuf);		//获取循环buffer存储空间
-	//UARTx ptRingBuf 指针初始化
-	g_tUartTran[1].ptRingBuf = &g_tRingbuf;		//UART1循环buffer指针赋值 	
-	ringbuffer_reset(g_tUartTran[1].ptRingBuf);	//复位(初始化)循环buffer参数
+	//接收缓存配置，实例化接收ringbuf，将ringbuf接收数据缓存指向用户定义的的接收buffer(g_byRxBuf)
+	//需要传入参数：串口设备/ringbuf结构体指针/接收buffer/接收buffer长度
+	csi_uart_set_buffer(UART1, &g_tRingbuf, g_byRxBuf, sizeof(g_byRxBuf));
 	
 	//串口参数配置
 	tUartConfig.byParity = UART_PARITY_ODD;		//校验位，奇校验
@@ -318,13 +309,9 @@ int uart_recv_dynamic_demo1(void)
 	csi_pin_set_mux(PB00, PB00_UART1_TX);		//UART1 TX管脚配置
 	csi_pin_pull_mode(PA013,GPIO_PULLUP);		//RX管脚上拉使能, 建议配置
 	
-	//接收缓存配置
-	//实例化g_tRingbuf 结构体变量
-	g_tRingbuf.pbyBuf = g_byRxBuf;				//循环buffer 缓存区地址指针赋值，指向g_byRxBuf
-	g_tRingbuf.hwSize = sizeof(g_byRxBuf);		//获取循环buffer存储空间
-	//UARTx ptRingBuf 指针初始化
-	g_tUartTran[1].ptRingBuf = &g_tRingbuf;		//UART1循环buffer指针赋值 	
-	ringbuffer_reset(g_tUartTran[1].ptRingBuf);	//复位(初始化)循环buffer参数
+	//接收缓存配置，实例化接收ringbuf，将ringbuf接收数据缓存指向用户定义的的接收buffer(g_byRxBuf)
+	//需要传入参数：串口设备/ringbuf结构体指针/接收buffer/接收buffer长度
+	csi_uart_set_buffer(UART1, &g_tRingbuf, g_byRxBuf, sizeof(g_byRxBuf));
 	
 	//串口参数配置
 	tUartConfig.byParity = UART_PARITY_ODD;							//校验位，奇校验
@@ -338,10 +325,10 @@ int uart_recv_dynamic_demo1(void)
 	
 	while(1)
 	{
-		if(csi_uart_get_recv_status(UART1) == UART_STATE_DONE)			//获取串口接收状态，串口接收到一串字符
+		if(csi_uart_get_recv_status(UART1) == UART_STATE_DONE)		//获取串口接收状态，串口接收到一串字符
 		{
-			hwRecvLen = csi_uart_receive(UART1,(void*)byRxBuf,0,0);		//获取接收到的一串数据，返回数据长度, 后面两个参数无意义
-			csi_uart_send(UART1,(void *)byRxBuf,hwRecvLen);				//UART发送采用轮询方式(同步)
+			hwRecvLen = csi_uart_receive(UART1,(void*)byRxBuf,0,0);	//获取接收到的一串数据，返回数据长度, 后面两个参数无意义
+			csi_uart_send(UART1,(void *)byRxBuf,hwRecvLen);			//UART发送采用中断方式(异步)
 		}
 	}
 	
