@@ -672,6 +672,19 @@ typedef enum {
 	ORL0 = 0xe,
 	ORL1,
 }csp_ept_ebi_e;
+
+#define ORLx_EP0  1
+#define ORLx_EP1  1<<1
+#define	ORLx_EP2  1<<2
+#define	ORLx_EP3  1<<3
+#define	ORLx_EP4  1<<4
+#define	ORLx_EP5  1<<5
+#define	ORLx_EP6  1<<6
+#define ORLx_EP7  1<<7
+
+
+
+
 #define EPT_EP_USE_EBI(m, n)     (((n)+1) << ((m)<<2))
 
 ///EMSRC2 config ORL0, ORL1 and input Filters
@@ -1121,16 +1134,29 @@ static inline void csp_ept_set_src(csp_ept_t *ptEptBase,uint32_t byVal )
 	ptEptBase -> REGPROT = EPT_REGPROT;
 	ptEptBase -> EMSRC = byVal;
 }
+static inline uint32_t csp_ept_get_src(csp_ept_t *ptEptBase )
+{	
+	return ( ptEptBase -> EMSRC );
+}
+
 static inline void csp_ept_set_src2(csp_ept_t *ptEptBase,uint32_t byVal)
 {
 	ptEptBase -> REGPROT = EPT_REGPROT;
 	ptEptBase -> EMSRC2  =byVal;
+}
+static inline uint32_t csp_ept_get_src2(csp_ept_t *ptEptBase )
+{	
+	return ( ptEptBase -> EMSRC2 );
 }
 
 static inline void csp_ept_set_empol(csp_ept_t *ptEptBase, uint32_t byVal)
 {
 	ptEptBase -> REGPROT = EPT_REGPROT;
 	ptEptBase -> EMPOL = byVal;
+}
+static inline uint32_t csp_ept_get_empol(csp_ept_t *ptEptBase )
+{	
+	return ( ptEptBase -> EMPOL );
 }
 
 static inline void csp_ept_set_emecr(csp_ept_t *ptEptBase,uint32_t byVal)
@@ -1139,10 +1165,19 @@ static inline void csp_ept_set_emecr(csp_ept_t *ptEptBase,uint32_t byVal)
 	ptEptBase -> EMECR = byVal;
 }
 
+static inline  uint32_t csp_ept_get_emecr(csp_ept_t *ptEptBase)				
+{
+	return (ptEptBase->EMECR);
+}
+
 static inline void csp_ept_set_emosr(csp_ept_t *ptEptBase,uint32_t byVal)
 {
 	ptEptBase -> REGPROT = EPT_REGPROT;
 	ptEptBase -> EMOSR = byVal;
+}
+static inline  uint32_t csp_ept_get_emosr(csp_ept_t *ptEptBase)				
+{
+	return (ptEptBase->EMOSR);
 }
 
 static inline  uint16_t csp_ept_get_emSdlck(csp_ept_t *ptEptBase)				
@@ -1285,7 +1320,7 @@ static inline void csp_ept_set_gldcr(csp_ept_t *ptEptBase, uint32_t byCh)
 }
 static inline void csp_ept_set_gldcr2(csp_ept_t *ptEptBase, uint32_t byCh)
 {   ptEptBase -> REGPROT = EPT_REGPROT;
-	ptEptBase -> GLDCR2   =  byCh ;
+	ptEptBase -> GLDCR2   |=  byCh ;
 }
 
 static inline void csp_ept_set_gldcfg(csp_ept_t *ptEptBase, uint32_t byCh)
