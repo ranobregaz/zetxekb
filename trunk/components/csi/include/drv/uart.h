@@ -158,6 +158,16 @@ void csi_uart_start(csp_uart_t *ptUartBase);
  */ 
 void csi_uart_stop(csp_uart_t *ptUartBase);
 
+/** 
+  \brief 	   set uart receive buffer and buffer depth
+  \param[in]   ptUartBase	pointer of uart register structure
+  \param[in]   ptRingbuf	pointer of receive ringbuf
+  \param[in]   pbyRdBuf		pointer of uart receive buffer
+  \param[in]   hwLen		uart  receive buffer length
+  \return 	   error code \ref csi_error_t
+ */ 
+void csi_uart_set_buffer(csp_uart_t *ptUartBase, ringbuffer_t *ptRingbuf, uint8_t *pbyRdBuf,  uint16_t hwLen);
+
 /**
   \brief       Start send data to UART transmitter, this function is blocking.
   \param[in]   uart     	uart handle to operate.
