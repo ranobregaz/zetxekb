@@ -22,7 +22,7 @@ extern "C" {
   \param[in]   idx  device id
   \return      \ref csi_error_t
 */
-csi_error_t csi_crc_init(void);
+void csi_crc_init(void);
 
 
 /**
