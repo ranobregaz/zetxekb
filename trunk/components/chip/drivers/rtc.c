@@ -21,7 +21,7 @@
 /* private function--------------------------------------------------------*/
 
 
-static void apt_rtc_alm_set_time(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byDay, uint8_t byPm, uint8_t byHor, uint8_t byMin,uint8_t bySec);
+static void apt_rtc_alm_set_time(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byDay, bool byPm, uint8_t byHor, uint8_t byMin,uint8_t bySec);
 static csp_error_t apt_rtc_set_time(csp_rtc_t *ptRtc, bool bPm, uint8_t byHor, uint8_t byMin,uint8_t bySec);
 static csp_error_t apt_rtc_set_date(csp_rtc_t *ptRtc, uint8_t byYear, uint8_t byMon, uint8_t byWday, uint8_t byDay);
 csp_error_t apt_rtc_set_trgsrc(csp_rtc_t *ptRtc, uint8_t byTrg, csp_rtc_trgsel_e eSrc);
@@ -219,7 +219,7 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	bool bHmsk = 0;
 	bool bMmsk = 0;
 	bool bSmsk = 0;
-	
+	bool bFmt = 0;
 
 	if (tpRtcTime -> tm_yday == 0xff || byMode == 2) {
 		bDmsk = 1;
@@ -250,6 +250,12 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 			break;
 	}
 	
+	if(csp_rtc_get_fmt(RTC) == RTC_24FMT) {
+		if (tpRtcTime -> tm_hour == 12) 
+			bFmt = RTC_PM;
+		else
+			bFmt = RTC_AM;
+	}
 	switch (byAlm)
 	{
 		case (RTC_ALMA): 	csp_rtc_int_clr(ptRtc, RTC_INT_ALMA);
@@ -264,7 +270,7 @@ csi_error_t csi_rtc_set_alarm(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byMode, c
 	
 	csi_rtc_int_enable(RTC, RTC_INT_ALMA, ENABLE);
 	csp_rtc_alm_enable(ptRtc, byAlm, DISABLE);
-	apt_rtc_alm_set_time(ptRtc, byAlm, tpRtcTime->tm_mday, RTC_AM,  tpRtcTime->tm_hour, tpRtcTime->tm_min,tpRtcTime->tm_sec);
+	apt_rtc_alm_set_time(ptRtc, byAlm, tpRtcTime->tm_mday, bFmt,  tpRtcTime->tm_hour, tpRtcTime->tm_min,tpRtcTime->tm_sec);
 	csp_rtc_alm_set_mode(ptRtc, byAlm, bWdsel, bDmsk, bHmsk, bMmsk, bSmsk);
 	csp_rtc_alm_enable(ptRtc, byAlm, ENABLE);
 	
@@ -489,7 +495,7 @@ static csp_error_t apt_rtc_set_time(csp_rtc_t *ptRtc, bool bPm, uint8_t byHor, u
 }
 
 
-static void apt_rtc_alm_set_time(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byDay, uint8_t byPm, uint8_t byHor, uint8_t byMin,uint8_t bySec)
+static void apt_rtc_alm_set_time(csp_rtc_t *ptRtc, uint8_t byAlm, uint8_t byDay, bool byPm, uint8_t byHor, uint8_t byMin,uint8_t bySec)
 {
 	uint8_t byVal;
 		

@@ -31,7 +31,8 @@
 #include "csp_syscon.h"
 #include "csp_uart.h"
 #include "csp_wwdt.h"
-#include "core_801.h"
+//#include "core_801.h"
+#include <csi_core.h>
 #include "csp_tkey.h"
 
 typedef csp_syscon_t 	csp_iwdt_t;

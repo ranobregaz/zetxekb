@@ -137,7 +137,7 @@ void rtc_timer_demo(void)
 	csi_pin_set_mux(PA03, PA03_OSC_XI);
 	csi_pin_set_mux(PA04, PA04_OSC_XO);
 	
-	tRtcConfig.byClkSrc = RTC_CLKSRC_EMOSC;  	//选择时钟源
+	tRtcConfig.byClkSrc = RTC_CLKSRC_ISOSC;  	//选择时钟源
 	tRtcConfig.byFmt = RTC_24FMT;				  	//选择时间模式
 	csi_rtc_init(RTC, &tRtcConfig);				  	//初始化RTC
 	
