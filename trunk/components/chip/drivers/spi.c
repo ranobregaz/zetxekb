@@ -788,7 +788,7 @@ void spi_buff_send(csp_spi_t *ptSpiBase,uint8_t *pbyData,uint8_t bySize)
 
 }
 
-/** \brief spi send and receive(less than eight bytes)
+/** \brief spi send and receive(equal to 8 or less than eight bytes)
  * 
  *  \param[in] ptSpiBase: SPI handle
  *  \param[in] pbyDataOut :send data buffer pointer
@@ -796,13 +796,13 @@ void spi_buff_send(csp_spi_t *ptSpiBase,uint8_t *pbyData,uint8_t bySize)
  *  \param[in] wSize ：length
  *  \return none
  */ 
-void csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, uint8_t *pbyDataOut,uint8_t *pbyDataIn,uint32_t wSize)//小于八个的发送接收,这种场景通常适合用来发送指令，读取状态。（大块的数据读取不合适）
+void csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, uint8_t *pbyDataOut,uint8_t *pbyDataIn,uint32_t wSize)//小于等于八个的发送接收,这种场景通常适合用来发送指令，读取状态。（大块的数据读取不合适）
 {	
 		uint8_t byCount = 0;
 		uint8_t bySize = 0;
 	    uint32_t wTimeStart = SPI_SEND_TIMEOUT;
-		if(wSize > 7)
-			bySize = 7;
+		if(wSize > 8)
+			bySize = 8;
 		else
 			bySize = (uint8_t)wSize;
 			
@@ -832,7 +832,7 @@ void csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, uint8_t *pbyDataOut,uint8_t *
 		while( ( (uint32_t)(ptSpiBase->SR) & SPI_BSY ) && (wTimeStart --) ){;}
 }
 
-/** \brief spi send and receive(send equal to 8 bytes or  more than eight bytes)
+/** \brief spi send and receive(equal to 8 bytes or  more than eight bytes)
  * 
  *  \param[in] ptSpiBase: SPI handle
  *  \param[in] pbyDataOut :send data buffer pointer 
@@ -840,7 +840,7 @@ void csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, uint8_t *pbyDataOut,uint8_t *
  *  \param[in] wSize ：length
  *  \return none
  */ 
-void csi_spi_send_receive_d8(csp_spi_t *ptSpiBase, uint8_t *pbyDataOut,uint8_t *pbyDataIn, uint32_t wSize)//大于八个的发送和读
+void csi_spi_send_receive_d8(csp_spi_t *ptSpiBase, uint8_t *pbyDataOut,uint8_t *pbyDataIn, uint32_t wSize)//大于等于八个的发送和读
 {
 		uint8_t byTxsize = wSize;
 		uint32_t wTimeStart = SPI_SEND_TIMEOUT;
