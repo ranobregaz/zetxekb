@@ -458,32 +458,77 @@ typedef enum{
 	EPTINT_EOMF	
 }csi_ept_emint_e;
 
+/**
+ * \enum	csi_ept_trgsrc_e
+ * \brief   EPT event trigger source
+ */
 typedef enum {
-	EPT_EVSRC_ZRO = 1,
-	EPT_EVSRC_PRD,
-	EPT_EVSRC_ZRO_PRD,
-	EPT_EVSRC_CAU,
-	EPT_EVSRC_CAD,
-	EPT_EVSRC_CBU,
-	EPT_EVSRC_CBD,
-	EPT_EVSRC_CCU,
-	EPT_EVSRC_CCD,
-	EPT_EVSRC_CDU,
-	EPT_EVSRC_CDD,
-	EPT_EVSRC_EX,
-	EPT_EVSRC_PE0,
-	EPT_EVSRC_PE1,
-	EPT_EVSRC_PE2,
-	EPT_EVSRC_PEND
-}csi_ept_evtrg_src_e;
+	EPT_TRGSRC_DIS		= 0,
+	EPT_TRGSRC_ZRO,
+	EPT_TRGSRC_PRD,
+	EPT_TRGSRC_ZRO_PRD,
+	EPT_TRGSRC_CAU,
+	EPT_TRGSRC_CAD,
+	EPT_TRGSRC_CBU,
+	EPT_TRGSRC_CBD,
+	EPT_TRGSRC_CCU,
+	EPT_TRGSRC_CCD,
+	EPT_TRGSRC_CDU,
+	EPT_TRGSRC_CDD,
+	EPT_TRGSRC_EX,
+	EPT_TRGSRC_PE0,
+	EPT_TRGSRC_PE1,
+	EPT_TRGSRC_PE2,
+	EPT_TRGSRC_PEND
+}csi_ept_trgsrc_e;
+
+/**
+ * \enum     csi_ept_arearm_e
+ * \brief    EPT hardware auto rearm 
+ */
+typedef enum{
+	EPT_AUTO_REARM_DIS 	= 0,	//disable auto rearm
+	EPT_AUTO_REARM_ZRO,			//CNT = ZRO auto rearm
+	EPT_AUTO_REARM_PRD,			//CNT = PRD auto rearm
+	EPT_AUTO_REARM_ZRO_PRD		//CNT = PRD or PRD auto rearm
+}csi_ept_arearm_e;
+
+/**
+ * \enum     csi_ept_trgin_e
+ * \brief    EPT sync trigger input 
+ */
+typedef enum{
+	EPT_TRGIN_SYNCEN0	= 0,	//start	up or reset count			
+	EPT_TRGIN_SYNCEN1,			//reg updata				
+	EPT_TRGIN_SYNCEN2,			//capture				
+	EPT_TRGIN_SYNCEN3,			//count inc or dec			
+	EPT_TRGIN_SYNCEN4,			//change output status(pwm)			
+	EPT_TRGIN_SYNCEN5			//change output status(pwm)						
+}csi_ept_trgin_e;
+
+/**
+ * \enum     csi_ept_trgmode_e
+ * \brief    EPT sync trigger mode 
+ */
+typedef enum{
+	EPT_TRG_CONTINU		= 0,	//EPT continuous trigger mode 
+	EPT_TRG_ONCE				//EPT once trigger mode 							
+}csi_ept_trgmode_e;
+
+/**
+ * \enum	csi_ept_trgout_e
+ * \brief   ept event trigger out port
+ */
+typedef enum{
+	EPT_TRG_OUT0		= 0,	//trigger out0
+	EPT_TRG_OUT1,				//trigger out1	
+	EPT_TRG_OUT2,				//trigger out2
+	EPT_TRG_OUT3				//trigger out3		
+}csi_ept_trgout_e;
+
 
 typedef enum{
-	EPT_SYNC_CONT = 0,
-	EPT_SYNC_OS
-}csi_ept_syncmode_e;
-
-typedef enum{
-	EPT_EVTRG_Disable = 0,
+	EPT_EVTRG_Disable 	= 0,
 	EPT_EVTRG_Enable
 }csi_ept_evtrg_e;
 
@@ -571,7 +616,7 @@ void csp_ept_clr_hdlck(csp_ept_t *ptEp, csi_ept_ebi_e eEbi);
   \param 	eSrc	
   \param   byTime		output trigger when event happens the 'byTime'th time.
 */
-csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEpt,uint8_t eCh,csi_ept_evtrg_src_e eSrc, uint8_t byTime);
+csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEpt,uint8_t eCh,csi_ept_trgsrc_e eSrc, uint8_t byTime);
 
 /**
   \brief   enable/disable ept out trigger 
