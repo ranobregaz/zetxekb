@@ -39,10 +39,10 @@ csi_error_t csi_gpta_config_init(csp_gpta_t *ptGptaBase, csi_gpta_config_t *ptGp
 	csp_gpta_wr_key(ptGptaBase);                                        //Unlocking
 	csp_gpta_reset(ptGptaBase);											// reset 
 	
-	wClkDiv = (soc_get_pclk_freq() / ptGptaPwmCfg->wFreq / 60000);		// clk div value
+	wClkDiv = (csi_get_pclk_freq() / ptGptaPwmCfg->wFreq / 60000);		// clk div value
 	if(wClkDiv == 0)wClkDiv = 1;
 	
-	wPrdrLoad  = (soc_get_pclk_freq()/ptGptaPwmCfg->wFreq/wClkDiv);	    //prdr load value
+	wPrdrLoad  = (csi_get_pclk_freq()/ptGptaPwmCfg->wFreq/wClkDiv);	    //prdr load value
 			
 	wCrVal =ptGptaPwmCfg->byCountingMode | (ptGptaPwmCfg->byStartSrc<<GPTA_STARTSRC_POS) |
 	        ptGptaPwmCfg->byOneshotMode<<GPTA_OPMD_POS | (ptGptaPwmCfg->byWorkmod<<GPTA_MODE_POS);
@@ -167,10 +167,10 @@ csi_error_t  csi_gpta_wave_init(csp_gpta_t *ptGptaBase, csi_gpta_pwmconfig_t *pt
 	csp_gpta_wr_key(ptGptaBase);                                           //Unlocking
 	csp_gpta_reset(ptGptaBase);											// reset 
 	
-	wClkDiv = (soc_get_pclk_freq() / ptGptaPwmCfg->wFreq / 60000);		// clk div value
+	wClkDiv = (csi_get_pclk_freq() / ptGptaPwmCfg->wFreq / 60000);		// clk div value
 	if(wClkDiv == 0)wClkDiv = 1;
 	
-	wPrdrLoad  = (soc_get_pclk_freq()/ptGptaPwmCfg->wFreq/wClkDiv);	    //prdr load value
+	wPrdrLoad  = (csi_get_pclk_freq()/ptGptaPwmCfg->wFreq/wClkDiv);	    //prdr load value
 		
 	wCrVal =ptGptaPwmCfg->byCountingMode | (ptGptaPwmCfg->byStartSrc<<GPTA_STARTSRC_POS) |
 	        ptGptaPwmCfg->byOneshotMode<<GPTA_OPMD_POS | (ptGptaPwmCfg->byWorkmod<<GPTA_MODE_POS);

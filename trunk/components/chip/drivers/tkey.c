@@ -1048,7 +1048,7 @@ void csi_tkey_init(void)
 	csi_tkey_config_interrupt_cmd(ENABLE,TKEY_DNE);
 	csi_tkey_config_interrupt_cmd(ENABLE,TKEY_TIME);
 	csi_irq_enable((uint32_t *)TKEY);
-	soc_pm_config_wakeup_source(WKUP_TCH, ENABLE);
+	csi_pm_config_wakeup_source(WKUP_TCH, ENABLE);
 	for(i=0;i<byTkeyNum;i++)
 	{
 		TKEY->TCH_SEQCON[i]=(hwTkeyClkDiv[byTkeySeque[i]]<<24)|(hwTkeyIcon[byTkeySeque[i]]<<20)|(byTkeySeque[i]<<15)|(byTkeyScanTime[byTkeySeque[i]]<<12)|(hwTkeySenprd[byTkeySeque[i]]<<0);

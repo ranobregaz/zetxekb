@@ -114,7 +114,7 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg)
 	
 	csi_clk_enable((uint32_t *)ptUartBase);				//uart peripheral clk enable
 	
-	wBrDiv = soc_get_pclk_freq()/ptUartCfg->wBaudRate;	
+	wBrDiv = csi_get_pclk_freq()/ptUartCfg->wBaudRate;	
 	if(wBrDiv < 16)
 		wBrDiv = 16;
 	csp_uart_set_brdiv(ptUartBase, wBrDiv);				//set uart baud rate 

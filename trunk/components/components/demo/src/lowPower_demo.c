@@ -47,7 +47,7 @@ void lp_exi_wakeup_demo(void)
 {
 	mdelay(3000);
 	
-	soc_pm_attach_callback(_LOW_POWER_MODE_, prepare2lp, wkup_lp);	//需要在工程设置compiler tab下加入define CONFIG_USER_PM=1;
+	csi_pm_attach_callback(_LOW_POWER_MODE_, prepare2lp, wkup_lp);	//需要在工程设置compiler tab下加入define CONFIG_USER_PM=1;
 	
 	csi_pin_set_mux(PA00, PA00_OUTPUT);
 	
@@ -59,7 +59,7 @@ void lp_exi_wakeup_demo(void)
 	switch(_LOW_POWER_MODE_)
 	{
 		case (PM_MODE_DEEPSLEEP):
-			soc_pm_config_wakeup_source(WKUP_EXI3, ENABLE);		//将WKUP_EXI3（包括GROUP4~9）设为唤醒源
+			csi_pm_config_wakeup_source(WKUP_EXI3, ENABLE);		//将WKUP_EXI3（包括GROUP4~9）设为唤醒源
 			my_printf("enter deep-sleep mode\n");
 			break;
 		case (PM_MODE_SLEEP):
@@ -73,7 +73,7 @@ void lp_exi_wakeup_demo(void)
 	while(1) {
 		csi_pin_set_high(PA00);
 		my_printf("e\n");
-		soc_pm_enter_sleep(_LOW_POWER_MODE_);
+		csi_pm_enter_sleep(_LOW_POWER_MODE_);
 		my_printf("w\n");
 		csi_pin_set_low(PA00);
 		mdelay(500);

@@ -37,7 +37,7 @@ static uint32_t apt_get_lpt_clk(csi_lpt_clksrc_e eClk)
 	uint32_t wLptClk =0;
 	switch (eClk)
 	{
-		case (LPT_CLK_PCLK_DIV4): wLptClk =  soc_get_pclk_freq()>> 2; 
+		case (LPT_CLK_PCLK_DIV4): wLptClk =  csi_get_pclk_freq()>> 2; 
 			break;
 		case (LPT_CLK_ISCLK): wLptClk = ISOSC_VALUE;
 			break;

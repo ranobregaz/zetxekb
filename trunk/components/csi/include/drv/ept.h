@@ -535,14 +535,14 @@ void csp_ept_clr_hdlck(csp_ept_t *ptEp, csi_ept_ebi_e eEbi);
  */
 void csi_ept_set_sync(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, csi_ept_trgmode_e eTrgMode, csi_ept_arearm_e eAutoRearm);
 
-/** 
-  \brief 	   ept extsync input select
-  \param[in]   ptEptBase	pointer of ept register structure
-  \param[in]   eTrgin		ept sync evtrg input channel(0~5)
-  \param[in]   byTrgChx		trgxsel channel(0~1)
-  \return 	   error code \ref csi_error_t
+/** \brief ept sync -> evtrv config
+ * 
+ *  \param[in] ptEptBase: pointer of ept register structure
+ *  \param[in] eTrgin: ept sync evtrg input channel(0~5)
+ *  \param[in] byTrgChx: trgxsel channel(0~1)
+ *  \return error code \ref csi_error_t
  */
-csi_error_t csi_ept_set_extsync_chnl(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, uint8_t byTrgChx);
+csi_error_t csi_ept_set_sync2evtrg(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, uint8_t byTrgChx);
 
 /** 
   \brief 	   ept sync input filter config  

@@ -33,15 +33,12 @@
 
 __attribute__((weak)) void system_init(void)
 {
-		CK_CPU_DISALLNORMALIRQ;
+	CK_CPU_DISALLNORMALIRQ;
 
-	//csi_reliability_init();
-	//csi_wdt_init(&tIwdt, 0);
-	//csi_wdt_stop(&tIwdt);
 	csi_iwdt_close();				//close iwdt
-	soc_sysclk_config();			//sysclk config
-	soc_get_sclk_freq();
-	soc_get_pclk_freq();
+	csi_sysclk_config();			//sysclk config
+	csi_get_sclk_freq();
+	csi_get_pclk_freq();
 	csi_tick_init();
 	
 	CK_CPU_ENALLNORMALIRQ;

@@ -27,7 +27,7 @@ const uint32_t g_wHclkDiv[] = {
 	1, 1, 2, 3, 4, 5, 6, 7, 8, 12, 16, 24, 32, 36, 64, 128, 256
 };
 
-static uint32_t get_hclk(void)
+static uint32_t apt_get_hclk(void)
 {
 	uint32_t tRslt;
 	tRslt = tClkConfig.wFreq/tClkConfig.eSdiv;
@@ -40,7 +40,7 @@ static uint32_t get_hclk(void)
  *  \param[in] none.
  *  \return csi_error_t.
  */ 
-csi_error_t soc_sysclk_config(void)
+csi_error_t csi_sysclk_config(void)
 {	csi_error_t ret = CSI_OK;
 	uint8_t byFreqIdx = 0;
 	uint32_t wFreq;
@@ -49,9 +49,8 @@ csi_error_t soc_sysclk_config(void)
 	uint8_t byFlashLp = 0;
 	wFreq = tClkConfig.wFreq;
 	eSrc = tClkConfig.eClkSrc;
-	wHFreq = get_hclk();
+	wHFreq = apt_get_hclk();
 	
-//	csp_ifc_set_speed(IFC_REG_BASE, get_hclk());
 	IFC->CEDR = IFC_CLKEN;
 	IFC->MR = IFC->MR & (~(HIGH_SPEED|PF_WAIT3));
 	if (wHFreq > 24000000)
@@ -129,7 +128,7 @@ csi_error_t soc_sysclk_config(void)
  *  \param[in] eCloDiv: clo divider 
  *  \return csi_error_t.
  */
-csi_error_t soc_clo_config(clo_src_e eCloSrc, clo_div_e eCloDiv)
+csi_error_t csi_clo_config(clo_src_e eCloSrc, clo_div_e eCloDiv)
 { 	
 	csi_error_t ret = CSI_OK;
 	csp_set_clo_src(SYSCON, eCloSrc);
@@ -170,7 +169,7 @@ void soc_clk_disable(int32_t wModule)
  *  \param[in] none.
  *  \return csi_error_t.
  */ 
-uint32_t soc_get_sclk_freq(void)
+uint32_t csi_get_sclk_freq(void)
 {	
 	//csi_error_t ret = CSI_OK;
 	cclk_src_e eClkSrc;
@@ -246,7 +245,7 @@ uint32_t soc_get_sclk_freq(void)
  *  \param[in] none.
  *  \return csi_error_t.
  */ 
-uint32_t soc_get_pclk_freq(void)
+uint32_t csi_get_pclk_freq(void)
 {
     uint32_t wDiv, wPdiv = 1;
 	wDiv = csp_get_pdiv(SYSCON);
@@ -291,7 +290,7 @@ uint32_t soc_get_coret_freq(void)
  *  \param[in] bEnable: enable or disable
  *  \return none.
  */ 
-void soc_clk_pm_enable(clk_pm_e eClk, bool bEnable)
+void csi_clk_pm_enable(clk_pm_e eClk, bool bEnable)
 {
 	csp_clk_pm_enable(SYSCON, eClk, bEnable);
 }
@@ -311,8 +310,8 @@ uint32_t soc_get_bt_freq(uint8_t byIdx)
 			bt_base = (csp_bt_t *)APB_BT1_BASE;
 			break;
 		default:
-			return soc_get_pclk_freq();
+			return csi_get_pclk_freq();
 	}
 	
-	return soc_get_pclk_freq()/(csp_bt_get_pscr(bt_base) + 1);
+	return csi_get_pclk_freq()/(csp_bt_get_pscr(bt_base) + 1);
 }

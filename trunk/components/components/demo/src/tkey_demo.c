@@ -56,7 +56,7 @@ void touch_lowpower_demo(void){
 		wSleepCnt++;		
 		if(wSleepCnt > 500){
 			csi_tkey_setup_sleep();  				//设置TOUCH唤醒，及相关的配置
-			soc_pm_enter_sleep(PM_MODE_DEEPSLEEP);	//进入低功耗模式（deepsleep）
+			csi_pm_enter_sleep(PM_MODE_DEEPSLEEP);	//进入低功耗模式（deepsleep）
 			csi_tkey_quit_sleep();					//唤醒后清除一些操作
 			wSleepCnt=0;
 		}		

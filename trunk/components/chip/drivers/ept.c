@@ -39,10 +39,10 @@ csi_error_t csi_ept_config_init(csp_ept_t *ptEptBase, csi_ept_config_t *pteptPwm
 	csp_ept_wr_key(ptEptBase);                                           //Unlocking
 	csp_ept_reset(ptEptBase);											// reset 
 	
-	wClkDiv = (soc_get_pclk_freq() / pteptPwmCfg->wFreq / 60000);		// clk div value
+	wClkDiv = (csi_get_pclk_freq() / pteptPwmCfg->wFreq / 60000);		// clk div value
 	if(wClkDiv == 0)wClkDiv = 1;
 	
-	wPrdrLoad  = (soc_get_pclk_freq()/pteptPwmCfg->wFreq/wClkDiv);	    //prdr load value
+	wPrdrLoad  = (csi_get_pclk_freq()/pteptPwmCfg->wFreq/wClkDiv);	    //prdr load value
 			
 	wCrVal =pteptPwmCfg->byCountingMode | (pteptPwmCfg->byStartSrc<<EPT_STARTSRC_POS) |
 	        pteptPwmCfg->byOneshotMode<<EPT_OPMD_POS | (pteptPwmCfg->byWorkmod<<EPT_MODE_POS);
@@ -167,10 +167,10 @@ csi_error_t  csi_ept_wave_init(csp_ept_t *ptEptBase, csi_ept_pwmconfig_t *pteptP
 	csp_ept_wr_key(ptEptBase);                                           //Unlocking
 	csp_ept_reset(ptEptBase);											// reset 
 	
-	wClkDiv = (soc_get_pclk_freq() / pteptPwmCfg->wFreq / 60000);		// clk div value
+	wClkDiv = (csi_get_pclk_freq() / pteptPwmCfg->wFreq / 60000);		// clk div value
 	if(wClkDiv == 0)wClkDiv = 1;
 	
-	wPrdrLoad  = (soc_get_pclk_freq()/pteptPwmCfg->wFreq/wClkDiv);	    //prdr load value
+	wPrdrLoad  = (csi_get_pclk_freq()/pteptPwmCfg->wFreq/wClkDiv);	    //prdr load value
 		
 	wCrVal =pteptPwmCfg->byCountingMode | (pteptPwmCfg->byStartSrc<<EPT_STARTSRC_POS) |
 	        pteptPwmCfg->byOneshotMode<<EPT_OPMD_POS | (pteptPwmCfg->byWorkmod<<EPT_MODE_POS);
@@ -719,14 +719,14 @@ void csi_ept_set_sync(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, csi_ept_trgm
 	csp_ept_sync_enable(ptEptBase, eTrgIn, ENABLE);
 }
 
-/** \brief ept extsync input select
+/** \brief ept sync -> evtrv config
  * 
  *  \param[in] ptEptBase: pointer of ept register structure
  *  \param[in] eTrgin: ept sync evtrg input channel(0~5)
  *  \param[in] byTrgChx: trgxsel channel(0~1)
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_ept_set_extsync_chnl(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, uint8_t byTrgChx)
+csi_error_t csi_ept_set_sync2evtrg(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, uint8_t byTrgChx)
 {
 	switch(byTrgChx)
 	{

@@ -107,7 +107,7 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 	csp_adc_en(ptAdcBase);								//enable adc mode
 	
 	//adc clk div
-	if((soc_get_pclk_freq() >= 40000000) && (ptAdcCfg->byClkDiv == 0))
+	if((csi_get_pclk_freq() >= 40000000) && (ptAdcCfg->byClkDiv == 0))
 		return CSI_ERROR;
 	if(ptAdcCfg->byClkDiv > 62)
 		ptAdcCfg->byClkDiv = 62;
@@ -338,7 +338,7 @@ uint32_t csi_adc_freq_div(csp_adc_t *ptAdcBase, uint8_t byDiv)
 		byDiv = 62;
 		
 	csp_adc_set_clk_div(ptAdcBase,byDiv);	
-	return  soc_get_pclk_freq()/byDiv;		
+	return  csi_get_pclk_freq()/byDiv;		
 }
 /** \brief get adc clk 
  * 
@@ -350,9 +350,9 @@ uint32_t csi_adc_get_freq(csp_adc_t *ptAdcBase)
     uint8_t byDiv = csp_adc_get_clk_div(ptAdcBase);
 	
 	if(0 == byDiv)
-		return  soc_get_pclk_freq();
+		return  csi_get_pclk_freq();
 	else
-		return  soc_get_pclk_freq()/(byDiv << 1);
+		return  csi_get_pclk_freq()/(byDiv << 1);
 }
  /** \brief adc cmp0 config
  * 

@@ -139,7 +139,7 @@ csi_error_t csi_iic_slave_init(csp_i2c_t *ptIicBase, csi_iic_slave_config_t *ptI
 	
 	csp_i2c_set_saddr(ptIicBase, ptIicSlaveCfg->hwSlaveAddr >> 1);
 
-	wIicClk = soc_get_pclk_freq() / 1000000U;
+	wIicClk = csi_get_pclk_freq() / 1000000U;
 	
 	if(ptIicSlaveCfg->bySpeedMode == IIC_BUS_SPEED_STANDARD)
 	{
@@ -222,7 +222,7 @@ csi_error_t csi_iic_master_init(csp_i2c_t *ptIicBase, csi_iic_master_config_t *p
 		return CSI_ERROR;
 	csp_pcer0_clk_en(SYSCON,22);
 	apt_iic_deinit(ptIicBase);
-	wIicClk = soc_get_pclk_freq() / 1000000U;
+	wIicClk = csi_get_pclk_freq() / 1000000U;
 	
 	if(ptIicMasterCfg->bySpeedMode == IIC_BUS_SPEED_STANDARD)
 	{

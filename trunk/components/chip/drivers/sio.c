@@ -100,7 +100,7 @@ csi_error_t csi_sio_tx_init(csp_sio_t *ptSioBase, csi_sio_tx_config_t *ptTxCfg)
 	
 	if(ptTxCfg->wTxFreq > 1)					//tx clk config
 	{
-		hwClkDiv = soc_get_pclk_freq()/ptTxCfg->wTxFreq - 1;
+		hwClkDiv = csi_get_pclk_freq()/ptTxCfg->wTxFreq - 1;
 		csp_sio_set_tx_clkdiv(ptSioBase, hwClkDiv);
 	}
 	else
@@ -140,7 +140,7 @@ csi_error_t csi_sio_rx_init(csp_sio_t *ptSioBase, csi_sio_rx_config_t *ptRxCfg)
 	
 	if(ptRxCfg->wRxFreq > 1)					//tx clk config
 	{
-		hwClkDiv = soc_get_pclk_freq()/ptRxCfg->wRxFreq - 1;
+		hwClkDiv = csi_get_pclk_freq()/ptRxCfg->wRxFreq - 1;
 		csp_sio_set_rx_clkdiv(ptSioBase, hwClkDiv);
 	}
 	else

@@ -26,7 +26,7 @@ pm_core_t g_tPmCore;
   \param   pBeforeSlp: funtion to be called after wakeup 
   \return      None.
 */
-void soc_pm_attach_callback(csi_pm_mode_t eMd, void *pBeforeSlp, void *pWkup)
+void csi_pm_attach_callback(csi_pm_mode_e eMd, void *pBeforeSlp, void *pWkup)
 {
 	switch(eMd)
 	{
@@ -43,10 +43,10 @@ void soc_pm_attach_callback(csi_pm_mode_t eMd, void *pBeforeSlp, void *pWkup)
 }
 #endif
 
-static csi_error_t soc_sleep(csi_pm_mode_t mode)
+static csi_error_t apt_sleep(csi_pm_mode_e eMode)
 {
 	csi_error_t ret = CSI_OK;
-	switch (mode)
+	switch (eMode)
 	{
 		case (PM_MODE_SLEEP):
 			__WFI();
@@ -66,16 +66,16 @@ static csi_error_t soc_sleep(csi_pm_mode_t mode)
   \param[in]   mode    \ref pmu_mode_e
   \return      error code
 */
-csi_error_t soc_pm_enter_sleep(csi_pm_mode_t mode)
+csi_error_t csi_pm_enter_sleep(csi_pm_mode_e eMode)
 {
 	
-	switch (mode)
+	switch (eMode)
 	{
 		case PM_MODE_SLEEP:		
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.prepare_to_sleep();
 			#endif
-			soc_sleep(PM_MODE_SLEEP);	
+			apt_sleep(PM_MODE_SLEEP);	
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.wkup_frm_sleep();		
 			#endif
@@ -84,7 +84,7 @@ csi_error_t soc_pm_enter_sleep(csi_pm_mode_t mode)
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.prepare_to_deepsleep();
 			#endif
-			soc_sleep(PM_MODE_DEEPSLEEP);	
+			apt_sleep(PM_MODE_DEEPSLEEP);	
 			#ifdef CONFIG_USER_PM
 			g_tPmCore.wkup_frm_deepsleep();
 			#endif
@@ -101,7 +101,7 @@ csi_error_t soc_pm_enter_sleep(csi_pm_mode_t mode)
   \param[in]   enable  flag control the wakeup source is enable or not
   \return      error code
 */
-csi_error_t soc_pm_config_wakeup_source(wakeupn_type_e eWkupSrc, bool bEnable)
+csi_error_t csi_pm_config_wakeup_source(wakeupn_type_e eWkupSrc, bool bEnable)
 {
     uint32_t wIrqNum;
 	csi_error_t ret = CSI_OK;

@@ -37,7 +37,7 @@ csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_conta_timer_config_t 
 	uint8_t byDivTemp = 1;
 	uint32_t wTempLoad = 1;
 	byDivTemp  = ( 0x01 << (ptContaTimerCfg->eClkDiv) );
-	wTempLoad  = (soc_get_pclk_freq() / (byDivTemp * 1000000)) * ptContaTimerCfg->wTime - 1; // (timeout_us / 1000000) = (byDivTemp / pclk) * (tmp_load + 1)
+	wTempLoad  = (csi_get_pclk_freq() / (byDivTemp * 1000000)) * ptContaTimerCfg->wTime - 1; // (timeout_us / 1000000) = (byDivTemp / pclk) * (tmp_load + 1)
 	
 	csi_clk_enable((uint32_t *)ptCntaBase);		//cnta clk enable
     csp_cnta_soft_rst(ptCntaBase);				//default init valu
@@ -114,7 +114,7 @@ csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_conta_pwm_config_t *ptC
     csp_cnta_soft_rst(ptCntaBase);				//default init valu
 	
 	//byClkDiv = ptContaPwmCfg->eClkDiv;
-	wPeriod = (soc_get_pclk_freq() / ptContaPwmCfg->wFreq) >> ptContaPwmCfg->eClkDiv;
+	wPeriod = (csi_get_pclk_freq() / ptContaPwmCfg->wFreq) >> ptContaPwmCfg->eClkDiv;
 	wDatahLoad = wPeriod * ptContaPwmCfg->byDutyCycle / 100 - 3 + 1;//加1是误差调整
 	wDatalLoad = wPeriod * (100 - ptContaPwmCfg->byDutyCycle) / 100 - 3 + 1;//加1是误差调整
 	

@@ -199,7 +199,7 @@ uint32_t csi_spi_baud(csp_spi_t *ptSpiBase, uint32_t wBaud)
     uint32_t wDiv;
     uint32_t wFreq = 0U;
 
-	wDiv = (soc_get_pclk_freq() >> 1) / wBaud;//baud = FPCLK/ CPSDVR / (1 + SCR))
+	wDiv = (csi_get_pclk_freq() >> 1) / wBaud;//baud = FPCLK/ CPSDVR / (1 + SCR))
 	
 	if(wDiv > 0)
 		wDiv --;
@@ -207,9 +207,9 @@ uint32_t csi_spi_baud(csp_spi_t *ptSpiBase, uint32_t wBaud)
 	csp_spi_set_clk_div(ptSpiBase, wDiv, 2);
 
 	if(wDiv > 0)
-		wFreq = (soc_get_pclk_freq() >> 1) / (wDiv + 1);
+		wFreq = (csi_get_pclk_freq() >> 1) / (wDiv + 1);
 	else
-		wFreq = (soc_get_pclk_freq() >> 1) ;
+		wFreq = (csi_get_pclk_freq() >> 1) ;
 		
     return wFreq;
 }
