@@ -229,7 +229,7 @@ uint32_t csi_lpt_get_load_value(csp_lpt_t *ptLptBase)
 	return csp_lpt_get_prdr(ptLptBase);
 }
 
-/** \brief get lpt load value
+/** \brief get lpt working status
  * 
  *  \param[in] ptLptBase:pointer of lpt register structure
  *  \return rue: running; false: stopped

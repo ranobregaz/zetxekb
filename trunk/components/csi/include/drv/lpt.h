@@ -131,7 +131,7 @@ uint32_t csi_lpt_get_remaining_value(csp_lpt_t *ptLptBase);
 uint32_t csi_lpt_get_load_value(csp_lpt_t *ptLptBase);
 
 /**
-  \brief       Check lpt is running
+  \brief       get lpt working status
   \param[in]   ptLptBase:pointer of lpt register structure
   \return      true->running, false->stopped
 */
