@@ -288,6 +288,17 @@ struct csi_ept_Global_load_control_config{
 	bool gfrcld;
 };
 
+/// \struct csi_ept_filter_config_t
+/// \brief  ept sync trigger filter parameter configuration, open to users  
+typedef struct {
+	uint8_t		byFiltSrc;			//filter input signal source
+	uint8_t		byWinInv;			//window inversion 
+	uint8_t		byWinAlign;			//window alignment 
+	uint8_t		byWinCross;			//window cross
+	uint16_t	byWinOffset;		//window offset
+	uint16_t 	byWinWidth;			//window width		
+} csi_ept_filter_config_t;
+
 typedef enum
 {
 	EPT_CAPTURE	= 0,		
@@ -526,6 +537,19 @@ typedef enum{
 	EPT_TRG_OUT3				//trigger out3		
 }csi_ept_trgout_e;
 
+/**
+ * \enum	csi_ept_filter_insrc_e
+ * \brief   ept filter input signal source
+ */
+typedef enum{
+	EPT_FILT_DIS		= 0,	//filter disable
+	EPT_FILT_SYNCIN0,			//filter input syncin0
+	EPT_FILT_SYNCIN1,			//filter input syncin1	
+	EPT_FILT_SYNCIN2,			//filter input syncin2
+	EPT_FILT_SYNCIN3,			//filter input syncin3	
+	EPT_FILT_SYNCIN4,			//filter input syncin4
+	EPT_FILT_SYNCIN5,			//filter input syncin5		
+}csi_ept_filter_insrc_e;
 
 typedef enum{
 	EPT_EVTRG_Disable 	= 0,
