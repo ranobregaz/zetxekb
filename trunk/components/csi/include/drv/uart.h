@@ -120,13 +120,13 @@ typedef struct {
 } csi_uart_config_t;
 
 typedef struct {
-    uint8_t				*pbyTxData;			//pointer of send buf 
+	uint8_t				bySendStat;			//send status
+	uint8_t				byRecvStat;			//receive status
+	uint8_t				bySendMode;			//send mode
+	uint8_t				byRecvMode;			//receive mode
 	uint16_t            hwTxSize;			//tx send data size
 	uint16_t            hwRxSize;			//tx send data size
-	uint8_t				bySendStat;
-	uint8_t				byRecvStat;
-	uint8_t				bySendMode;
-	uint8_t				byRecvMode;
+	uint8_t				*pbyTxData;			//pointer of send buf 
 	ringbuffer_t		*ptRingBuf;			
 } csi_uart_transfer_t;
 
