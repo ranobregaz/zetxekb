@@ -287,17 +287,17 @@ uint8_t spi_send_receive_1byte(csp_spi_t *ptSpiBase,uint8_t byData);
  */ 
 void spi_buff_send(csp_spi_t *ptSpiBase,uint8_t *pbyData,uint8_t bySize);
 
-/** \brief spi send and receive(less than eight bytes)
+/** \brief spi send and receive(equal to 8 or less than eight bytes)
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] pbyDataout :send data buffer pointer
- *  \param[in] pbyDatain :receive data buffer pointer
+ *  \param[in] pbyDataOut :send data buffer pointer
+ *  \param[in] pbyDataIn :receive data buffer pointer
  *  \param[in] wSize ：length
  *  \return none
  */ 
-void csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, uint8_t *pbyDataout,uint8_t *pbyDatain,uint32_t wSize);
+void csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, uint8_t *pbyDataOut,uint8_t *pbyDataIn,uint32_t wSize);
 
-/** \brief spi send and receive(send equal to 8 bytes or  more than eight bytes)
+/** \brief spi send and receive(equal to 8 bytes or  more than eight bytes)
  * 
  *  \param[in] ptSpiBase: SPI handle
  *  \param[in] pbyDataout :send data buffer pointer 
