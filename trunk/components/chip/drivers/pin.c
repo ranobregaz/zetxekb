@@ -47,7 +47,7 @@ static unsigned int *apt_get_pin_name_addr(pin_name_e ePinName)
  *  \param[in] eExiGrp:	EXI_IGRP0 ~ EXI_IGRP19
  *  \return none
  */ 
-void apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp)
+static void apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp)
 {
 	uint32_t byMaskShift,byMask;
 	gpio_group_e eIoGroup = GRP_GPIOA0;
@@ -109,7 +109,7 @@ void apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e
  *  \param[in] eGpioTrg: EXI_IRT,EXI_IFT,
  *  \return none
  */ 
-void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg)
+static void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg)
 {
 	uint32_t wPinMsak = (0x01ul << eExiGrp);
 	
