@@ -253,14 +253,14 @@ void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin)
 /** \brief bt evtrg output config
  * 
  *  \param[in] ptBtBase:pointer of bt register structure
- *  \param[in] byEvTrg: trigger event (byEvtrg =  0)
- *  \param[in] eTrgSrc: BT evtrg source(1~3) 
- *  \param[in] eTrgPrd: event count period
+ *  \param[in] byTrgOut: trigger out event (byEvtrg =  0)
+ *  \param[in] eTrgSrc: bt evtrg source(1~3) 
+ *  \param[in] byTrgPrd: event count period
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byEvTrg, csi_bt_trgsrc_e eTrgSrc, uint8_t eTrgPrd)
+csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byTrgOut, csi_bt_trgsrc_e eTrgSrc, uint8_t byTrgPrd)
 {
-	if (byEvTrg > 0)
+	if (byTrgOut > 0)
 		return CSI_ERROR;
 	
 	if(eTrgSrc == BT_TRGSRC_DIS)

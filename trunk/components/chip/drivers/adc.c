@@ -467,13 +467,13 @@ void csi_adc_rearm_sync(csp_adc_t *ptAdcBase, csi_adc_trgin_e eTrgIn)
 /** \brief set adc evtrg output
  * 
  *  \param[in] ptAdcBase: pointer of adc register structure
- *  \param[in] byEvTrg: adc event trigger out select(0~1)
+ *  \param[in] byTrgOut: adc event trigger out select(0~1)
  *  \param[in] adc_trgsrc: adc evtrg source(0~23) 
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, uint8_t byEvTrg, csi_adc_trgsrc_e eTrgSrc)
+csi_error_t csi_adc_set_evtrg(csp_adc_t *ptAdcBase, uint8_t byTrgOut, csi_adc_trgsrc_e eTrgSrc)
 {
-	switch(byEvTrg)
+	switch(byTrgOut)
 	{
 		case ADC_TRG_OUT0:		//event trigger out0
 			ptAdcBase->EVTRG = (ptAdcBase->EVTRG & (~ADC12_TRGSRC0_MSK)) | (eTrgSrc << ADC12_TRGSRC0_POS);
