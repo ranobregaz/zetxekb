@@ -19,7 +19,7 @@ uint32_t gEptPrd;
 
  /**
  \brief  Basic configuration
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    	pointer of ept register structure
  \param  pteptPwmCfg   	refer to csi_ept_config_t
  \return CSI_OK/CSI_ERROR
 */
@@ -96,7 +96,7 @@ csi_error_t csi_ept_config_init(csp_ept_t *ptEptBase, csi_ept_config_t *pteptPwm
 
  /**
  \brief  capture configuration
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    	pointer of ept register structure
  \param  pteptPwmCfg   	refer to csi_ept_captureconfig_t
  \return CSI_OK /CSI_ERROR
 */
@@ -148,7 +148,7 @@ csi_error_t csi_ept_capture_init(csp_ept_t *ptEptBase, csi_ept_captureconfig_t *
 
  /**
  \brief  wave configuration
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    	pointer of ept register structure
  \param  pteptPwmCfg   	refer to csi_ept_pwmconfig_t
  \return CSI_OK /CSI_ERROR
 */
@@ -202,7 +202,7 @@ csi_error_t  csi_ept_wave_init(csp_ept_t *ptEptBase, csi_ept_pwmconfig_t *pteptP
 }
  /**
  \brief  Channel configuration
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    	pointer of ept register structure
  \param  tPwmCfg   	    refer to csi_ept_pwmchannel_config_t
  \param  channel        Channel label
  \return CSI_OK /CSI_ERROR
@@ -241,7 +241,7 @@ csi_error_t csi_ept_channel_config(csp_ept_t *ptEptBase, csi_ept_pwmchannel_conf
 }
  /**
  \brief  DeadZoneTime configuration loading 
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    	pointer of ept register structure
  \param  byVal         refer to csi_ept_dbdldr_e
  \param  byWod         refer to csp_ept_shdw_e
  \param  byWod2	       refer to csp_ept_lddb_e
@@ -273,10 +273,8 @@ csi_error_t csi_ept_dbldrload_config(csp_ept_t *ptEptBase, csi_ept_dbdldr_e byVa
 }   
  /**
  \brief  DeadZoneTime configuration 
- \param  ptEptBase    	ept handle to operate 
- \param  byVal         refer to csi_ept_dbdldr_e
- \param  byWod         refer to csp_ept_shdw_e
- \param  byWod2	       refer to csp_ept_lddb_e
+ \param  ptEptBase    	pointer of ept register structure
+ \param  tCfg           refer to csi_ept_deadzone_config_t
  \return CSI_OK /CSI_ERROR
 */
 csi_error_t csi_ept_dbcr_config(csp_ept_t *ptEptBase, csi_ept_deadzone_config_t *tCfg)
@@ -294,7 +292,7 @@ csi_error_t csi_ept_dbcr_config(csp_ept_t *ptEptBase, csi_ept_deadzone_config_t 
 }
  /**
  \brief  channelmode configuration 
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    pointer of ept register structure
  \param  tCfg         refer to csi_ept_deadzone_config_t
  \param  byCh         refer to csi_ept_channel_e
  \return CSI_OK /CSI_ERROR
@@ -328,7 +326,7 @@ csi_error_t csi_ept_channelmode_config(csp_ept_t *ptEptBase,csi_ept_deadzone_con
 }
 /**
  \brief  Carrier output parameter configuration 
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    	pointer of ept register structure
  \param  tCfg         refer to csi_ept_Chopper_config_t
  \return CSI_OK /CSI_ERROR
 */
@@ -372,7 +370,7 @@ csi_error_t csi_ept_chopper_config(csp_ept_t *ptEptBase, csi_ept_chx_e byCh, boo
 }
 /**
  \brief  State of emergency configuration 
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    	pointer of ept register structure
  \param  tCfg           refer to csi_ept_emergency_config_t
  \return CSI_OK /CSI_ERROR
 */
@@ -411,7 +409,7 @@ csi_error_t csi_ept_emergency_cfg(csp_ept_t *ptEptBase, csi_ept_emergency_config
 }
 /**
  \brief  State of emergency configuration 
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    	pointer of ept register structure
  \param  tCfg           refer to csi_ept_emergency_config_t
  \return CSI_OK /CSI_ERROR
 */
@@ -433,7 +431,7 @@ csi_error_t csi_ept_emergency_pinxout(csp_ept_t *ptEptBase,csi_ept_osrchx_e  byC
 }
 /**
  \brief  ept configuration Loading
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    	pointer of ept register structure
  \param  tCfg           refer to csi_ept_Global_load_control_config_t
  \return CSI_OK /CSI_ERROR
 */
@@ -449,7 +447,7 @@ csi_error_t csi_ept_global_config(csp_ept_t *ptEptBase,csi_ept_Global_load_contr
 }
 /**
  \brief  Software trigger loading
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    	pointer of ept register structure
  \return CSI_OK
 */
 csi_error_t csi_ept_global_sw(csp_ept_t *ptEptBase)
@@ -459,7 +457,7 @@ csi_error_t csi_ept_global_sw(csp_ept_t *ptEptBase)
 }
 /**
  \brief  rearm  loading
- \param  ptEptBase    	ept handle to operate 
+ \param  ptEptBase    	pointer of ept register structure
  \return CSI_OK
 */
 csi_error_t csi_ept_global_rearm(csp_ept_t *ptEptBase)
@@ -478,7 +476,7 @@ csi_error_t csi_ept_start(csp_ept_t *pteptBase)
 }
 /**
  \brief SW stop EPT counter
- \param ptEpt    EPT handle to operate
+ \param ptEpt    pointer of ept register structure
 */
 void csi_ept_swstop(csp_ept_t *ptEpt)
 {
@@ -487,7 +485,7 @@ void csi_ept_swstop(csp_ept_t *ptEpt)
 }
 /**
  \brief set EPT start mode. 
- \param ptEpt    EPT handle to operate
+ \param ptEpt    pointer of ept register structure
  \return eMode ：EPT_SW/EPT_SYNC
 */
 void csi_ept_set_start_mode(csp_ept_t *ptEpt, csi_ept_stmd_e eMode)
@@ -496,7 +494,7 @@ void csi_ept_set_start_mode(csp_ept_t *ptEpt, csi_ept_stmd_e eMode)
 }
 /**
  \brief set EPT operation mode
- \param ptEpt    EPT handle to operate
+ \param ptEpt    pointer of ept register structure
  \param eMode 	 EPT_OP_CONT/EPT_OP_OT
 */
 void csi_ept_set_os_mode(csp_ept_t *ptEpt, csi_ept_opmd_e eMode)
@@ -506,7 +504,7 @@ void csi_ept_set_os_mode(csp_ept_t *ptEpt, csi_ept_opmd_e eMode)
 
 /**
  \brief set EPT stop status
- \param ptEpt    EPT handle to operate
+ \param ptEpt    pointer of ept register structure
  \param eSt 	 EPT_STP_HZ/EPT_STP_LOW
 */
 void csi_ept_set_stop_st(csp_ept_t *ptEpt, csp_ept_stpst_e eSt)
@@ -516,7 +514,7 @@ void csi_ept_set_stop_st(csp_ept_t *ptEpt, csp_ept_stpst_e eSt)
 
 /**
  \brief get counter period to calculate the duty cycle. 
- \param ptEpt    ept handle to operate
+ \param ptEpt    pointer of ept register structure
  \return counter period (reg data)
 */
 uint16_t csi_ept_get_prdr(csp_ept_t *ptEpt)
@@ -526,7 +524,7 @@ uint16_t csi_ept_get_prdr(csp_ept_t *ptEpt)
 
 /**
  \brief change ept output dutycycle. 
- \param ptEptBase     ept handle to operate
+ \param ptEptBase     pointer of ept register structure
  \param eCh           refer to csi_ept_chtype_e
  \param wActiveTime   cmpx data to be set directly
 */
@@ -551,24 +549,9 @@ csi_error_t csi_ept_change_ch_duty(csp_ept_t *ptEptBase, csi_ept_chtype_e eCh, u
 }
 
 /**
- \brief chopper configuration
- \param ptEpt    		ept handle to operate 
- \param bybyCdiv   		fchop = PCLK/((bybyCdiv+1)*8)
- \param bybyCduty  		(0~7) duty = byduty/8 
- \param byFirstWidth 	T = Tchop * byFirstWidth
- \return none 
-*/
-void csi_ept_set_cp(csp_ept_t *ptEptBase, uint8_t bybyCdiv, uint8_t bybyCduty, uint8_t byFirstWidth)
-{	
-	csp_ept_set_cp_div(ptEptBase, bybyCdiv);
-	csp_ept_set_cp_duty(ptEptBase, bybyCduty);
-	csp_ept_set_cp_ospwth(ptEptBase, byFirstWidth);
-}
-
-/**
  \brief software force lock
- \param ptEpt    ept handle to operate
- \param eEbi 	 external emergency input: EPT_EBI0~4 （EBI4 = LVD）
+ \param ptEpt    pointer of ept register structure
+ \param eEbi 	 external emergency input: EPT_EPI0~7 （EBI4 = LVD）
  \return none
 */
 void csi_ept_force_em(csp_ept_t *ptEptBase, csp_ept_ep_e byEbi)
@@ -578,7 +561,7 @@ void csi_ept_force_em(csp_ept_t *ptEptBase, csp_ept_ep_e byEbi)
 
 /**
  \brief get harklock status
- \param ptEpt    ept handle to operate
+ \param ptEpt    pointer of ept register structure
  \return uint8_t 0b_ _ _ _ _ _ _ _
 */
 uint8_t csi_ept_get_hdlck_st(csp_ept_t *ptEptBase)
@@ -588,17 +571,17 @@ uint8_t csi_ept_get_hdlck_st(csp_ept_t *ptEptBase)
 
 /**
  \brief clear harklock status
- \param ptEpt    ept handle to operate
- \return  eEbi 	 external emergency input: EPT_EBI0~3/EPT_EBILVD
+ \param ptEpt   pointer of ept register structure
+ \return  eEbi 	 external emergency input: csp_ept_ep_e                 
 */
-void csi_ept_clr_hdlck(csp_ept_t *ptEptBase, csi_ept_ebi_e eEbi)
+void csi_ept_clr_hdlck(csp_ept_t *ptEptBase, csp_ept_ep_e eEbi)
 {
 	csp_ept_clr_emHdlck(ptEptBase, eEbi);
 }
 
 /**
  \brief get 	 softlock status
- \param ptEpt    ept handle to operate
+ \param ptEpt    pointer of ept register structure
  \return uint8_t 0b_ _ _ _ _ _ _ _
 */
 uint8_t csi_ept_get_sftlck_st(csp_ept_t *ptEptBase)
@@ -608,8 +591,8 @@ uint8_t csi_ept_get_sftlck_st(csp_ept_t *ptEptBase)
 
 /**
  \brief clear softlock status
- \param ptEpt    ept handle to operate
- \return  eEpi 	 external emergency input: EPT_EBI0~3/EPT_EBILVD
+ \param ptEpt   pointer of ept register structure
+ \return  eEpi 	 external emergency input: csp_ept_ep_e
 */
 void csp_ept_clr_sftlck(csp_ept_t *ptEptBase, csp_ept_ep_e eEpi)
 {	
@@ -618,7 +601,7 @@ void csp_ept_clr_sftlck(csp_ept_t *ptEptBase, csp_ept_ep_e eEpi)
 
 /**
   \brief       enable/disable ept in debug mode
-  \param[in]   ptEpt       EPT handle to operate
+  \param[in]   ptEpt      pointer of ept register structure
   \param[in]   bEnable		ENABLE/DISABLE
 */
 
@@ -629,7 +612,7 @@ void csi_ept_debug_enable(csp_ept_t *ptEptBase, bool bEnable)
 
 /**
   \brief       enable/disable ept emergencyinterruption
-  \param[in]   ptEptBase       EPT handle to operate
+  \param[in]   ptEptBase       pointer of ept register structure
   \param[in]   eEbi		       refer to csp_ept_emint_e
 */
 void csi_ept_emergency_interruption_en(csp_ept_t *ptEptBase, csp_ept_emint_e eEbi)
@@ -639,7 +622,7 @@ void csi_ept_emergency_interruption_en(csp_ept_t *ptEptBase, csp_ept_emint_e eEb
 
 /**
   \brief   enable/disable ept out trigger 
-  \param   ptEptBase       EPT handle to operate
+  \param   ptEptBase      pointer of ept register structure
   \param 	eCh			0/1/2/3
   \param   bEnable		ENABLE/DISABLE
 */
@@ -652,7 +635,7 @@ csi_error_t csi_ept_evtrg_enable(csp_ept_t *ptEptBase, uint8_t byCh, bool bEnabl
 
 /**
   \brief   One time software output 
-  \param   ptEptBase      EPT handle to operate 
+  \param   ptEptBase      pointer of ept register structure 
   \param   byCh	         EPT_OSTSFA/EPT_OSTSFB/EPT_OSTSFC/EPT_OSTSFD		
   \param   bEnable 		EPT_LDAQCR_ZRO/EPT_LDAQCR_PRD/EPT_LDAQCR_ZROPRD
 */
