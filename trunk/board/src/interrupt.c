@@ -50,7 +50,7 @@ void CORETHandler(void)
     // ISR content ...
 	//CK801->CORET_CVR = 0x0;			// Clear counter and flag
 	tick_irq_handler(NULL);
-	csi_pin_toggle(PA01);
+	//csi_pin_toggle(PA01);
 }
 
 void SYSCONIntHandler(void) 
@@ -294,7 +294,7 @@ void EXI10to15IntHandler(void)
 void CNTAIntHandler(void) 
 {
     // ISR content ...
-	csi_pin_toggle(PA01);
+	csi_pin_toggle(PA011);
 
 }
 void TKEYIntHandler(void) 
