@@ -201,6 +201,14 @@ csi_error_t csi_emosc_enable(uint32_t wFreq)
 	else
 		csp_set_em_gain(SYSCON, 0x7);
 		
+	csp_set_em_gain(SYSCON, 0x1f);
+	
+	if (wFreq == 32768) {
+		csp_set_em_lfmd(SYSCON, ENABLE);
+		SYSCON->OSTR = SYSCON->OSTR & (~0x3ff)|(0xff);
+	}
+	
+
 	SYSCON->GCER = EMOSC;
 	//wait for EMOSC to stable
 	while(!(csp_get_ckst(SYSCON)& EMOSC));
