@@ -444,7 +444,7 @@ csi_error_t spi_senario(void)
 		
 		iRet = csi_spi_init(&g_tSpiMaster,0);		
 	
-		iRet = csi_spi_attach_callback(&g_tSpiMaster,apt_spi_event, (void *)arg);		
+		iRet = csi_spi_attach_callback(&g_tSpiMaster,apt_spi_event, (void *) arg);		
 	
 		iRet = csi_spi_mode(&g_tSpiMaster, SPI_MASTER);		
 	
