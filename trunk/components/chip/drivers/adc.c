@@ -102,6 +102,7 @@ csi_error_t csi_adc_init(csp_adc_t *ptAdcBase, csi_adc_config_t *ptAdcCfg)
 	csi_clk_enable((uint32_t *)ptAdcBase);				//adc peripheral clk enable
 	csp_adc_clk_en(ptAdcBase);							//adc clk enable
 	csp_adc_soft_rst(ptAdcBase);						//adc mode reset
+	csp_adc_clk_en(ptAdcBase);							//adc clk enable
 	csp_adc_set_resolution(ptAdcBase, ADC12_12BIT);		//adc 12bit
 	csp_adc_en(ptAdcBase);								//enable adc mode
 	
@@ -186,7 +187,7 @@ csi_error_t csi_adc_start(csp_adc_t *ptAdcBase)
 	csi_error_t ret = CSI_OK;
 	uint32_t wTimeOut = 0xffff;
 	
-	while(!((ptAdcBase->SR >> ADC12_READY) & 0x01) && wTimeOut --);	//adc ready ok?
+	while(!(ptAdcBase->SR & ADC12_READY) && wTimeOut --);	//adc ready ok?
 	if(wTimeOut)
 		csp_adc_start(ptAdcBase);									//start adc
 	else
