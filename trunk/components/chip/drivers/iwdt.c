@@ -35,25 +35,24 @@ csi_error_t csi_iwdt_init(csi_iwdt_to_e eTimeOut)
 	if(!(csp_get_gcsr(SYSCON) & ISOSC))		//enable isosc
 		csi_isosc_enable();		
 	
-	s_wIwdtTimeout = eTimeOut;
 	switch (eTimeOut)						//set iwdt time out(time long of reset)
 	{
-		case IWDT_TO_128:	byOvt = 0x0;
+		case IWDT_TO_128:	byOvt = 0x0; s_wIwdtTimeout = 128;
 			break;
-		case IWDT_TO_256: 	byOvt = 0x1;
+		case IWDT_TO_256: 	byOvt = 0x1; s_wIwdtTimeout = 256;
 			break;
-		case IWDT_TO_512: 	byOvt = 0x2;
+		case IWDT_TO_512: 	byOvt = 0x2; s_wIwdtTimeout = 512;
 			break;
-		case IWDT_TO_1000: 	byOvt = 0x3;
+		case IWDT_TO_1000: 	byOvt = 0x3; s_wIwdtTimeout = 1024;
 			break;
-		case IWDT_TO_2000:	byOvt = 0x4;
+		case IWDT_TO_2000:	byOvt = 0x4; s_wIwdtTimeout = 2048;
 			break;
-		case IWDT_TO_3100:	byOvt = 0x5;
+		case IWDT_TO_3100:	byOvt = 0x5; s_wIwdtTimeout = 3072;
 			break;
-		case IWDT_TO_4100: 	byOvt = 0x6;
+		case IWDT_TO_4100: 	byOvt = 0x6; s_wIwdtTimeout = 4096;
 			break;
 		case IWDT_TO_8200:
-		default:	byOvt = 0x7;
+		default:	byOvt = 0x7; s_wIwdtTimeout = 8192;
 			break;
 	}
 	
