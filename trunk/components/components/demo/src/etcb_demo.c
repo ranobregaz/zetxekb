@@ -27,22 +27,35 @@
 int etcb_one_trg_one_demo(void)
 {
 	int iRet = 0;
-	uint8_t ch;
+	volatile uint8_t ch;
 	csi_etb_config_t tEtbConfig;				//ETB 参数配置结构体	
-			
-	//para config
-	tEtbConfig.eChType 	= ETB_ONE_TRG_ONE;		//单个源触发单个目标
-	tEtbConfig.bySrcIp 	= ETB_EXI_TRGOUT0;		//外部中断组0作为触发源
-	tEtbConfig.bySrcIp1 = 0xff;						
+		
+	tEtbConfig.eChType = ETB_ONE_TRG_ONE;  		//one channel trigger one channel
+	tEtbConfig.bySrcIp  = ETB_ETP0_TRGOUT0 ;  	//
+	tEtbConfig.bySrcIp1 = 0xff;      
 	tEtbConfig.bySrcIp2 = 0xff;
-	tEtbConfig.byDstIp 	= ETB_BT0_SYNCIN0;		//BT0 同步输入0作为目标事件
+	tEtbConfig.byDstIp =  ETB_EPT0_SYNCIN2;   	//
 	tEtbConfig.byDstIp1 = 0xff;
 	tEtbConfig.byDstIp2 = 0xff;
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
-	
-	csi_etb_init();								//初始化(使能)ETB
-	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//获取ETB空闲通道
-	iRet = csi_etb_ch_config(ch,&tEtbConfig);	//配置并启动ETB通道
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
+   
+	csi_etb_init();
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);
+	iRet = csi_etb_ch_config(ch, &tEtbConfig);
+		
+//	//para config
+//	tEtbConfig.eChType 	= ETB_ONE_TRG_ONE;		//单个源触发单个目标
+//	tEtbConfig.bySrcIp 	= ETB_EXI_TRGOUT0;		//外部中断组0作为触发源
+//	tEtbConfig.bySrcIp1 = 0xff;						
+//	tEtbConfig.bySrcIp2 = 0xff;
+//	tEtbConfig.byDstIp 	= ETB_BT0_SYNCIN0;		//BT0 同步输入0作为目标事件
+//	tEtbConfig.byDstIp1 = 0xff;
+//	tEtbConfig.byDstIp2 = 0xff;
+//	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
+//	
+//	csi_etb_init();								//初始化(使能)ETB
+//	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//获取ETB空闲通道
+//	iRet = csi_etb_ch_config(ch,&tEtbConfig);	//配置并启动ETB通道
 			
 	return iRet;
 }
@@ -55,6 +68,23 @@ int etcb_one_trg_one_demo(void)
 int etcb_one_trg_more_demo(void)
 {
 	int iRet = 0;
+	volatile uint8_t ch;
+	csi_etb_config_t tEtbConfig;				//ETB 参数配置结构体	
+	
+	//para config
+	tEtbConfig.eChType 	= ETB_ONE_TRG_MORE;		//单个源触发多个目标
+	tEtbConfig.bySrcIp 	= ETB_EXI_TRGOUT0;		//外部中断组0作为触发源
+	tEtbConfig.bySrcIp1 = 0xff;						
+	tEtbConfig.bySrcIp2 = 0xff;
+	tEtbConfig.byDstIp 	= ETB_BT0_SYNCIN0;		//BT0 同步输入0作为目标事件
+	tEtbConfig.byDstIp1 = ETB_ADC_SYNCIN0;
+	tEtbConfig.byDstIp2 = ETB_EPT0_SYNCIN1;
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
+	
+	csi_etb_init();								//初始化(使能)ETB
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//获取ETB空闲通道
+	iRet = csi_etb_ch_config(ch,&tEtbConfig);	//配置并启动ETB通道
+			
 	return iRet;
 }
 
@@ -65,6 +95,23 @@ int etcb_one_trg_more_demo(void)
  */
 int etcb_more_trg_one_demo(void)
 {
-	int iRet = 0;
+		int iRet = 0;
+	volatile uint8_t ch;
+	csi_etb_config_t tEtbConfig;				//ETB 参数配置结构体	
+	
+	//para config
+	tEtbConfig.eChType 	= ETB_MORE_TRG_ONE;		//单个源触发多个目标
+	tEtbConfig.bySrcIp 	= ETB_EXI_TRGOUT0;		//外部中断组0作为触发源
+	tEtbConfig.bySrcIp1 = ETB_BT_TRGOUT0;						
+	tEtbConfig.bySrcIp2 = ETB_ETP0_TRGOUT0;
+	tEtbConfig.byDstIp 	= ETB_BT0_SYNCIN0;		//BT0 同步输入0作为目标事件
+	tEtbConfig.byDstIp1 = 0xff;
+	tEtbConfig.byDstIp2 = 0xff;
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
+	
+	csi_etb_init();								//初始化(使能)ETB
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//获取ETB空闲通道
+	iRet = csi_etb_ch_config(ch,&tEtbConfig);	//配置并启动ETB通道
+			
 	return iRet;
 }
