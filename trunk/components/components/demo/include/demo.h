@@ -77,4 +77,10 @@ void rtc_trgev_demo(void);
 
 //low power demo
 void lp_exi_wakeup_demo(void);
+
+//iic demo
+extern void iic_master_demo(void);
+extern void iic_master_slave_demo(void);
+extern void iic_slave_demo(void);
+
 #endif
