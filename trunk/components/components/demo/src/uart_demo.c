@@ -218,7 +218,7 @@ int uart_recv_intr_demo(void)
 	g_tUartTran[1].ptRingBuf = &g_tRingbuf;		//UART1循环buffer指针赋值 	
 	ringbuffer_reset(g_tUartTran[1].ptRingBuf);	//初始化循环buffer
 	
-	tUartConfig.byParity = UART_PARITY_ODD;		//校验位，奇校验
+	tUartConfig.byParity = UART_PARITY_NONE;	//校验位，奇校验
 	tUartConfig.wBaudRate = 115200;				//波特率，115200
 	tUartConfig.wInter = UART_INTSRC_RXFIFO;	//串口接收中断打开，使用RXFIFO中断
 	tUartConfig.byTxMode = UART_TX_MODE_POLL;	//发送模式：轮询模式
@@ -231,9 +231,10 @@ int uart_recv_intr_demo(void)
 	{
 		//从串口缓存（UART接收循环buffer）里面读取数据，返回读取数据个数
 		//用户应用根据实际不同协议来处理数据
-		hwRecvLen = csi_uart_receive(UART1,(void *)byRxBuf, 13,0);	//读取接收循环buffer数据
-		if(hwRecvLen)
-			csi_uart_send(UART1,(void *)byRxBuf,hwRecvLen);			//UART发送采用轮询方式(同步)
+		hwRecvLen = csi_uart_receive(UART1,(void *)byRxBuf, 1,0);	//读取接收循环buffer数据
+		if(hwRecvLen == 1)
+			csi_uart_putc(UART1,*byRxBuf);
+			//csi_uart_send(UART1,(void *)byRxBuf, hwRecvLen);		//UART发送采用轮询方式(同步)
 	}
 	
 	return iRet;
@@ -285,9 +286,7 @@ int uart_recv_dynamic_demo(void)
 			hwRecvLen = csi_uart_receive(UART1,(void*)byRxBuf,0,0);		//获取接收到的一串数据，返回数据长度, 后面两个参数无意义
 			csi_uart_send(UART1,(void *)byRxBuf,hwRecvLen);				//UART发送采用轮询方式(同步)
 		}
-		
 	}
-	
 	return iRet;
 }
 
