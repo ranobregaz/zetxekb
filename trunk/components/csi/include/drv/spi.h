@@ -123,6 +123,13 @@ extern csi_spi_transmit_t g_tSpiTransmit;
  */ 
 csi_error_t csi_spi_init(csp_spi_t *ptSpiBase,csi_spi_config_t *ptSpiCfg);
 
+/** \brief uninit spi data structure
+ * 
+ *  \param[in] ptSpiBase: SPI handle
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_spi_uninit(csp_spi_t *ptSpiBase);
+
 /** \brief set spi mode, master or slave
  * 
  *  \param[in] ptSpiBase: SPI handle
