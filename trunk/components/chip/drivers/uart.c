@@ -13,7 +13,6 @@
 #include <drv/irq.h>
 #include <drv/gpio.h>
 #include <drv/pin.h>
-#include <drv/porting.h>
 #include <drv/tick.h>
 
 /* Private macro------------------------------------------------------*/
