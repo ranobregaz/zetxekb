@@ -28,7 +28,7 @@ csi_adc_samp_t	g_tAdcSamp;
 
 /** \brief adc interrupt handle function
  * 
- *  \param[in] ptUartBase: pointer of adc register structure
+ *  \param[in] ptAdcBase: pointer of adc register structure
  *  \return none
  */ 
 void apt_adc_irqhandler(csp_adc_t *ptAdcBase)

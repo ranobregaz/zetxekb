@@ -206,14 +206,14 @@ void csi_bt_pwm_duty_cycle_updata(csp_bt_t *ptBtBase, uint8_t byDutyCycle)
 /** \brief  updata bt pwm freq and duty cycle
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
- *  \param[in] wfreq: pwm frequency  
+ *  \param[in] wFreq: pwm frequency  
  *  \param[in] byDutyCycle: pwm duty cycle(0 -> 100)
  *  \return none
  */
-void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle) 
+void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wFreq, uint8_t byDutyCycle) 
 {
 	uint16_t hwClkDiv = csp_bt_get_pscr(ptBtBase) + 1;
-	uint32_t wPrdrLoad  = (soc_get_pclk_freq() / (hwClkDiv * wfreq));
+	uint32_t wPrdrLoad  = (soc_get_pclk_freq() / (hwClkDiv * wFreq));
 	uint32_t wCmpLoad = wPrdrLoad * byDutyCycle /100;
 	
 	csp_bt_set_prdr(ptBtBase, wPrdrLoad);					//bt prdr load value

@@ -218,7 +218,7 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
 }
 /** \brief free an etb channel
  * 
- *  \param[in] eChId: etb channel work mode
+ *  \param[in] eChId: etb channel id number
  *  \return none
 */
 void csi_etb_ch_free(csi_etb_chid_e eChId)
@@ -237,12 +237,12 @@ csi_error_t csi_etb_ch_config(csi_etb_chid_e eChId, csi_etb_config_t *ptConfig)
     CSI_PARAM_CHK(ptConfig, CSI_ERROR);
 	csi_error_t ret = CSI_OK;
 	
-	switch(ptConfig->eChType)
+	switch(ptConfig->byChType)
 	{
 		case ETB_ONE_TRG_ONE:					//channel num = [3:7]
 			if(eChId > ETB_CH2_ID)
 			{
-				csp_etb_one_trg_one_set(ETCB, eChId, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->eTrgMode);
+				csp_etb_one_trg_one_set(ETCB, eChId, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byTrgMode);
 				csp_etb_chx_en(ETCB, eChId);	//enable etb channel 
 			}
 			else
@@ -251,14 +251,14 @@ csi_error_t csi_etb_ch_config(csi_etb_chid_e eChId, csi_etb_config_t *ptConfig)
 			break;
 		case ETB_ONE_TRG_MORE:					//channel num = [1:2]		
 			if((eChId == ETB_CH1_ID) || (eChId == ETB_CH2_ID))
-				etb_one_trg_more_set(ETCB, eChId, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byDstIp1, ptConfig->byDstIp2,ptConfig->eTrgMode);
+				etb_one_trg_more_set(ETCB, eChId, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byDstIp1, ptConfig->byDstIp2,ptConfig->byTrgMode);
 			else
 				ret = CSI_ERROR;
 				
 			break;
 		case ETB_MORE_TRG_ONE:					//channel num = 0
 			if(eChId == ETB_CH0_ID)
-				etb_more_trg_one_set(ETCB,ptConfig->bySrcIp, ptConfig->bySrcIp1, ptConfig->bySrcIp2, ptConfig->byDstIp, ptConfig->eTrgMode);
+				etb_more_trg_one_set(ETCB,ptConfig->bySrcIp, ptConfig->bySrcIp1, ptConfig->bySrcIp2, ptConfig->byDstIp, ptConfig->byTrgMode);
 			else
 				ret = CSI_ERROR;
 			

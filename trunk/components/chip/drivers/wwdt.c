@@ -99,11 +99,11 @@ void csi_wwdt_open(void)
  *  \param[in] none
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_wwdt_close(void)
-{
-	//csp_iwdt_disable(SYSCON);
-	return CSI_UNSUPPORTED;					//can not stop WWDT once it is enabled
-}
+//csi_error_t csi_wwdt_close(void)
+//{
+//	//csp_iwdt_disable(SYSCON);
+//	return CSI_UNSUPPORTED;					//can not stop WWDT once it is enabled
+//}
 
 /** \brief feed wwdt
  * 
