@@ -682,6 +682,31 @@ void csi_ept_set_sync(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, csi_ept_trgm
 	csp_ept_set_auto_rearm(ptEptBase, eAutoRearm);
 	csp_ept_sync_enable(ptEptBase, eTrgIn, ENABLE);
 }
+
+/** \brief ept extsync input select
+ * 
+ *  \param[in] ptEptBase: pointer of ept register structure
+ *  \param[in] eTrgin: ept sync evtrg input channel(0~5)
+ *  \param[in] byTrgChx: trgxsel channel(0~1)
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_ept_set_extsync_chnl(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, uint8_t byTrgChx)
+{
+	switch(byTrgChx)
+	{
+		case 0:
+			csp_ept_sync_trg0sel(ptEptBase, eTrgIn);
+			break;
+		case 1:
+			csp_ept_sync_trg1sel(ptEptBase, eTrgIn);
+			break;
+		default:
+			return CSI_ERROR;
+		
+	}
+	return CSI_OK;
+}
+
 /** \brief ept sync input filter config  
  * 
  *  \param[in] ptEptBase: pointer of ept register structure
@@ -719,10 +744,9 @@ void csi_ept_rearm_sync(csp_ept_t *ptEptBase,csi_ept_trgin_e eTrgin)
  *  \param[in] ptEptBase: pointer of ept register structure
  *  \param[in] byTrgOut: evtrg out port(0~3)
  *  \param[in] eTrgSrc: evtrg source(1~15) 
- *  \param[in] byTrgCnt: evtrg count value
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_trgsrc_e eTrgSrc, uint8_t byTrgCnt)
+csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_trgsrc_e eTrgSrc)
 {
 	switch (byTrgOut)
 	{
@@ -754,7 +778,6 @@ csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_tr
 			return CSI_ERROR;
 	}
 	
-	csp_ept_set_trgprd(ptEptBase, byTrgOut, byTrgCnt - 1);				//evtrg count
 	csp_ept_trg_xoe_enable(ptEptBase, byTrgOut, ENABLE);				//evtrg out enable
 	
 	return CSI_OK;
@@ -764,18 +787,19 @@ csi_error_t csi_ept_set_evtrg(csp_ept_t *ptEptBase, uint8_t byTrgOut, csi_ept_tr
  * 
  *  \param[in] ptEptBase: pointer of ept register structure
  *  \param[in] eCntxInit: evtrg countinit channel(0~3)
+ *  \param[in] byCntVal: evtrg cnt value
  *  \param[in] byCntInitVal: evtrg cntxinit value
- *  \param[in] bEnable: cntxiniten enable/disable
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_ept_set_evcntinit(csp_ept_t *ptEptBase, csi_ept_cntinit_e eCntxInit, uint8_t byCntInitVal, bool bEnable)
+csi_error_t csi_ept_set_evcntinit(csp_ept_t *ptEptBase, csi_ept_cntinit_e eCntxInit, uint8_t byCntVal, uint8_t byCntInitVal)
 {
 	
 	if(eCntxInit > EPT_CNT3INIT)
 		return CSI_ERROR;
 	
-	csp_ept_trg_cntxiniten_enable(ptEptBase, eCntxInit, bEnable);
+	csp_ept_set_trgprd(ptEptBase, eCntxInit, byCntVal - 1);				//evtrg count
 	csp_ept_trg_cntxinit(ptEptBase, eCntxInit, byCntInitVal);
+	csp_ept_trg_cntxiniten_enable(ptEptBase, eCntxInit, ENABLE);
 	
 	return CSI_OK;
 }
