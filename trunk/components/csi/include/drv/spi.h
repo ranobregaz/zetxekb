@@ -26,8 +26,8 @@ extern "C" {
 
 
 
-#define		SPI_MASTER_SEL			//spi mode select(master or slave)
-#define		SPI_SYNC_SEL			//spi work mode select(同步 或者异步)
+#define		SPI_MASTER_SEL			//主机或者从机
+#define		SPI_SYNC_SEL			//同步或者异步
 
 #ifdef SPI_MASTER_SEL
 	#define		SPICS_CLR		*(uint32_t *)(0x60002010)=(uint32_t)0x20		//PB0.5低
@@ -90,7 +90,7 @@ typedef enum {
 	SPI_EVENT_ERROR_OVERFLOW,          ///< Data overflow: Receive overflow
     SPI_EVENT_ERROR_UNDERFLOW,         ///< Data underflow: Transmit underflow
     SPI_EVENT_ERROR                    ///< Master Mode Fault (SS deactivated when Master).Occurs in master mode when Slave Select is deactivated and indicates Master Mode Fault
-} csi_spi_event_t;
+} csi_spi_event_e;
 
 
 typedef struct 
@@ -100,138 +100,134 @@ typedef struct
 	csi_spi_cp_format_e eSpiPolarityPhase;  //0:(0 0)   1:(0 1)  2:(1 0) 3:(1 1)
 	csi_spi_frame_len_e eSpiFrameLen;       //4-16 bit
 	uint32_t            dwSpiBaud;			//spi clk
-    uint8_t             *tx_data;      ///< Output data buf
-    uint32_t             tx_size;      ///< Output data size specified by user
-    uint8_t             *rx_data;      ///< Input  data buf
-    uint32_t             rx_size;      ///< Input  data size specified by user
-	void (*callback)(csp_spi_t *ptSpiBase, csi_spi_event_t event, void *arg); ///< User callback ,signaled by driver event
-    csi_state_t         state;        ///< Peripheral state
-    void                *priv;
-	void                *arg;          ///< User private param ,passed to user callback
-}csi_spi_para_config_t;
-extern csi_spi_para_config_t g_tSpiTransmit;
+	uint8_t             byInter;            //int source
+}csi_spi_config_t;
+
+typedef struct
+{
+	uint8_t             *pbyTxData;      ///< Output data buf
+	uint8_t             *pbyRxData;      ///< Input  data buf
+    uint8_t             byTxSize;        ///< Output data size specified by user
+    uint8_t             byRxSize;        ///< Input  data size specified by user
+	uint8_t             byRxFifoLength;  ///< receive fifo length
+	uint8_t             byInter;  		 ///< interrupt
+    csi_state_t         tState;          ///< Peripheral state
+}csi_spi_transmit_t;
+extern csi_spi_transmit_t g_tSpiTransmit; 
 
 /** \brief initialize spi data structure
  * 
  *  \param[in] ptSpiBase: SPI handle
+ *  \param[in] ptSpiCfg: user spi parameter config
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_spi_init(csp_spi_t *ptSpiBase);
+csi_error_t csi_spi_init(csp_spi_t *ptSpiBase,csi_spi_config_t *ptSpiCfg);
 
 /** \brief set spi mode, master or slave
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] mode: master, slave
+ *  \param[in] eMode: master, slave
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_spi_mode(csp_spi_t *ptSpiBase, csi_spi_mode_e mode);
+csi_error_t csi_spi_mode(csp_spi_t *ptSpiBase, csi_spi_mode_e eMode);
 
 /** \brief config spi cp format
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] format: spi cp format
+ *  \param[in] eFormat: spi cp format
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_spi_cp_format(csp_spi_t *ptSpiBase, csi_spi_cp_format_e format);
+csi_error_t csi_spi_cp_format(csp_spi_t *ptSpiBase, csi_spi_cp_format_e eFormat);
 
 /** \brief config spi work frequence
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] baud: spi work baud
+ *  \param[in] wBaud: spi work baud
  *  \return spi config frequency
  */
-uint32_t csi_spi_baud(csp_spi_t *ptSpiBase, uint32_t baud);
+uint32_t csi_spi_baud(csp_spi_t *ptSpiBase, uint32_t wBaud);
 
 /** \brief config spi frame length
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] length: frame length
+ *  \param[in] eLength: frame length
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_spi_frame_len(csp_spi_t *ptSpiBase, csi_spi_frame_len_e length);
+csi_error_t csi_spi_frame_len(csp_spi_t *ptSpiBase, csi_spi_frame_len_e eLength);
 
 /** \brief get the state of spi device
  * 
- *  \param[in] state: the state of spi device
+ *  \param[in] ptState: the state of spi device
  *  \return none
  */ 
-csi_error_t csi_spi_get_state(csi_state_t *state);
+csi_error_t csi_spi_get_state(csi_state_t *ptState);
 
 /** \brief sending data to spi transmitter(received data is ignored),blocking mode
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] data: pointer to buffer with data to send to spi transmitter
- *  \param[in] size: number of data to send(byte)
- *  \param[in] timeout: unit in mini-second
+ *  \param[in] pData: pointer to buffer with data to send to spi transmitter
+ *  \param[in] wSize: number of data to send(byte)
+ *  \param[in] wTimeout: unit in mini-second
  *  \return return the num of data or  return Error code
  */
-int32_t csi_spi_send(csp_spi_t *ptSpiBase, const void *data, uint32_t size, uint32_t timeout);
+int32_t csi_spi_send(csp_spi_t *ptSpiBase, void *pData, uint32_t wSize, uint32_t wTimeout);
 
 /** \brief sending data to spi transmitter, non-blocking mode(interrupt mode)
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] data: pointer to buffer with data to send to spi transmitter
- *  \param[in] size: number of data to send(byte)
+ *  \param[in] pData: pointer to buffer with data to send to spi transmitter
+ *  \param[in] wSize: number of data to send(byte)
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_spi_send_async(csp_spi_t *ptSpiBase, const void *data, uint32_t size);
+csi_error_t csi_spi_send_async(csp_spi_t *ptSpiBase, void *pData, uint32_t wSize);
 
 /** \brief  receiving data from spi receiver, blocking mode
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] data: pointer to buffer with data to send to spi transmitter
- *  \param[in] size: number of data to receive(byte)
- *  \param[in] timeout: unit in mini-second
+ *  \param[in] pData: pointer to buffer with data to receive
+ *  \param[in] wSize: number of data to receive(byte)
+ *  \param[in] wTimeout: unit in mini-second
  *  \return return the num of data or  return Error code
  */
-int32_t csi_spi_receive(csp_spi_t *ptSpiBase, void *data, uint32_t size, uint32_t timeout);
+int32_t csi_spi_receive(csp_spi_t *ptSpiBase, void *pData, uint32_t wSize, uint32_t wTimeout);
 
 /** \brief  receiving data from spi receiver, not-blocking mode(interrupt mode)
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] data: pointer to buffer with data to send to spi transmitter
- *  \param[in] size: number of data to receive(byte)
+ *  \param[in] pData: pointer to buffer with data to send to spi transmitter
+ *  \param[in] wSize: number of data to receive(byte)
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_spi_receive_async(csp_spi_t *ptSpiBase, void *data, uint32_t size);
+csi_error_t csi_spi_receive_async(csp_spi_t *ptSpiBase, void *pData, uint32_t wSize);
 
 /** \brief  receiving data from spi receiver,blocking mode
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] data_out: pointer to buffer with data to send to spi transmitter
- *  \param[in] data_in: number of data to receive(byte)
- *  \param[in] size: number of data to receive(byte)
- *  \param[in] timeout: number of data to receive(byte)
+ *  \param[in] pDataout: pointer to buffer with data to send to spi transmitter
+ *  \param[in] pDatain: number of data to receive(byte)
+ *  \param[in] wSize: number of data to receive(byte)
+ *  \param[in] wTimeout: number of data to receive(byte)
  *  \return error code \ref csi_error_t
  */
-int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, const void *data_out, void *data_in, uint32_t size, uint32_t timeout);
+int32_t csi_spi_send_receive(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain, uint32_t wSize, uint32_t wTimeout);
 
 /** \brief  receiving data from spi receiver, not-blocking mode
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] data_out: pointer to buffer with data to send to spi transmitter
- *  \param[in] data_in: number of data to receive(byte)
- *  \param[in] size: number of data to receive(byte)
+ *  \param[in] pDataout: pointer to buffer with data to send to spi transmitter
+ *  \param[in] pDatain: number of data to receive(byte)
+ *  \param[in] wSize: number of data to receive(byte)
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_spi_send_receive_async(csp_spi_t *ptSpiBase, const void *data_out, void *data_in, uint32_t size);
+csi_error_t csi_spi_send_receive_async(csp_spi_t *ptSpiBase, void *pDataout, void *pDatain, uint32_t wSize);
 
-/** \brief  spi parameter struct init
+/** \brief  transmission variables init ,user not change it
  * 
- *  \param[in] ptSpiBase: SPI handle
- *  \param[in] callback: after interrupt have done,then callback this function,Tells the user that interrupt processing is over
+ *  \param[in] eRxLen:rx fifo length
+ *  \param[in] byInter:interrupt source
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_spi_paraconfig_init(csp_spi_t *ptSpiBase, void *callback);
-
-/** \brief spi interrupt callback function
- * 
- *  \param[in] ptSpiBase: SPI handle
- *  \param[in] event: spi event 
- *  \param[in] arg: para
- *  \return none
- */
-__attribute__((weak)) void apt_spi_event(csp_spi_t *ptSpiBase, csi_spi_event_t event, void *arg);
+csi_error_t csi_spi_Internal_variables_init(spi_rxifl_e eRxLen,uint8_t byInter);
 
 //interrupt
 /** \brief spi interrupt handle function
@@ -246,7 +242,7 @@ __attribute__((weak)) void spi_irqhandler(csp_spi_t *ptSpiBase);
  *  \param[in] ptSpiBase: SPI handle
  *  \return none
  */
-void csi_spi_clrRx_fifo(csp_spi_t *ptSpiBase);
+void csi_spi_clr_rxfifo(csp_spi_t *ptSpiBase);
 
 /** \brief spi slave receive data
  * 
@@ -258,10 +254,10 @@ uint16_t csi_spi_receive_slave(csp_spi_t *ptSpiBase);
 /** \brief spi slave receive data
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] data_out: data of send
+ *  \param[in] hwDataout: data of send
  *  \return none
  */ 
-csi_error_t csi_spi_send_slave(csp_spi_t *ptSpiBase, uint16_t data_out);
+csi_error_t csi_spi_send_slave(csp_spi_t *ptSpiBase, uint16_t hwDataout);
 
 //-----------------------------------------------------------------------------------------------------------
 //high speed spi function for reference
@@ -270,39 +266,39 @@ csi_error_t csi_spi_send_slave(csp_spi_t *ptSpiBase, uint16_t data_out);
 /** \brief spi_send_receive_1byte
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] data :send data buffer pointer
+ *  \param[in] byReceiveData :send data buffer pointer
  *  \return the receive data
  */ 
-uint8_t spi_send_receive_1byte(csp_spi_t *ptSpiBase,uint8_t data);
+uint8_t spi_send_receive_1byte(csp_spi_t *ptSpiBase,uint8_t byData);
 
-/** \brief spi send buff
+/** \brief spi send buff(this funtion will ignore the receive)
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] data :send data buffer pointer
- *  \param[in] size ：length
+ *  \param[in] pbyData :send data buffer pointer
+ *  \param[in] bySize ：length
  *  \return none
  */ 
-void spi_buff_send(csp_spi_t *ptSpiBase,uint8_t *data,uint8_t size);
+void spi_buff_send(csp_spi_t *ptSpiBase,uint8_t *pbyData,uint8_t bySize);
 
 /** \brief spi send and receive(less than eight bytes)
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] data_out :send data buffer pointer
- *  \param[in] data_in :receive data buffer pointer
- *  \param[in] size ：length
+ *  \param[in] pbyDataout :send data buffer pointer
+ *  \param[in] pbyDatain :receive data buffer pointer
+ *  \param[in] wSize ：length
  *  \return none
  */ 
-void csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, uint8_t *data_out,uint8_t *data_in,uint32_t size);
+void csi_spi_send_receive_x8(csp_spi_t *ptSpiBase, uint8_t *pbyDataout,uint8_t *pbyDatain,uint32_t wSize);
 
 /** \brief spi send and receive(send equal to 8 bytes or  more than eight bytes)
  * 
  *  \param[in] ptSpiBase: SPI handle
- *  \param[in] data_out :send data buffer pointer 
- *  \param[in] data_in  :send data buffer pointer 
- *  \param[in] size ：length
+ *  \param[in] pbyDataout :send data buffer pointer 
+ *  \param[in] pbyDatain  :send data buffer pointer 
+ *  \param[in] wSize ：length
  *  \return none
  */ 
-void csi_spi_send_receive_d8(csp_spi_t *ptSpiBase, uint8_t *data_out,uint8_t *data_in, uint32_t size);
+void csi_spi_send_receive_d8(csp_spi_t *ptSpiBase, uint8_t *pbyDataout,uint8_t *pbyDatain, uint32_t wSize);
 //-------------------------------------------------------------------------------------------------------------------------------------
 
 #ifdef __cplusplus

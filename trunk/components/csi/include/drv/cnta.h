@@ -20,6 +20,26 @@
 extern "C" {
 #endif
 
+/// \struct csi_conta_timer_config_t
+/// \brief  conta timer parameter configuration
+typedef struct {
+	cnta_ckdiv_e eClkDiv;  //时钟分频
+	cnta_mode_e  eRunMode; //单次还是重复
+	uint8_t     byInter;   //int source
+	uint32_t	wTime;	   //周期（us）
+} csi_conta_timer_config_t;
+
+/// \struct csi_conta_pwm_config_t
+/// \brief  conta pwm parameter configuration
+typedef struct {
+	cnta_ckdiv_e eClkDiv;    //时钟分频选择
+	uint8_t		byStartLevel;//计数器pwm初始电平
+	uint8_t		byStopLevel; //计数器pwm结束电平
+	uint8_t     byInter;     //int source
+	uint8_t		byDutyCycle; //占空比(0-100)
+	uint32_t	wFreq;	     //频率（hz）	
+} csi_conta_pwm_config_t;
+
 typedef enum
 {
 	POLAR_LOW	= 0,
@@ -63,19 +83,17 @@ typedef enum
 /** \brief initialize cnta data structure
  * 
  *  \param[in] ptCntaBase: handle cnta handle to operate
- *  \param[in] eClkDiv: the cnta clk_div
- *  \param[in] eRunMode: the cnta run mode
+ *  \param[in] ptContaTimerCfg:point of timer parameter config
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,cnta_ckdiv_e eClkDiv,cnta_mode_e eRunMode);
+csi_error_t csi_cnta_timer_init(csp_cnta_t *ptCntaBase,csi_conta_timer_config_t *ptContaTimerCfg);
 
 /** \brief start cnta
  * 
  *  \param[in] ptCntaBase: handle cnta handle to operate
- *  \param[in] timeout_us: the timeout for timer((0.333us * 1) ->(0.333us * 65535): 0.3333us -> 21.845ms)
- *  \return error code \ref csi_error_t
+ *  \return none
  */ 
-csi_error_t csi_cnta_timer_start(csp_cnta_t *ptCntaBase,uint32_t timeout_us);
+void csi_cnta_start(csp_cnta_t *ptCntaBase);
 
 /**
   \brief       Stop cnta
@@ -98,23 +116,13 @@ uint32_t csi_cnta_get_datah_value(csp_cnta_t *cnta);
  */ 
 uint32_t csi_cnta_get_datal_value(csp_cnta_t *ptCntaBase);
 
-/**
-  \brief       cnta pwm init
-  \param[in]   ptCntaBase	cnta handle to operate.
-  \param[in]   eClkDiv      the cnta clk_div
-  \param[in]   init_polar   cnta pwm output mode, carrier/envelope
-  \param[in]   init_polar   cnta pwm output initial polarity
-  \param[in]   stop_lev     cnta pwm output stop level
-*/
-csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,cnta_ckdiv_e eClkDiv, csi_cnta_pwmout_t pwm_mode ,csi_cnta_pwmlev_t init_polar, csi_cnta_pwmlev_t stop_lev);
-
-/**
-  \brief       start cnta pwm
-  \param[in]   ptCntaBase    cnta handle to operate.
-  \param[in]   freq    		pwm frequency 
-  \param[in]   duty_cycle   duty cycle
-*/
-csi_error_t csi_cnta_pwm_start(csp_cnta_t *ptCntaBase, uint32_t freq, uint32_t duty_cycle);
+/** \brief cnta pwm init 
+ * 
+ *  \param[in] ptCntaBase: handle cnta handle to operate
+ *  \param[in] ptContaPwmCfg:point of pwm parameter config
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_cnta_pwm_init(csp_cnta_t *ptCntaBase,csi_conta_pwm_config_t *ptContaPwmCfg);
 
 /**
   \brief       updata cnta pwm freq para
