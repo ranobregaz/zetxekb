@@ -200,9 +200,10 @@ int uart_receive_demo(void)
 int uart_recv_intr_demo(void)
 {
 	int iRet = 0;
-	uint8_t byRxBuf[32];
-	
+	uint8_t  byRxBuf[32];
+	uint16_t hwRecvNum = 9;
 	volatile uint16_t hwRecvLen;
+	
 	
 	csi_uart_config_t tUartConfig;				//UART1 参数配置结构体
 	
@@ -231,10 +232,19 @@ int uart_recv_intr_demo(void)
 	{
 		//从串口缓存（UART接收循环buffer）里面读取数据，返回读取数据个数
 		//用户应用根据实际不同协议来处理数据
-		hwRecvLen = csi_uart_receive(UART1,(void *)byRxBuf, 1,0);	//读取接收循环buffer数据
-		if(hwRecvLen == 1)
-			csi_uart_putc(UART1,*byRxBuf);
-			//csi_uart_send(UART1,(void *)byRxBuf, hwRecvLen);		//UART发送采用轮询方式(同步)
+		
+		if(hwRecvNum == 1)		//单个字节收数据(读接收ringbuf)
+		{
+			hwRecvLen = csi_uart_receive(UART1,(void *)byRxBuf, hwRecvNum, 0);	//读取接收循环buffer数据
+			if(hwRecvLen)
+				csi_uart_putc(UART1,*byRxBuf);
+		}
+		else if(hwRecvNum > 1)	//多个字节收数据(读接收ringbuf)
+		{
+			hwRecvLen = csi_uart_receive(UART1,(void *)byRxBuf, hwRecvNum, 0);	//读取接收循环buffer数据
+			if(hwRecvLen)
+				csi_uart_send(UART1,(void *)byRxBuf, hwRecvNum);				//UART发送采用轮询方式(同步)
+		}
 	}
 	
 	return iRet;
@@ -282,7 +292,6 @@ int uart_recv_dynamic_demo(void)
 	{
 		if(csi_uart_get_recv_status(UART1) == UART_STATE_DONE)			//获取串口接收状态，串口接收到一串字符
 		{
-			//csi_uart_clr_recv_status(UART1);							//清除串口接收状态，设置为空闲
 			hwRecvLen = csi_uart_receive(UART1,(void*)byRxBuf,0,0);		//获取接收到的一串数据，返回数据长度, 后面两个参数无意义
 			csi_uart_send(UART1,(void *)byRxBuf,hwRecvLen);				//UART发送采用轮询方式(同步)
 		}
@@ -331,7 +340,6 @@ int uart_recv_dynamic_demo1(void)
 	{
 		if(csi_uart_get_recv_status(UART1) == UART_STATE_DONE)			//获取串口接收状态，串口接收到一串字符
 		{
-			//csi_uart_clr_recv_status(UART1);							//清除串口接收状态，设置为空闲
 			hwRecvLen = csi_uart_receive(UART1,(void*)byRxBuf,0,0);		//获取接收到的一串数据，返回数据长度, 后面两个参数无意义
 			csi_uart_send(UART1,(void *)byRxBuf,hwRecvLen);				//UART发送采用轮询方式(同步)
 		}
