@@ -761,7 +761,28 @@ void csi_ept_set_sync(csp_ept_t *ptEptBase, csi_ept_trgin_e eTrgIn, csi_ept_trgm
 	csp_ept_set_auto_rearm(ptEptBase, eAutoRearm);
 	csp_ept_sync_enable(ptEptBase, eTrgIn, ENABLE);
 }
-
+/** \brief ept sync input filter config  
+ * 
+ *  \param[in] ptEptBase: pointer of ept register structure
+ *  \param[in] ptFilter: pointer of sync input filter parameter config structure
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_ept_set_sync_filter(csp_ept_t *ptEptBase, csi_ept_filter_config_t *ptFilter)
+{
+	uint32_t wFiltCr;
+	uint32_t wWindow;
+	
+	if(ptFilter->byFiltSrc > EPT_FILT_SYNCIN5)
+		return CSI_ERROR;
+	wFiltCr = ptFilter->byFiltSrc | (ptFilter->byWinInv << EPT_FLTBLKINV_POS) | 
+			(ptFilter->byWinAlign << EPT_ALIGNMD_POS) | (ptFilter->byWinCross << EPT_CROSSMD_POS);
+	wWindow = ptFilter->byWinOffset | (ptFilter->byWinWidth << EPT_FLT_WDW_POS);
+	
+	csp_ept_set_trgftcr(ptEptBase, wFiltCr);
+	csp_ept_set_trgftwr(ptEptBase, wWindow);
+	
+	return CSI_OK;
+}
 /** \brief rearm ept sync evtrg  
  * 
  *  \param[in] ptBtBase: pointer of ept register structure
