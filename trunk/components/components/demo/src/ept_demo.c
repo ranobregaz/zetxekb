@@ -226,10 +226,10 @@ int ept_demo1(void)
 	if(tEptEmergencyCfg.byEpxInt ==ORL0){tEptEmergencyCfg.byOrl0 = ORLx_EP0 |ORLx_EP1|ORLx_EP2;}
 	if(tEptEmergencyCfg.byEpxInt ==ORL1){tEptEmergencyCfg.byOrl1 = ORLx_EP4 |ORLx_EP5|ORLx_EP6;}
 	csi_ept_emergency_cfg(EPT0,&tEptEmergencyCfg);		
-//	csi_ept_emergency_interruption_en(EPT0,EPT_INT_EP7);      //紧急状态输入中断使能
-//    csi_ept_set_evtrg(EPT0, EPT_TRG_OUT0, EPT_TRGSRC_PE1, 1); //EP1用trg0输出，经过ETCB  触发sync2 捕获
+	csi_ept_emergency_interruption_en(EPT0,EPT_INT_EP1);      //紧急状态输入中断使能
+//------------------------------------------------------------------------------------------------------------------------	
+    csi_ept_set_evtrg(EPT0, EPT_TRG_OUT0, EPT_TRGSRC_PE1);    //EP1用trg0输出，经过ETCB  触发sync2 捕获
 	csi_ept_set_sync (EPT0, EPT_TRGIN_SYNCEN2, EPT_TRG_CONTINU,EPT_AUTO_REARM_ZRO);
-//------------------------------------------------------------------------------------------------------------------------
 	csi_ept_int_enable(EPT0, EPT_INT_TRGEV0,true);	
 	csi_ept_start(EPT0);//start  timer
     while(1){		
