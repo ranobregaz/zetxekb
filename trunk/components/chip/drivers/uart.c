@@ -78,7 +78,7 @@ void apt_uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx)
 				//ringbuffer_byte_in(g_tUartTran[byIdx].ptRingBuf, byData);
 				if(g_tUartTran[byIdx].ptRingBuf->hwDataLen < g_tUartTran[byIdx].ptRingBuf->hwSize)	//the same as previous line of code 
 				{
-					g_tUartTran[byIdx].ptRingBuf->pbyBuf[g_tUartTran[byIdx].ptRingBuf->hwWrite] = csp_uart_get_data(ptUartBase);;
+					g_tUartTran[byIdx].ptRingBuf->pbyBuf[g_tUartTran[byIdx].ptRingBuf->hwWrite] = csp_uart_get_data(ptUartBase);
 					g_tUartTran[byIdx].ptRingBuf->hwWrite = (g_tUartTran[byIdx].ptRingBuf->hwWrite + 1) % g_tUartTran[byIdx].ptRingBuf->hwSize;
 					g_tUartTran[byIdx].ptRingBuf->hwDataLen ++;
 				}
