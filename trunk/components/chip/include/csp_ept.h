@@ -265,9 +265,11 @@ typedef enum{
 
 #define EPT_TRGO0SEL_POS	(24)
 #define EPT_TRGO0SEL_MSK	(0x7<<EPT_TRGO0SEL_POS)
+#define EPT_TRGO0SEL(val)	((val &0x7) << EPT_TRGO0SEL_POS)
 
 #define EPT_TRGO1SEL_POS	(27)
 #define EPT_TRGO1SEL_MSK	(0x7<<EPT_TRGO1SEL_POS)
+#define EPT_TRGO1SEL(val)	((val &0x7) << EPT_TRGO1SEL_POS)
 
 #define EPT_AREARM_POS		(30)
 #define EPT_AREARM_MSK		(0x3<<EPT_AREARM_POS)
@@ -1360,6 +1362,16 @@ static inline void csp_ept_set_auto_rearm(csp_ept_t *ptEptBase,  csp_ept_arearm_
 static inline void csp_ept_rearm_sync(csp_ept_t *ptEptBase, uint8_t byCh)
 {   ptEptBase -> REGPROT = EPT_REGPROT;
 	ptEptBase -> SYNCR = ptEptBase -> SYNCR | EPT_REARM(byCh);
+}
+
+static inline void csp_ept_sync_trg0sel(csp_ept_t *ptEptBase, uint8_t byTrgin)
+{   ptEptBase -> REGPROT = EPT_REGPROT;
+	ptEptBase -> SYNCR = (ptEptBase -> SYNCR & ~EPT_TRGO0SEL_MSK) | EPT_TRGO0SEL(byTrgin);
+}
+
+static inline void csp_ept_sync_trg1sel(csp_ept_t *ptEptBase, uint8_t byTrgin)
+{   ptEptBase -> REGPROT = EPT_REGPROT;
+	ptEptBase -> SYNCR = (ptEptBase -> SYNCR & ~EPT_TRGO1SEL_MSK) | EPT_TRGO1SEL(byTrgin);
 }
 
 static inline bool csp_ept_get_rearm_st(csp_ept_t *ptEptBase, uint8_t byCh)
