@@ -83,32 +83,6 @@ struct csi_ept_captureconfig {
 	uint32_t    byInter;
 };
 
-//typedef struct  csi_ept_syncr_config  csi_ept_syncr_config_t; 
-//struct  csi_ept_syncr_config{
-//	uint8_t  syncen0;
-//	uint8_t  syncen1;
-//	uint8_t  syncen2;
-//	uint8_t  syncen3;
-//	uint8_t  syncen4;
-//	uint8_t  syncen5;	
-//	uint8_t  ostmd0;
-//	uint8_t  ostmd1;
-//	uint8_t  ostmd2;
-//	uint8_t  ostmd3;
-//	uint8_t  ostmd4;
-//	uint8_t  ostmd5;	
-//	uint8_t  rearm0;
-//	uint8_t  rearm1;
-//	uint8_t  rearm2;
-//	uint8_t  rearm3;
-//	uint8_t  rearm4;
-//	uint8_t  rearm5;
-//	uint8_t  arearm;
-//	uint8_t  Tx_rearm0;
-//	uint8_t  trgo0sel;
-//	uint8_t  trgo1sel;
-//};
-
 typedef struct csi_ept_pwmchannel_config      csi_ept_pwmchannel_config_t;
 struct csi_ept_pwmchannel_config {
 	
@@ -125,22 +99,6 @@ struct csi_ept_pwmchannel_config {
     uint8_t     byChoiceCasel;
 	uint8_t     byChoiceCbsel;
 };
-
-//typedef struct csi_ept_dbldr_config      csi_ept_dbldr_config_t;
-//struct csi_ept_dbldr_config {
-//	
-//    uint8_t		bycfgdbcrshadoworimmediate;          //
-//	uint8_t     bycfgdbcrshadowLoadcontrol; 
-//         
-//	uint8_t     bycfgdbdtrshadoworimmediate;          
-//    uint8_t     bycfgdbdtrshadowLoadcontrol; 
-//		
-//	uint8_t     bycfgdbdtfshadoworimmediate;        
-//	uint8_t     bycfgdbdtfshadowLoadcontrol; 
-//       
-//	uint8_t     bycfgdckpscshadoworimmediate;          
-//	uint8_t     bycfgdckpscshadowLoadcontrol;     
-//};
 
 typedef struct csi_ept_deadzone_config   csi_ept_deadzone_config_t;
 struct  csi_ept_deadzone_config
