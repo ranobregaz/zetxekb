@@ -221,21 +221,6 @@ typedef enum
 #define BT_EVSWF_EN		(0x01ul)
 
 /******************************************************************************
-********************** BT External Functions Declaration **********************
-******************************************************************************/
-//extern void csp_bt_rst_init(csp_bt_t *ptBtBase);
-//extern void csp_bt_vic_irq_en(csp_bt_t *ptBtBase);
-//extern void csp_timer_data_update(csp_bt_t *ptBtBase, uint16_t hwPrdr, uint16_t hwCmp);
-//extern void csp_bt_set_timer(csp_bt_t *ptBtBase, bt_clk_e eClkCtrl, bt_shdw_e eShdwMode, bt_opm_e eOpmMode, 
-//					bt_extckm_e eExtckMode, bt_cntrld_e eCntRld, uint16_t hwPscr);
-//extern void csp_bt_set_pwm(csp_bt_t *ptBtBase, bt_startst_e eStartLev, bt_idlest_e eIdelLev, uint16_t hwCmp, uint16_t hwPrdr);
-//extern void csp_bt_pwm_config(csp_bt_t *ptBtBase, bt_startst_e eStartLev, bt_idlest_e eIdelLev, uint32_t wFreq,uint8_t byDutyCycle);
-//extern uint8_t csp_bt_get_work_state(csp_bt_t *ptBtBase);
-//
-//extern void csp_bt_set_sync(csp_bt_t *ptBtBase, bt_sync_e eSync, bt_synccmd_e eSyncCmd, bt_ostmd_e eOstmd, bt_arearm_e eArearm, bt_evtrg_in_e eTrgin);
-//extern csp_error_t csp_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byEvtrg, bt_evtrg_src_e eTrgSrc);
-
-/******************************************************************************
 ********************** BT inline Functions Declaration ************************
 ******************************************************************************/
 static inline void csp_bt_start(csp_bt_t *ptBtBase)

@@ -447,26 +447,6 @@ typedef enum{
 #define ADC_DR_RST          (0x00000000ul)            /**< DR   reset value  */
 #define ADC_CMP0_RST        (0x00000000ul)            /**< CMP0 reset value  */
 #define ADC_CMP1_RST        (0x00000000ul)            /**< CMP1 reset value  */
- 
-/******************************************************************************
-********************* ADC12 External Functions Declaration ********************
-******************************************************************************/
-//extern void csp_adc_set_clk(csp_adc_t *ptAdcBase, bool bEnable);
-//extern void csp_adc_set_dbgen(csp_adc_t *ptAdcBase, bool bEnable);
-//extern void csp_adc_set_seqx(csp_adc_t *ptAdcBase, uint8_t bySeqx,adc_chnl_e eAdcChnl, adc_cnt_e eCvcnt,
-//									adc_avg_e eAvgSel,bool eAvgctrl, adc_trg_src_e eSrc);
-//extern void csp_adc_set_int(csp_adc_t *ptAdcBase,adc_int_e eAdcInt,bool bEnable);
-//extern uint8_t  csp_adc_get_clk_div(csp_adc_t *ptAdcBase);
-//extern uint32_t csp_adc_get_conv_mode(csp_adc_t *ptAdcBase);
-//extern void csp_adc_set_vref(csp_adc_t *ptAdcBase, adc_vref_e eVrefSel);
-//extern void csp_adc_set_cmp0(csp_adc_t *ptAdcBase, uint32_t wCmpData, uint8_t byCmpChnl);
-//extern void csp_adc_set_cmp1(csp_adc_t *ptAdcBase, uint32_t wCmpData, uint8_t byCmpChnl);
-//
-//extern void csp_adc_set_sync_delay(csp_adc_t *ptAdcBase, adc_sync_e eTrgIn, uint8_t byDelay);
-//extern void csp_adc_set_sync(csp_adc_t *ptAdcBase, adc_sync_e eTrgIn, adc_evtrg_mode_e eTrgMode, bool bEnChnl);
-//extern void csp_adc_set_evtrg(csp_adc_t *ptAdcBase, adc_evtrg_src_e eEvSrc, adc_evtrg_out_e eEvOut);
-//extern void csp_adc_evtrg_en(csp_adc_t *ptAdcBase, adc_evtrg_out_e eEvOut);
-//extern void csp_adc_evtrg_dis(csp_adc_t *ptAdcBase, adc_evtrg_out_e eEvOut);
 
 /******************************************************************************
 ********************* ADC12 inline Functions Declaration **********************

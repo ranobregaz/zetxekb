@@ -169,25 +169,6 @@ typedef enum{
 }uart_tdma_md_e;
 
 /******************************************************************************
-********************* ADC12 External Functions Declaration ********************
-******************************************************************************/
-extern void csp_uart_vic_irq_en(csp_uart_t *ptUartBase);
-extern void csp_uart_default_init(csp_uart_t *ptUartBase);
-extern void csp_uart_set_int(csp_uart_t *ptUartBase,uart_int_e eUartInt,bool bEnable);
-extern void csp_uart_set_baudrate(csp_uart_t *ptUartBase,uint32_t wBaud, uint32_t wUartFreq);
-extern void csp_uart_put_char(csp_uart_t *ptUartBase,uint8_t byByte);
-extern void csp_uart_ctrl_init(csp_uart_t *ptUartBase, tx_ctrl_e eTxCtrl, rx_ctrl_e eRxCtrl,uart_parity_e eParity, uart_int_e eUartInt);
-
-extern uint8_t  csp_uart_get_char(csp_uart_t *ptUartBase);
-extern uint8_t  csp_uart_put_ready(csp_uart_t *ptUartBase);
-extern uint8_t  csp_uart_get_ready(csp_uart_t *ptUartBase);
-extern uint8_t  csp_uart_fifo_get_ready(csp_uart_t *ptUartBase);
-extern uint32_t csp_uart_send(csp_uart_t *ptUartBase, uint8_t *byPdata, uint32_t size);
-
-extern void csp_uart_send_dma(csp_uart_t *ptUartBase, void *byPdata, uint32_t size);
-extern void csp_uart_recv_dma(csp_uart_t *ptUartBase, void *byPdata, uint32_t size);
-
-/******************************************************************************
 ********************* ADC12 inline Functions Declaration **********************
 ******************************************************************************/
 static inline void csp_uart_set_tx(csp_uart_t *ptUartBase, tx_ctrl_e eTxCtrl) 
