@@ -46,6 +46,15 @@ int uart_recv_intr_demo(void);
 int uart_recv_dynamic_demo(void);
 int uart_recv_dynamic_demo1(void);
 
+//adc demo
+//normal mode(no interrupt)
+int adc_samp_oneshot_demo(void);
+int adc_samp_continuous_demo(void);
+//interrupt mode
+int adc_samp_oneshot_int_demo(void);
+int adc_samp_continuous_int_demo(void);
+
+
 //lpt demo
 extern int lpt_timer_demo(void);
 extern int lpt_pwm_demo(void);
