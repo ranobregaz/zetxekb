@@ -12,6 +12,7 @@
 /* include ----------------------------------------------------------------*/
 #include "reliability.h"
 #include "pin.h"
+#include "iostring.h"
 
 /* externs function--------------------------------------------------------*/
 /* private function--------------------------------------------------------*/
@@ -26,11 +27,11 @@
 void lvd_demo(void)
 {
 	uint8_t byLevel;
-	uint8_t byRstSrc;
 	
 	csi_lvd_int_enable(LVD_INTF,LVD_39);  //VDD掉电到3.9V即触发LVD中断
 	byLevel = csi_get_lvdlevel();
-
+	
+	my_printf("lvd level：%/d\n", byLevel); //执行board_init()对串口进行配置后才有打印
 	while(1);
 	
 }
@@ -45,10 +46,11 @@ void lvr_demo(void)
 	uint8_t byLevel;
 	uint8_t byRstSrc;	
 
-	csi_lvr_enable(LVR_28);				  //VDD掉电到2.8V，芯片复位	
+	csi_lvr_enable(LVR_28);				  	//VDD掉电到2.8V，芯片复位	
 	byLevel = csi_get_lvrlevel();
-	byRstSrc = csi_get_rst_reason(); //查询复位源，值为csi_rst_rsr_e枚举量之一
-	
+	my_printf("lvr level：%/d\n", byLevel);	//执行board_init()对串口进行配置后才有打印
+	byRstSrc = csi_get_rst_reason(); 		//查询复位源，值为csi_rst_rsr_e枚举量之一
+	my_printf("rst source：%/d\n", byRstSrc);
 	while(1);
 	
 }
