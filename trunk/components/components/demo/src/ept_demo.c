@@ -123,7 +123,7 @@ int ept_demo(void)
 	tEptChopperOutCfg.byCasel              =EPT_CPSRC_IN ;      //载波信号源选择控制位: 0h：EPT内部产生载波;  1h：TIN的输入
 	csi_ept_choppercpcr_config(EPT0,&tEptChopperOutCfg);
 
-	csi_ept_chopper_config(EPT0,EPTCHAX,ENABLE);                //斩波输出使能控制位   0b：禁止当前通道斩波输出    1b：开启当前通道斩波输出
+	csi_ept_chopper_config(EPT0,EPTCHAX,DISABLE);                //斩波输出使能控制位   0b：禁止当前通道斩波输出    1b：开启当前通道斩波输出
 	csi_ept_chopper_config(EPT0,EPTCHAY,DISABLE);
 	csi_ept_chopper_config(EPT0,EPTCHBX,DISABLE);
 	csi_ept_chopper_config(EPT0,EPTCHBY,DISABLE);
