@@ -24,6 +24,7 @@
 extern void tick_irq_handler(void *arg);		//system coret 
 extern void apt_uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx);
 extern void apt_adc_irqhandler(csp_adc_t *ptAdcBase);
+extern void apt_sio_irqhandler(csp_sio_t *ptSioBase);
 
 /* private function--------------------------------------------------------*/
 
@@ -154,6 +155,7 @@ void SPI0IntHandler(void)
 void SIO0IntHandler(void) 
 {
    // ISR content ...
+   apt_sio_irqhandler(SIO0);
 }
 void EXI0IntHandler(void) 
 {
