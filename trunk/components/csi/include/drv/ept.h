@@ -179,50 +179,28 @@ typedef enum{
 	EPTCHCY
 }csi_ept_chx_e;
 
+typedef enum{
+	EMCOAX =0,
+	EMCOBX,
+	EMCOCX,
+	EMCOD,
+	EMCOAY,
+	EMCOBY,
+	EMCOCY
+}csi_ept_osrchx_e;
 
-typedef struct csi_ept_emergency_input_config   csi_ept_emergency_input_config_t;
-struct csi_ept_emergency_input_config
+typedef struct csi_ept_emergency_config   csi_ept_emergency_config_t;
+struct csi_ept_emergency_config
 {
-    uint8_t  ep0choiceebixint        ;
-    uint8_t  ep1choiceebixint        ;
-    uint8_t  ep2choiceebixint        ;
-    uint8_t  ep3choiceebixint        ;
-	uint8_t  ep4choiceebixint        ;
-	uint8_t  ep5choiceebixint        ;
-	uint8_t  ep6choiceebixint        ;
-	uint8_t  ep7choiceebixint        ;
-
-	uint8_t  fltpace0                  ;
-	uint8_t  fltpace1                  ;
-    uint8_t  POLPOSEBI0               ;
-	uint8_t  POLPOSEBI1               ;
-	uint8_t  POLPOSEBI2               ;
-	uint8_t  POLPOSEBI3               ;
-	uint8_t  POLPOSEBI4               ;
-	uint8_t  ep0lckmd                  ;        
-	uint8_t  ep1lckmd                  ;
-	uint8_t  ep2lckmd                  ;
-	uint8_t  ep3lckmd                  ;
-	uint8_t  ep4lckmd                  ;
-	uint8_t  ep5lckmd                  ;
-	uint8_t  ep6lckmd                  ;
-	uint8_t  ep7lckmd                  ;
-	uint8_t  osrshdw                    ;
-	uint8_t  osrldmd                    ;
-	uint8_t  slclrmd                    ;
-	uint8_t  emasync                    ;
-	uint8_t  cpufault                  ;                               
-	uint8_t  memfault                  ;                              
-	uint8_t  eomfault                  ;                               
-	uint8_t  emcoax                    ;                                          
-	uint8_t  emcobx                    ;
-	uint8_t  emcocx                    ;                                          
-	uint8_t  emcod                     ;
-	uint8_t  emcoay                    ;
-	uint8_t  emcoby                    ;
-	uint8_t  emcocy                    ;	
-	uint16_t orl0choiceepxorl       ;
-	uint32_t orl1choiceepxorl       ;
+    uint8_t  byEpxInt ;
+	uint8_t  byPolEbix;
+    uint8_t	 byEpx;
+	uint8_t  byEpxLckmd;
+	uint8_t  byFltpace0;
+	uint8_t  byFltpace1;
+	uint8_t  byOrl0;
+	uint8_t  byOrl1;
+	
 };
 
 typedef struct  csi_ept_Event_trigger_config   csi_ept_Event_trigger_config_t;
@@ -266,26 +244,10 @@ struct  csi_ept_Event_trigger_config{
 typedef struct csi_ept_Global_load_control_config    csi_ept_Global_load_control_config_t;
 struct csi_ept_Global_load_control_config{
 	
-	bool glden;
-    uint8_t gldmd;
-	bool ostmd;
-	bool gldprd;
-	bool prdren;
-	bool cmpaen;
-	bool cmpben;
-	bool cmpcen;
-	bool cmpden;
-    bool dbdtren;
-	bool dbdtfen;
-	bool dbcren;
-	bool aqcraen;
-	bool aqcrben;
-	bool aqcrcen;
-	bool aqcrden;
-	bool aqcsfen;
-	bool aqosren;
-	bool osrearm;
-	bool gfrcld;
+	bool bGlden;
+	bool bOstmd;
+	uint8_t bGldprd;	
+    uint8_t byGldmd;
 };
 
 /// \struct csi_ept_filter_config_t
@@ -662,20 +624,22 @@ csi_error_t csi_ept_evtrg_enable(csp_ept_t *ptEpt, uint8_t byCh, bool bEnable);
 csi_error_t csi_ept_start(csp_ept_t *ptBtBase);
 csi_error_t csi_ept_config_init(csp_ept_t *ptBtBase, csi_ept_config_t *ptBtPwmCfg);
 csi_error_t csi_ept_channel_config(csp_ept_t *pteptBase, csi_ept_pwmchannel_config_t *tPwmCfg, csi_ept_channel_e changl);
-//csi_error_t csi_ept_syncr_config_init(csp_ept_t *ptEptBase,csi_ept_syncr_config_t *tPwmCfg);
-
-//csi_error_t csi_ept_dbldrloadcontrol_config(csp_ept_t *ptEptBase, csi_ept_dbldr_config_t *tCfg);
 csi_error_t csi_ept_dbcr_config(csp_ept_t *ptEptBase, csi_ept_deadzone_config_t *tCfg);
 csi_error_t csi_ept_choppercpcr_config(csp_ept_t *ptEptBase, csi_ept_Chopper_config_t *tCfg);
-csi_error_t csi_ept_emergency_config(csp_ept_t *ptEptBase, csi_ept_emergency_input_config_t *tCfg);
 csi_error_t  csi_ept_evtrg_config(csp_ept_t *ptEptBase, csi_ept_Event_trigger_config_t *tCfg);
-void csi_ept_emergency_interruption_en(csp_ept_t *ptEptBase, csp_ept_emint_e eEbi);
-uint16_t csi_ept_capture_get_cap_data(csp_ept_t *ptEpt, uint8_t num);
 csi_error_t csi_ept_continuous_software_waveform(csp_ept_t *ptEptBase, csi_ept_channel_e byCh, csp_ept_aqcsf_e bEnable);
 csi_error_t csi_ept_global_config(csp_ept_t *ptEptBase,csi_ept_Global_load_control_config_t *Global);
 csi_error_t  csi_ept_wave_init(csp_ept_t *ptEptBase, csi_ept_pwmconfig_t *pteptPwmCfg);
 csi_error_t csi_ept_dbldrload_config(csp_ept_t *ptEptBase, csi_ept_dbdldr_e byVal,csp_ept_shdw_e byWod,csp_ept_lddb_e byWod2);
 csi_error_t csi_ept_channelmode_config(csp_ept_t *ptEptBase,csi_ept_deadzone_config_t *tCfg,csi_ept_channel_e byCh);
+csi_error_t csi_ept_global_rearm(csp_ept_t *ptEptBase);
+csi_error_t csi_ept_global_sw(csp_ept_t *ptEptBase);
+csi_error_t csi_ept_chopper_config(csp_ept_t *ptEptBase, csi_ept_chx_e byCh, bool bEn);
+csi_error_t csi_ept_capture_init(csp_ept_t *ptEptBase, csi_ept_captureconfig_t *pteptPwmCfg);
+csi_error_t csi_ept_emergency_cfg(csp_ept_t *ptEptBase, csi_ept_emergency_config_t *tCfg);
+csi_error_t csi_ept_emergency_pinxout(csp_ept_t *ptEptBase,csi_ept_osrchx_e  byCh ,csp_ept_emout_e byCh2);
+void csi_ept_emergency_interruption_en(csp_ept_t *ptEptBase, csp_ept_emint_e eEbi);
+
 
 #ifdef __cplusplus
 }
