@@ -296,7 +296,6 @@ int adc_samp_oneshot_int_demo(void)
 	return iRet;
 }
 
-
 /** \brief ADC sample, countinuous mode ADC_DATA_DEPTH = N（N > 0）
  *  \brief ADC采样，轮询、连续转换模式。ADC通道采样深度为N（每通道采样次数为N）
  *  \brief 连续转换模式：ADC启动后进行整个序列采样，序列采样完成后，继续从序列第一个通道开始，如此循环。采样期间可以停止
