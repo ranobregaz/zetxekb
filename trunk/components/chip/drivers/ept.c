@@ -14,7 +14,7 @@
 #include "csp_ept.h"
 #include "drv/pin.h"
 #include <drv/irq.h>
-
+#include <sys_clk.h>
 
 uint32_t gEptPrd;
 
@@ -41,7 +41,7 @@ csi_error_t csi_ept_config_init(csp_ept_t *ptEptBase, csi_ept_config_t *pteptPwm
 	csp_ept_reset(ptEptBase);											// reset 
 	
 
-	wClkDiv = (soc_get_pclk_freq() / pteptPwmCfg->wFreq / 30000);		// clk div value
+	wClkDiv = (csi_get_pclk_freq() / pteptPwmCfg->wFreq / 30000);		// clk div value
 
 	if(wClkDiv == 0)wClkDiv = 1;
 	
@@ -172,7 +172,7 @@ csi_error_t  csi_ept_wave_init(csp_ept_t *ptEptBase, csi_ept_pwmconfig_t *pteptP
 	csp_ept_wr_key(ptEptBase);                                           //Unlocking
 	csp_ept_reset(ptEptBase);											// reset 
 
-	wClkDiv=soc_get_pclk_freq();
+	wClkDiv=csi_get_pclk_freq();
 	wClkDiv = (wClkDiv / pteptPwmCfg->wFreq / 30000);		            // clk div value
 
 	if(wClkDiv == 0)wClkDiv = 1;
