@@ -1,0 +1,32 @@
+name: original_csp_h
+version: v1.0.0
+description: ""
+tag: ""
+keywords: ~
+author:
+  name: ""
+license: ""
+homepage: ~
+type: common
+depends: ~
+yoc_version: ~
+hw_info:
+  cpu_id: ""
+  cpu_name: ""
+  vendor_name: ""
+  chip_name: ""
+  board_name: ""
+  ld_script: ""
+  flash_program: ""
+build_config:
+  include: ~
+  internal_include: ~
+  cflag: ""
+  cxxflag: ""
+  asmflag: ""
+  define: ~
+  libs: ~
+  libpath: ~
+source_file: ~
+def_config: ~
+install: ~

@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.csky.cds.peripheral>
+  <config Version="0.0.1">
+     <Peripheral Name="SYSCON"> 
+      <Register Name="SYSCON_IDCCR" Authority="RW" Address="0x40011000" Width="32" Description="ID和控制器模块时钟控制寄存器"/>
+      <Register Name="SYSCON_GCER" Authority="RW" Address="0x40011004" Width="32" Description="通用使能控制寄存器"/>
+      <Register Name="SYSCON_GCDR" Authority="RW" Address="0x40011008" Width="32" Description="通用禁止控制寄存器"/>
+      <Register Name="SYSCON_GCSR" Authority="RW" Address="0x4001100C" Width="32" Description="通用状态寄存器"/>
+      <Register Name="SYSCON_CKST" Authority="RW" Address="0x40011010" Width="32" Description="时钟状态寄存器"/>
+      <Register Name="SYSCON_RAMCHK" Authority="RW" Address="0x40011014" Width="32" Description="SRAM 校验控制寄存器"/>
+      <Register Name="SYSCON_EFLCHK" Authority="RW" Address="0x40011018" Width="32" Description="Embedded Flash 校验控制寄存器"/>
+      <Register Name="SYSCON_SCLKCR" Authority="RW" Address="0x4001101C" Width="32" Description="系统时钟控制寄存器"/>
+      <Register Name="SYSCON_PCLKCR" Authority="RW" Address="0x40011020" Width="32" Description="外设时钟控制寄存器"/>
+      <Register Name="SYSCON_PCER0" Authority="RW" Address="0x40011028" Width="32" Description="外设时钟使能寄存器0"/>
+      <Register Name="SYSCON_PCDR0" Authority="RW" Address="0x4001102C" Width="32" Description="外设时钟禁止寄存器0"/>
+      <Register Name="SYSCON_PCSR0" Authority="RW" Address="0x40011030" Width="32" Description="外设时钟状态寄存器0"/>
+      <Register Name="SYSCON_PCER1" Authority="RW" Address="0x40011034" Width="32" Description="外设时钟使能寄存器1"/>
+      <Register Name="SYSCON_PCDR1" Authority="RW" Address="0x40011038" Width="32" Description="外设时钟禁止寄存器1"/>
+      <Register Name="SYSCON_PCSR1" Authority="RW" Address="0x4001103C" Width="32" Description="外设时钟状态寄存器1"/>
+      <Register Name="SYSCON_OSTR" Authority="RW" Address="0x40011040" Width="32" Description="外部振荡器稳定时间配置寄存器"/>
+      <Register Name="SYSCON_LVDCR" Authority="RW" Address="0x4001104C" Width="32" Description="低电压检测控制寄存器"/>
+      <Register Name="SYSCON_CLCR" Authority="RW" Address="0x40011050" Width="32" Description="内部振荡器调整寄存器"/>
+      <Register Name="SYSCON_PWRCR" Authority="RW" Address="0x40011054" Width="32" Description="功耗控制寄存器"/>
+      <Register Name="SYSCON_PWRKEY" Authority="RW" Address="0x40011058" Width="32" Description="功耗调整使能寄存器"/>
+      <Register Name="SYSCON_OPT1" Authority="RW" Address="0x40011064" Width="32" Description="系统配置寄存器1 (TRIM value for OSC) [1]"/>
+      <Register Name="SYSCON_OPT0" Authority="RW" Address="0x40011068" Width="32" Description="系统配置寄存器0 [2]"/>
+      <Register Name="SYSCON_WKCR" Authority="RW" Address="0x4001106C" Width="32" Description="低功耗唤醒使能控制寄存器"/>
+      <Register Name="SYSCON_IMER" Authority="RW" Address="0x40011074" Width="32" Description="中断使能控制寄存器"/>
+      <Register Name="SYSCON_IMDR" Authority="RW" Address="0x40011078" Width="32" Description="中断禁止控制寄存器"/>
+      <Register Name="SYSCON_IMCR" Authority="RW" Address="0x4001107C" Width="32" Description="中断使能/禁止状态寄存器"/>
+      <Register Name="SYSCON_IAR" Authority="RW" Address="0x40011080" Width="32" Description="中断软件触发寄存器"/>
+      <Register Name="SYSCON_ICR" Authority="RW" Address="0x40011084" Width="32" Description="中断清除寄存器"/>
+      <Register Name="SYSCON_RISR" Authority="RW" Address="0x40011088" Width="32" Description="原始中断标志状态寄存器"/>
+      <Register Name="SYSCON_MISR" Authority="RW" Address="0x4001108C" Width="32" Description="中断标志状态寄存器"/>
+      <Register Name="SYSCON_RSR" Authority="RW" Address="0x40011090" Width="32" Description="复位源记录状态寄存器"/>
+      <Register Name="SYSCON_EXIRT" Authority="RW" Address="0x40011094" Width="32" Description="外部中断上升沿选择寄存器"/>
+      <Register Name="SYSCON_EXIFT" Authority="RW" Address="0x40011098" Width="32" Description="外部中断下降沿选择寄存器"/>
+      <Register Name="SYSCON_EXIER" Authority="RW" Address="0x4001109C" Width="32" Description="外部中断使能寄存器"/>
+      <Register Name="SYSCON_EXIDR" Authority="RW" Address="0x400110A0" Width="32" Description="外部中断禁止寄存器"/>
+      <Register Name="SYSCON_EXIMR" Authority="RW" Address="0x400110A4" Width="32" Description="外部中断使能/禁止状态寄存器"/>
+      <Register Name="SYSCON_EXIAR" Authority="RW" Address="0x400110A8" Width="32" Description="外部中断软件触发寄存器"/>
+      <Register Name="SYSCON_EXICR" Authority="RW" Address="0x400110AC" Width="32" Description="外部中断清除寄存器"/>
+      <Register Name="SYSCON_EXIRS" Authority="RW" Address="0x400110B0" Width="32" Description="外部中断原始标志状态寄存器"/>
+      <Register Name="SYSCON_IWDCR" Authority="RW" Address="0x400110B4" Width="32" Description="独立看门狗控制寄存器"/>
+      <Register Name="SYSCON_IWDCNT" Authority="RW" Address="0x400110B8" Width="32" Description="独立看门狗控制计数器值"/>
+      <Register Name="SYSCON_IWDEDR" Authority="RW" Address="0x400110BC" Width="32" Description="独立看门狗使能寄存器"/>
+      <Register Name="SYSCON_IOMAP0" Authority="RW" Address="0x400110C0" Width="32" Description="GPIO分组0的功能映射配置寄存器"/>
+      <Register Name="SYSCON_IOMAP1" Authority="RW" Address="0x400110C4" Width="32" Description="GPIO分组1的功能映射配置寄存器"/>
+      <Register Name="SYSCON_FINF0" Authority="RW" Address="0x400110D0" Width="32" Description="工程信息区0"/>
+      <Register Name="SYSCON_FINF1" Authority="RW" Address="0x400110D4" Width="32" Description="工程信息区1"/>
+      <Register Name="SYSCON_FINF2" Authority="RW" Address="0x400110D8" Width="32" Description="工程信息区2"/>
+      <Register Name="SYSCON_UID0" Authority="RW" Address="0x400110E4" Width="32" Description="UID寄存器0"/>
+      <Register Name="SYSCON_UID1" Authority="RW" Address="0x400110E8" Width="32" Description="UID寄存器1"/>
+      <Register Name="SYSCON_UID2" Authority="RW" Address="0x400110EC" Width="32" Description="UID寄存器2"/>
+      <Register Name="SYSCON_PWROPT" Authority="RW" Address="0x400110F0" Width="32" Description="供电恢复时间调整寄存器"/>
+      <Register Name="SYSCON_EVTRG" Authority="RW" Address="0x400110F4" Width="32" Description="事件触发选择寄存器"/>
+      <Register Name="SYSCON_EVPS" Authority="RW" Address="0x400110F8" Width="32" Description="事件触发计数寄存器"/>
+      <Register Name="SYSCON_EVSWF" Authority="RW" Address="0x400110FC" Width="32" Description="事件计数器软件触发控制寄存器"/>
+      <Register Name="SYSCON_UREG0" Authority="RW" Address="0x40011100" Width="32" Description="32位用户寄存器"/>
+      <Register Name="SYSCON_UREG1" Authority="RW" Address="0x40011104" Width="32" Description="32位用户寄存器"/>
+      <Register Name="SYSCON_UREG2" Authority="RW" Address="0x40011108" Width="32" Description="16位用户寄存器"/>
+      <Register Name="SYSCON_UREG3" Authority="RW" Address="0x4001110C" Width="32" Description="16位用户寄存器"/>
+    </Peripheral>
+    <Peripheral Name="CRC"> 
+      <Register Name="CRC_CEDR" Authority="RW" Address="0x50000004" Width="32" Description="时钟使能/禁止寄存器"/>
+      <Register Name="CRC_SRR" Authority="RW" Address="0x50000008" Width="32" Description="软件复位寄存器"/>
+      <Register Name="CRC_CR" Authority="RW" Address="0x5000000C" Width="32" Description="控制寄存器"/>
+      <Register Name="CRC_SEED" Authority="RW" Address="0x50000010" Width="32" Description="种子值寄存器"/>
+      <Register Name="CRC_DATAIN" Authority="RW" Address="0x50000014" Width="32" Description="输入数据寄存器"/>
+      <Register Name="CRC_DATAOUT" Authority="RW" Address="0x50000018" Width="32" Description="输出数据寄存器"/>
+    </Peripheral>
+    <Peripheral Name="IFC"> 
+      <Register Name="IFC_IDR" Authority="RW" Address="0x40010000" Width="32" Description="闪存控制器ID寄存器"/>
+      <Register Name="IFC_CEDR" Authority="RW" Address="0x40010004" Width="32" Description="时钟使能/禁止寄存器"/>
+      <Register Name="IFC_SRR" Authority="RW" Address="0x40010008" Width="32" Description="软件复位寄存器"/>
+      <Register Name="IFC_CMR" Authority="RW" Address="0x4001000C" Width="32" Description="指令寄存器"/>
+      <Register Name="IFC_CR" Authority="RW" Address="0x40010010" Width="32" Description="控制寄存器"/>
+      <Register Name="IFC_MR" Authority="RW" Address="0x40010014" Width="32" Description="工作模式寄存器"/>
+      <Register Name="IFC_FM_ADDR" Authority="RW" Address="0x40010018" Width="32" Description="ISP地址寄存器"/>
+      <Register Name="IFC_KR" Authority="RW" Address="0x40010020" Width="32" Description="ISP秘钥寄存器"/>
+      <Register Name="IFC_IMCR" Authority="RW" Address="0x40010024" Width="32" Description="中断控制寄存器"/>
+      <Register Name="IFC_RISR" Authority="RW" Address="0x40010028" Width="32" Description="中断原始状态寄存器"/>
+      <Register Name="IFC_MISR" Authority="RW" Address="0x4001002C" Width="32" Description="中断状态寄存器"/>
+      <Register Name="IFC_ICR" Authority="RW" Address="0x40010030" Width="32" Description="中断状态清除寄存器"/>
+    </Peripheral>
+    <Peripheral Name="GPIOA0"> 
+      <Register Name="GPIO_CONLR" Authority="RW" Address="0x60000000" Width="32" Description="低位控制寄存器"/>
+      <Register Name="GPIO_CONHR" Authority="RW" Address="0x60000004" Width="32" Description="高位控制寄存器"/>
+      <Register Name="GPIO_WODR" Authority="RW" Address="0x60000008" Width="32" Description="输出数据寄存器"/>
+      <Register Name="GPIO_SODR" Authority="RW" Address="0x6000000C" Width="32" Description="输出置位寄存器"/>
+      <Register Name="GPIO_CODR" Authority="RW" Address="0x60000010" Width="32" Description="输出清除寄存器"/>
+      <Register Name="GPIO_ODSR" Authority="RW" Address="0x60000014" Width="32" Description="输出状态寄存器"/>
+      <Register Name="GPIO_PSDR" Authority="RW" Address="0x60000018" Width="32" Description="管脚状态寄存器"/>
+      <Register Name="GPIO_FLTEN" Authority="RW" Address="0x6000001C" Width="32" Description="输入信号滤波器使能控制寄存器"/>
+      <Register Name="GPIO_PUDR" Authority="RW" Address="0x60000020" Width="32" Description="上拉/下拉配置寄存器"/>
+      <Register Name="GPIO_DSCR" Authority="RW" Address="0x60000024" Width="32" Description="驱动强度配置寄存器"/>
+      <Register Name="GPIO_OMCR" Authority="RW" Address="0x60000028" Width="32" Description="输出模式配置寄存器"/>
+      <Register Name="GPIO_IECR" Authority="RW" Address="0x6000002C" Width="32" Description="外部中断使能寄存器"/>
+      <Register Name="GPIO_IEER" Authority="RW" Address="0x60000030" Width="32" Description="外部中断使能设置寄存器"/>
+      <Register Name="GPIO_IEDR" Authority="RW" Address="0x60000034" Width="32" Description="外部中断使能清除寄存器"/>
+    </Peripheral>
+    <Peripheral Name="GPIOB0"> 
+      <Register Name="GPIO_CONLR" Authority="RW" Address="0x60002000" Width="32" Description="低位控制寄存器"/>
+      <Register Name="GPIO_CONHR" Authority="RW" Address="0x60002004" Width="32" Description="高位控制寄存器"/>
+      <Register Name="GPIO_WODR" Authority="RW" Address="0x60002008" Width="32" Description="输出数据寄存器"/>
+      <Register Name="GPIO_SODR" Authority="RW" Address="0x6000200C" Width="32" Description="输出置位寄存器"/>
+      <Register Name="GPIO_CODR" Authority="RW" Address="0x60002010" Width="32" Description="输出清除寄存器"/>
+      <Register Name="GPIO_ODSR" Authority="RW" Address="0x60002014" Width="32" Description="输出状态寄存器"/>
+      <Register Name="GPIO_PSDR" Authority="RW" Address="0x60002018" Width="32" Description="管脚状态寄存器"/>
+      <Register Name="GPIO_FLTEN" Authority="RW" Address="0x6000201C" Width="32" Description="输入信号滤波器使能控制寄存器"/>
+      <Register Name="GPIO_PUDR" Authority="RW" Address="0x60002020" Width="32" Description="上拉/下拉配置寄存器"/>
+      <Register Name="GPIO_DSCR" Authority="RW" Address="0x60002024" Width="32" Description="驱动强度配置寄存器"/>
+      <Register Name="GPIO_OMCR" Authority="RW" Address="0x60002028" Width="32" Description="输出模式配置寄存器"/>
+      <Register Name="GPIO_IECR" Authority="RW" Address="0x6000202C" Width="32" Description="外部中断使能寄存器"/>
+      <Register Name="GPIO_IEER" Authority="RW" Address="0x60002030" Width="32" Description="外部中断使能设置寄存器"/>
+      <Register Name="GPIO_IEDR" Authority="RW" Address="0x60002034" Width="32" Description="外部中断使能清除寄存器"/>
+    </Peripheral>
+    <Peripheral Name="GPIO_IGRP"> 
+      <Register Name="GPIO_IGRPL" Authority="RW" Address="0x6000f000" Width="32" Description="外部中断组配置寄存器"/>
+      <Register Name="GPIO_IGRPH" Authority="RW" Address="0x6000f004" Width="32" Description="外部中断组配置寄存器"/>
+      <Register Name="GPIO_IGREX" Authority="RW" Address="0x6000f008" Width="32" Description="外部中断组扩展配置寄存器"/>
+      <Register Name="GPIO_CLKEN" Authority="RW" Address="0x6000f00C" Width="32" Description="GPIO组时钟使能控制寄存器"/>
+    </Peripheral>
+    <Peripheral Name="BT0"> 
+      <Register Name="BT_RSSR" Authority="RW" Address="0x40051000" Width="32" Description="Reset/Start Control Register"/>
+      <Register Name="BT_CR" Authority="RW" Address="0x40051004" Width="32" Description="General Control Register"/>
+      <Register Name="BT_PSCR" Authority="RW" Address="0x40051008" Width="32" Description="Counter Clock Prescaler Register"/>
+      <Register Name="BT_PRDR" Authority="RW" Address="0x4005100C" Width="32" Description="Period Register"/>
+      <Register Name="BT_CMP" Authority="RW" Address="0x40051010" Width="32" Description="Compare Data"/>
+      <Register Name="BT_CNT" Authority="RW" Address="0x40051014" Width="32" Description="Counter Register"/>
+      <Register Name="BT_EVTRG" Authority="RW" Address="0x40051018" Width="32" Description="Event Generation Control Register"/>
+      <Register Name="BT_EVSWF" Authority="RW" Address="0x40051024" Width="32" Description="Event Counter Software Trigger Register"/>
+      <Register Name="BT_RISR" Authority="RW" Address="0x40051028" Width="32" Description="Raw Interrupt Status Register"/>
+      <Register Name="BT_IMCR" Authority="RW" Address="0x4005102C" Width="32" Description="Interrupt Masking Control Register"/>
+      <Register Name="BT_MISR" Authority="RW" Address="0x40051030" Width="32" Description="Masked Interrupt Status Register"/>
+      <Register Name="BT_ICR" Authority="RW" Address="0x40051034" Width="32" Description="Interrupt Clear Register"/>
+    </Peripheral>
+    <Peripheral Name="BT1"> 
+      <Register Name="BT_RSSR" Authority="RW" Address="0x40052000" Width="32" Description="Reset/Start Control Register"/>
+      <Register Name="BT_CR" Authority="RW" Address="0x40052004" Width="32" Description="General Control Register"/>
+      <Register Name="BT_PSCR" Authority="RW" Address="0x40052008" Width="32" Description="Counter Clock Prescaler Register"/>
+      <Register Name="BT_PRDR" Authority="RW" Address="0x4005200C" Width="32" Description="Period Register"/>
+      <Register Name="BT_CMP" Authority="RW" Address="0x40052010" Width="32" Description="Compare Data"/>
+      <Register Name="BT_CNT" Authority="RW" Address="0x40052014" Width="32" Description="Counter Register"/>
+      <Register Name="BT_EVTRG" Authority="RW" Address="0x40052018" Width="32" Description="Event Generation Control Register"/>
+      <Register Name="BT_EVSWF" Authority="RW" Address="0x40052024" Width="32" Description="Event Counter Software Trigger Register"/>
+      <Register Name="BT_RISR" Authority="RW" Address="0x40052028" Width="32" Description="Raw Interrupt Status Register"/>
+      <Register Name="BT_IMCR" Authority="RW" Address="0x4005202C" Width="32" Description="Interrupt Masking Control Register"/>
+      <Register Name="BT_MISR" Authority="RW" Address="0x40052030" Width="32" Description="Masked Interrupt Status Register"/>
+      <Register Name="BT_ICR" Authority="RW" Address="0x40052034" Width="32" Description="Interrupt Clear Register"/>
+    </Peripheral>
+    <Peripheral Name="GPTA"> 
+      <Register Name="GPTA_CEDR" Authority="RW" Address="0x40055000" Width="32" Description="ID and Clock Enable/Disable Register"/>
+      <Register Name="GPTA_RSSR" Authority="RW" Address="0x40055004" Width="32" Description="RESET/START/STOP Register"/>
+      <Register Name="GPTA_PSCR" Authority="RW" Address="0x40055008" Width="32" Description="Counter Clock Prescaler Register"/>
+      <Register Name="GPTA_CR" Authority="RW" Address="0x4005500C" Width="32" Description="General Control Register"/>
+      <Register Name="GPTA_SYNCR" Authority="RW" Address="0x40055010" Width="32" Description="Synchronization Control Register"/>
+      <Register Name="GPTA_GLDCR" Authority="RW" Address="0x40055014" Width="32" Description="Global Load Control Register"/>
+      <Register Name="GPTA_GLDCFG" Authority="RW" Address="0x40055018" Width="32" Description="Global Load Configuration Register"/>
+      <Register Name="GPTA_GLDCR2" Authority="RW" Address="0x4005501C" Width="32" Description="Global Load Control Register2"/>
+      <Register Name="GPTA_PRDR" Authority="RW" Address="0x40055024" Width="32" Description="Period Register"/>
+      <Register Name="GPTA_CMPA" Authority="RW" Address="0x4005502C" Width="32" Description="Compare A Register"/>
+      <Register Name="GPTA_CMPB" Authority="RW" Address="0x40055030" Width="32" Description="Compare B Register"/>
+      <Register Name="GPTA_CMPLDR" Authority="RW" Address="0x4005503C" Width="32" Description="Compare Data Load Control Register"/>
+      <Register Name="GPTA_CNT" Authority="RW" Address="0x40055040" Width="32" Description="Counter Register"/>
+      <Register Name="GPTA_AQLDR" Authority="RW" Address="0x40055044" Width="32" Description="Action Qualifier Load Control Register"/>
+      <Register Name="GPTA_AQCRA" Authority="RW" Address="0x40055048" Width="32" Description="Action Qualifier Control Register A"/>
+      <Register Name="GPTA_AQCRB" Authority="RW" Address="0x4005504C" Width="32" Description="Action Qualifier Control Register B"/>
+      <Register Name="GPTA_AQOSF" Authority="RW" Address="0x4005505C" Width="32" Description="Action Qualifier One Shot Force Register"/>
+      <Register Name="GPTA_AQCSF" Authority="RW" Address="0x40055060" Width="32" Description="Action Qualifier Continuous Force Register"/>
+      <Register Name="GPTA_TRGFTCR" Authority="RW" Address="0x400550AC" Width="32" Description="Digital Compare Filter Control Register"/>
+      <Register Name="GPTA_TRGFTWR" Authority="RW" Address="0x400550B0" Width="32" Description="Digital Compare Filter Window Register"/>
+      <Register Name="GPTA_EVTRG" Authority="RW" Address="0x400550B4" Width="32" Description="Event Generation Control Register"/>
+      <Register Name="GPTA_EVPS" Authority="RW" Address="0x400550B8" Width="32" Description="Event Counter Prescaler"/>
+      <Register Name="GPTA_EVCNTINIT" Authority="RW" Address="0x400550BC" Width="32" Description="Event Conter Initialization Register"/>
+      <Register Name="GPTA_EVSWF" Authority="RW" Address="0x400550C0" Width="32" Description="Event Counter Load Control Register"/>
+      <Register Name="GPTA_RISR" Authority="RW" Address="0x400550C4" Width="32" Description="Raw Interrupt Status Register"/>
+      <Register Name="GPTA_MISR" Authority="RW" Address="0x400550C8" Width="32" Description="Masked Interrupt Status Register"/>
+      <Register Name="GPTA_IMCR" Authority="RW" Address="0x400550CC" Width="32" Description="Interrupt Masking Control Register"/>
+      <Register Name="GPTA_ICR" Authority="RW" Address="0x400550D0" Width="32" Description="Interrupt Clear Register"/>
+      <Register Name="GPT_PROT" Authority="RW" Address="0x400550E8" Width="32" Description="Protection Register"/>
+    </Peripheral>
+    <Peripheral Name="EPT"> 
+      <Register Name="EPT_CEDR" Authority="RW" Address="0x40059000" Width="32" Description="ID and Clock Enable/Disable Register"/>
+      <Register Name="EPT_RSSR" Authority="RW" Address="0x40059004" Width="32" Description="RESET/START/STOP Register"/>
+      <Register Name="EPT_PSCR" Authority="RW" Address="0x40059008" Width="32" Description="Counter Clock Prescaler Register"/>
+      <Register Name="EPT_CR" Authority="RW" Address="0x4005900C" Width="32" Description="General Control Register"/>
+      <Register Name="EPT_SYNCR" Authority="RW" Address="0x40059010" Width="32" Description="Synchronization Control Register"/>
+      <Register Name="EPT_GLDCR" Authority="RW" Address="0x40059014" Width="32" Description="Global Load Control Register"/>
+      <Register Name="EPT_GLDCFG" Authority="RW" Address="0x40059018" Width="32" Description="Global Load Configuration Register"/>
+      <Register Name="EPT_GLDCR2" Authority="RW" Address="0x4005901C" Width="32" Description="Global Load Control Register2"/>
+      <Register Name="EPT_PRDR" Authority="RW" Address="0x40059024" Width="32" Description="Period Register"/>
+      <Register Name="EPT_PHSR" Authority="RW" Address="0x40059028" Width="32" Description="Phase Control Register"/>
+      <Register Name="EPT_CMPA" Authority="RW" Address="0x4005902C" Width="32" Description="Compare A Register"/>
+      <Register Name="EPT_CMPB" Authority="RW" Address="0x40059030" Width="32" Description="Compare B Register"/>
+      <Register Name="EPT_CMPC" Authority="RW" Address="0x40059034" Width="32" Description="Compare C Register"/>
+      <Register Name="EPT_CMPD" Authority="RW" Address="0x40059038" Width="32" Description="Compare D Register"/>
+      <Register Name="EPT_CMPLDR" Authority="RW" Address="0x4005903C" Width="32" Description="Compare Data Load Control Register"/>
+      <Register Name="EPT_CNT" Authority="RW" Address="0x40059040" Width="32" Description="Counter Register"/>
+      <Register Name="EPT_AQLDR" Authority="RW" Address="0x40059044" Width="32" Description="Action Qualifier Load Control Register"/>
+      <Register Name="EPT_AQCRA" Authority="RW" Address="0x40059048" Width="32" Description="Action Qualifier Control Register A"/>
+      <Register Name="EPT_AQCRB" Authority="RW" Address="0x4005904C" Width="32" Description="Action Qualifier Control Register B"/>
+      <Register Name="EPT_AQCRC" Authority="RW" Address="0x40059050" Width="32" Description="Action Qualifier Control Register C"/>
+      <Register Name="EPT_AQCRD" Authority="RW" Address="0x40059054" Width="32" Description="Action Qualifier Control Register D"/>
+      <Register Name="EPT_AQTSCR" Authority="RW" Address="0x40059058" Width="32" Description="Action Qualifier T Event Source Selection Register"/>
+      <Register Name="EPT_AQOSF" Authority="RW" Address="0x4005905C" Width="32" Description="Action Qualifier One Shot Force Register"/>
+      <Register Name="EPT_AQCSF" Authority="RW" Address="0x40059060" Width="32" Description="Action Qualifier Continuous Force Register"/>
+      <Register Name="EPT_DBLDR" Authority="RW" Address="0x40059064" Width="32" Description="Dead-Band Load Control Register"/>
+      <Register Name="EPT_DBCR" Authority="RW" Address="0x40059068" Width="32" Description="Dead-Band Control Register"/>
+      <Register Name="EPT_DPSCR" Authority="RW" Address="0x4005906C" Width="32" Description="Dead-Band Delay Control Clock Prescaler"/>
+      <Register Name="EPT_DBDTR" Authority="RW" Address="0x40059070" Width="32" Description="Dead-Band Rising Edge Delay Time Regiser"/>
+      <Register Name="EPT_DBDTF" Authority="RW" Address="0x40059074" Width="32" Description="Dead-Band Falling Edge Delay Time Regiser"/>
+      <Register Name="EPT_CPCR" Authority="RW" Address="0x40059078" Width="32" Description="Chop Control Register"/>
+      <Register Name="EPT_EMSRC" Authority="RW" Address="0x4005907C" Width="32" Description="Emergency Condition Input Config Register1"/>
+      <Register Name="EPT_EMSRC2" Authority="RW" Address="0x40059080" Width="32" Description="Emergency Condition Input Config Register2"/>
+      <Register Name="EPT_EMPOL" Authority="RW" Address="0x40059084" Width="32" Description="Emergency Condition Input Poloarity Register"/>
+      <Register Name="EPT_EMECR" Authority="RW" Address="0x40059088" Width="32" Description="Emergency Condition Enable Register"/>
+      <Register Name="EPT_EMOSR" Authority="RW" Address="0x4005908C" Width="32" Description="Emergency Condition Output Status Set Register1"/>
+      <Register Name="EPT_EMSLSR" Authority="RW" Address="0x40059094" Width="32" Description="Emergency Condition Soft-lock Status Register"/>
+      <Register Name="EPT_EMSLCLR" Authority="RW" Address="0x40059098" Width="32" Description="Emergency Condition Soft-lock Clear Register"/>
+      <Register Name="EPT_EMHLSR" Authority="RW" Address="0x4005909C" Width="32" Description="Emergency Condition Hard-lock Status Register"/>
+      <Register Name="EPT_EMHLCLR" Authority="RW" Address="0x400590A0" Width="32" Description="Emergency Condition Hard-lock Clear Register"/>
+      <Register Name="EPT_EMFRCR" Authority="RW" Address="0x400590A4" Width="32" Description="Emergency Condition Software Force Register"/>
+      <Register Name="EPT_EMRISR" Authority="RW" Address="0x400590A8" Width="32" Description="Emergency Condition Raw Interrupt Status Register"/>
+      <Register Name="EPT_EMMISR" Authority="RW" Address="0x400590AC" Width="32" Description="Emergency Condition Masked Interrupt Status Register"/>
+      <Register Name="EPT_EMIMCR" Authority="RW" Address="0x400590B0" Width="32" Description="Emergency Condition Interrupt Masking Control Register"/>
+      <Register Name="EPT_EMICR" Authority="RW" Address="0x400590B4" Width="32" Description="Emergency Condition Interrupt Clear Register"/>
+      <Register Name="EPT_TRGFTCR" Authority="RW" Address="0x400590B8" Width="32" Description="Digital Compare Filter Control Register"/>
+      <Register Name="EPT_TRGFTWR" Authority="RW" Address="0x400590BC" Width="32" Description="Digital Compare Filter Window Register"/>
+      <Register Name="EPT_EVTRG" Authority="RW" Address="0x400590C0" Width="32" Description="Event Generation Control Register"/>
+      <Register Name="EPT_EVPS" Authority="RW" Address="0x400590C4" Width="32" Description="Event Counter Prescaler"/>
+      <Register Name="EPT_EVCNTINIT" Authority="RW" Address="0x400590C8" Width="32" Description="Event Counter Initial Value"/>
+      <Register Name="EPT_EVSWF" Authority="RW" Address="0x400590CC" Width="32" Description="Event Counter Software Trigger Register"/>
+      <Register Name="EPT_RISR" Authority="RW" Address="0x400590D0" Width="32" Description="Raw Interrupt Status Register"/>
+      <Register Name="EPT_MISR" Authority="RW" Address="0x400590D4" Width="32" Description="Masked Interrupt Status Register"/>
+      <Register Name="EPT_IMCR" Authority="RW" Address="0x400590D8" Width="32" Description="Interrupt Masking Control Register"/>
+      <Register Name="EPT_ICR" Authority="RW" Address="0x400590DC" Width="32" Description="Interrupt Clear Register"/>
+      <Register Name="EPT_PROT" Authority="RW" Address="0x400590E8" Width="32" Description="Protection Register"/>
+    </Peripheral>
+    <Peripheral Name="RTC"> 
+      <Register Name="RTC_TIMR" Authority="RW" Address="0x40060000" Width="32" Description="时间控制寄存器"/>
+      <Register Name="RTC_DATR" Authority="RW" Address="0x40060004" Width="32" Description="日期控制寄存器"/>
+      <Register Name="RTC_CR" Authority="RW" Address="0x40060008" Width="32" Description="通用控制寄存器"/>
+      <Register Name="RTC_CCR" Authority="RW" Address="0x4006000C" Width="32" Description="时钟控制寄存器"/>
+      <Register Name="RTC_ALRA" Authority="RW" Address="0x40060010" Width="32" Description="闹钟A设置寄存器"/>
+      <Register Name="RTC_SSR" Authority="RW" Address="0x40060018" Width="32" Description="毫秒计数器"/>
+      <Register Name="RTC_RISR" Authority="RW" Address="0x40060020" Width="32" Description="中断原始状态标志寄存器"/>
+      <Register Name="RTC_IMCR" Authority="RW" Address="0x40060024" Width="32" Description="中断使能控制寄存器"/>
+      <Register Name="RTC_MISR" Authority="RW" Address="0x40060028" Width="32" Description="中断状态标志寄存器"/>
+      <Register Name="RTC_ICR" Authority="RW" Address="0x4006002C" Width="32" Description="中断状态清除寄存器"/>
+      <Register Name="RTC_KEY" Authority="RW" Address="0x40060030" Width="32" Description="保护寄存器"/>
+      <Register Name="RTC_EVTRG" Authority="RW" Address="0x40060034" Width="32" Description="同步事件触发控制寄存器"/>
+      <Register Name="RTC_EVPS" Authority="RW" Address="0x40060038" Width="32" Description="同步事件计数控制器"/>
+      <Register Name="RTC_EVSWF" Authority="RW" Address="0x4006003C" Width="32" Description="同步事件软件触发寄存器"/>
+    </Peripheral>
+    <Peripheral Name="LPT"> 
+      <Register Name="LPT_CEDR" Authority="RW" Address="0x40061000" Width="32" Description="ID和时钟控制寄存器"/>
+      <Register Name="LPT_RSSR" Authority="RW" Address="0x40061004" Width="32" Description="启停控制寄存器"/>
+      <Register Name="LPT_PSCR" Authority="RW" Address="0x40061008" Width="32" Description="时钟分频控制寄存器"/>
+      <Register Name="LPT_CR" Authority="RW" Address="0x4006100C" Width="32" Description="控制寄存器"/>
+      <Register Name="LPT_SYNCR" Authority="RW" Address="0x40061010" Width="32" Description="同步控制寄存器"/>
+      <Register Name="LPT_PRDR" Authority="RW" Address="0x40061014" Width="32" Description="周期设置寄存器"/>
+      <Register Name="LPT_CMP" Authority="RW" Address="0x40061018" Width="32" Description="比较值寄存器"/>
+      <Register Name="LPT_CNT" Authority="RW" Address="0x4006101C" Width="32" Description="时基计数器寄存器"/>
+      <Register Name="LPT_TRGFCR" Authority="RW" Address="0x40061020" Width="32" Description="触发事件滤波窗控制寄存器"/>
+      <Register Name="LPT_TRGFWR" Authority="RW" Address="0x40061024" Width="32" Description="触发事件滤波窗时序寄存器"/>
+      <Register Name="LPT_EVTRG" Authority="RW" Address="0x40061028" Width="32" Description="事件触发选择寄存器"/>
+      <Register Name="LPT_EVPS" Authority="RW" Address="0x4006102C" Width="32" Description="事件触发计数寄存器"/>
+      <Register Name="LPT_EVSWF" Authority="RW" Address="0x40061030" Width="32" Description="软件强制触发事件控制寄存器"/>
+      <Register Name="LPT_RISR" Authority="RW" Address="0x40061034" Width="32" Description="原始中断状态寄存器"/>
+      <Register Name="LPT_MISR" Authority="RW" Address="0x40061038" Width="32" Description="中断状态寄存器"/>
+      <Register Name="LPT_IMCR" Authority="RW" Address="0x4006103C" Width="32" Description="中断使能控制寄存器"/>
+      <Register Name="LPT_ICR" Authority="RW" Address="0x40061040" Width="32" Description="中断清除寄存器"/>
+    </Peripheral>
+    <Peripheral Name="WWDT"> 
+      <Register Name="WWDT_CR" Authority="RW" Address="0x40062000" Width="32" Description="Control Register"/>
+      <Register Name="WWDT_CFGR" Authority="RW" Address="0x40062004" Width="32" Description="Configuration Register"/>
+      <Register Name="WWDT_RISR" Authority="RW" Address="0x40062008" Width="32" Description="Raw Interrupt Status Register"/>
+      <Register Name="WWDT_MISR" Authority="RW" Address="0x4006200C" Width="32" Description="Masked Interrupt Status Register"/>
+      <Register Name="WWDT_IMCR" Authority="RW" Address="0x40062010" Width="32" Description="Interrupt Masking Control Register"/>
+      <Register Name="WWDT_ICR" Authority="RW" Address="0x40062014" Width="32" Description="Interrupt Pending Clear Register"/>
+    </Peripheral>
+    <Peripheral Name="UART0"> 
+      <Register Name="UART_DATA" Authority="RW" Address="0x40080000" Width="32" Description="数据寄存器"/>
+      <Register Name="UART_SR" Authority="RW" Address="0x40080004" Width="32" Description="状态寄存器"/>
+      <Register Name="UART_CTRL" Authority="RW" Address="0x40080008" Width="32" Description="控制寄存器"/>
+      <Register Name="UART_ISR" Authority="RW" Address="0x4008000C" Width="32" Description="中断状态寄存器"/>
+      <Register Name="UART_BRDIV" Authority="RW" Address="0x40080010" Width="32" Description="波特率分频寄存器"/>
+    </Peripheral>
+    <Peripheral Name="UART1"> 
+      <Register Name="UART_DATA" Authority="RW" Address="0x40081000" Width="32" Description="数据寄存器"/>
+      <Register Name="UART_SR" Authority="RW" Address="0x40081004" Width="32" Description="状态寄存器"/>
+      <Register Name="UART_CTRL" Authority="RW" Address="0x40081008" Width="32" Description="控制寄存器"/>
+      <Register Name="UART_ISR" Authority="RW" Address="0x4008100C" Width="32" Description="中断状态寄存器"/>
+      <Register Name="UART_BRDIV" Authority="RW" Address="0x40081010" Width="32" Description="波特率分频寄存器"/>
+    </Peripheral>
+    <Peripheral Name="UART2"> 
+      <Register Name="UART_DATA" Authority="RW" Address="0x40082000" Width="32" Description="数据寄存器"/>
+      <Register Name="UART_SR" Authority="RW" Address="0x40082004" Width="32" Description="状态寄存器"/>
+      <Register Name="UART_CTRL" Authority="RW" Address="0x40082008" Width="32" Description="控制寄存器"/>
+      <Register Name="UART_ISR" Authority="RW" Address="0x4008200C" Width="32" Description="中断状态寄存器"/>
+      <Register Name="UART_BRDIV" Authority="RW" Address="0x40082010" Width="32" Description="波特率分频寄存器"/>
+    </Peripheral>
+    <Peripheral Name="SPI"> 
+      <Register Name="SSP_CR0" Authority="RW" Address="0x40090000" Width="32" Description="SSP控制寄存器0"/>
+      <Register Name="SSP_CR1" Authority="RW" Address="0x40090004" Width="32" Description="SSP控制寄存器1"/>
+      <Register Name="SSP_DR" Authority="RW" Address="0x40090008" Width="32" Description="SSP接收FIFO数据寄存器 (读该寄存器时);SSP发送FIFO数据寄存器 (写该寄存器时)"/>
+      <Register Name="SSP_SR" Authority="RW" Address="0x4009000C" Width="32" Description="SSP状态寄存器"/>
+      <Register Name="SSP_CPSR" Authority="RW" Address="0x40090010" Width="32" Description="SSP时钟分频寄存器"/>
+      <Register Name="SSP_IMSCR" Authority="RW" Address="0x40090014" Width="32" Description="SSP中断使能/禁止寄存器"/>
+      <Register Name="SSP_RISR" Authority="RW" Address="0x40090018" Width="32" Description="SSP中断原始状态寄存器"/>
+      <Register Name="SSP_MISR" Authority="RW" Address="0x4009001C" Width="32" Description="SSP中断状态寄存器"/>
+      <Register Name="SSP_ICR" Authority="RW" Address="0x40090020" Width="32" Description="SSP中断清除寄存器"/>
+    </Peripheral>
+    <Peripheral Name="I2C"> 
+      <Register Name="I2C_CR" Authority="RW" Address="0x400a0000" Width="32" Description="控制寄存器"/>
+      <Register Name="I2C_TADDR" Authority="RW" Address="0x400a0004" Width="32" Description="目标地址寄存器"/>
+      <Register Name="I2C_SADDR" Authority="RW" Address="0x400a0008" Width="32" Description="从机地址寄存器"/>
+      <Register Name="I2C_DATA_CMD" Authority="RW" Address="0x400a0010" Width="32" Description="数据和命令寄存器"/>
+      <Register Name="I2C_SS_SCLH" Authority="RW" Address="0x400a0014" Width="32" Description="标准模式SCL高电平长度计数寄存器"/>
+      <Register Name="I2C_SS_SCLL" Authority="RW" Address="0x400a0018" Width="32" Description="标准模式SCL低电平长度计数寄存器"/>
+      <Register Name="I2C_FS_SCLH" Authority="RW" Address="0x400a001C" Width="32" Description="高速模式SCL高电平长度计数寄存器"/>
+      <Register Name="I2C_FS_SCLL" Authority="RW" Address="0x400a0020" Width="32" Description="高速模式SCL低电平长度计数寄存器"/>
+      <Register Name="I2C_RX_FLSEL" Authority="RW" Address="0x400a002C" Width="32" Description="接收FIFO阈值寄存器"/>
+      <Register Name="I2C_TX_FLSEL" Authority="RW" Address="0x400a0030" Width="32" Description="发送FIFO阈值寄存器"/>
+      <Register Name="I2C_RX_FL" Authority="RW" Address="0x400a0034" Width="32" Description="接收FIFO状态寄存器"/>
+      <Register Name="I2C_TX_FL" Authority="RW" Address="0x400a0038" Width="32" Description="发送FIFO状态寄存器"/>
+      <Register Name="I2C_ENABLE" Authority="RW" Address="0x400a003C" Width="32" Description="使能寄存器"/>
+      <Register Name="I2C_STATUS" Authority="RW" Address="0x400a0040" Width="32" Description="状态寄存器"/>
+      <Register Name="I2C_SDA_TSETUP" Authority="RW" Address="0x400a0048" Width="32" Description="SDA Setup时间寄存器"/>
+      <Register Name="I2C_SDA_THOLD" Authority="RW" Address="0x400a004C" Width="32" Description="SDA Hold 时间寄存器"/>
+      <Register Name="I2C_SPKLEN" Authority="RW" Address="0x400a0050" Width="32" Description="毛刺干扰滤波控制寄存器"/>
+      <Register Name="I2C_MISR" Authority="RW" Address="0x400a0058" Width="32" Description="中断状态寄存器"/>
+      <Register Name="I2C_IMSCR" Authority="RW" Address="0x400a005C" Width="32" Description="中断使能寄存器"/>
+      <Register Name="I2C_RISR" Authority="RW" Address="0x400a0060" Width="32" Description="原始中断状态寄存器"/>
+      <Register Name="I2C_ICR" Authority="RW" Address="0x400a0064" Width="32" Description="中断清除寄存器"/>
+      <Register Name="I2C_SCL_TOUT" Authority="RW" Address="0x400a006C" Width="32" Description="SCL锁死超时控制寄存器"/>
+      <Register Name="I2C_SDA_TOUT" Authority="RW" Address="0x400a0070" Width="32" Description="SDA锁死超时控制寄存器"/>
+      <Register Name="I2C_TX_ABRT" Authority="RW" Address="0x400a0074" Width="32" Description="发送中止状态寄存器"/>
+      <Register Name="I2C_GCALL" Authority="RW" Address="0x400a0078" Width="32" Description="General Call控制寄存器"/>
+      <Register Name="I2C_NACK" Authority="RW" Address="0x400a007C" Width="32" Description="从机NACK控制寄存器"/>
+    </Peripheral>
+    <Peripheral Name="SIO"> 
+      <Register Name="SIO_CR" Authority="RW" Address="0x400b0000" Width="32" Description="控制寄存器"/>
+      <Register Name="SIO_TXCR0" Authority="RW" Address="0x400b0004" Width="32" Description="发送控制寄存器0"/>
+      <Register Name="SIO_TXCR1" Authority="RW" Address="0x400b0008" Width="32" Description="发送控制寄存器1"/>
+      <Register Name="SIO_TXBUF" Authority="RW" Address="0x400b000C" Width="32" Description="发送数据缓存寄存器"/>
+      <Register Name="SIO_RXCR0" Authority="RW" Address="0x400b0010" Width="32" Description="接收控制寄存器0"/>
+      <Register Name="SIO_RXCR1" Authority="RW" Address="0x400b0014" Width="32" Description="接收控制寄存器1"/>
+      <Register Name="SIO_RXCR2" Authority="RW" Address="0x400b0018" Width="32" Description="接收控制寄存器2"/>
+      <Register Name="SIO_RXBUF" Authority="RW" Address="0x400b001C" Width="32" Description="接收数据缓存寄存器"/>
+      <Register Name="SIO_RISR" Authority="RW" Address="0x400b0020" Width="32" Description="原始中断状态寄存器"/>
+      <Register Name="SIO_MISR" Authority="RW" Address="0x400b0024" Width="32" Description="中断状态寄存器"/>
+      <Register Name="SIO_IMCR" Authority="RW" Address="0x400b0028" Width="32" Description="中断使能控制寄存器"/>
+      <Register Name="SIO_ICR" Authority="RW" Address="0x400b002C" Width="32" Description="中断清除寄存器"/>
+    </Peripheral>
+    <Peripheral Name="TOUCH"> 
+      <Register Name="TCH_CCR" Authority="RW" Address="0x40020000" Width="32" Description="Clock Control Register"/>
+      <Register Name="TCH_CON0" Authority="RW" Address="0x40020004" Width="32" Description="Touch Sensor General Control Register0"/>
+      <Register Name="TCH_CON1" Authority="RW" Address="0x40020008" Width="32" Description="Touch Sensor General Control Register1"/>
+      <Register Name="TCH_VALBUF" Authority="RW" Address="0x40020014" Width="32" Description="Touch Sample Value Buffer"/>
+      <Register Name="TCH_SENCNT" Authority="RW" Address="0x40020018" Width="32" Description="Current Sensor Node Discharge Counter Value"/>
+      <Register Name="TCH_TCHCNT" Authority="RW" Address="0x4002001C" Width="32" Description="Current Touch Sample Counter Value"/>
+      <Register Name="TCH_THR" Authority="RW" Address="0x40020020" Width="32" Description="Touch OFFSET Threshold Register"/>
+      <Register Name="TCH_RISR" Authority="RW" Address="0x40020028" Width="32" Description="Touch Senor Raw Interrupt Status Register"/>
+      <Register Name="TCH_IER" Authority="RW" Address="0x4002002C" Width="32" Description="Touch Senor Interrupt Masking Control Register"/>
+      <Register Name="TCH_ICR" Authority="RW" Address="0x40020030" Width="32" Description="Touch Senor Interrupt Clear Control Register"/>
+      <Register Name="TCH_RWSR" Authority="RW" Address="0x40020034" Width="32" Description="Touch Sample Value R/W Status Register"/>
+      <Register Name="TCH_OVW_THR" Authority="RW" Address="0x40020038" Width="32" Description="Touch OverThreshold Status Register"/>
+      <Register Name="TCH_OVF" Authority="RW" Address="0x4002003C" Width="32" Description="Touch Overflow status Register"/>
+      <Register Name="TCH_OVT" Authority="RW" Address="0x40020040" Width="32" Description="Touch OverTIME status Register"/>
+      <Register Name="TCH_SYNCR" Authority="RW" Address="0x40020044" Width="32" Description="Touch Sync Control Register"/>
+      <Register Name="TCH_EVTRG" Authority="RW" Address="0x40020048" Width="32" Description="Touch Trigger Event Generation Control Register"/>
+      <Register Name="TCH_EVPS" Authority="RW" Address="0x4002004C" Width="32" Description="Touch Trigger Event Generation Prescaler"/>
+      <Register Name="TCH_EVSWF" Authority="RW" Address="0x40020050" Width="32" Description="Touch Trigger Event Software Force Generation"/>
+      <Register Name="TCH_CH0VAL" Authority="RW" Address="0x40021000" Width="32" Description="CH0 Touch Sample Value Register"/>
+      <Register Name="TCH_CH1VAL" Authority="RW" Address="0x40021004" Width="32" Description="CH1 Touch Sample Value Register"/>
+      <Register Name="TCH_CH2VAL" Authority="RW" Address="0x40021008" Width="32" Description="CH2 Touch Sample Value Register"/>
+      <Register Name="TCH_CH3VAL" Authority="RW" Address="0x4002100C" Width="32" Description="CH3 Touch Sample Value Register"/>
+      <Register Name="TCH_CH4VAL" Authority="RW" Address="0x40021010" Width="32" Description="CH4 Touch Sample Value Register"/>
+      <Register Name="TCH_CH5VAL" Authority="RW" Address="0x40021014" Width="32" Description="CH5 Touch Sample Value Register"/>
+      <Register Name="TCH_CH6VAL" Authority="RW" Address="0x40021018" Width="32" Description="CH6 Touch Sample Value Register"/>
+      <Register Name="TCH_CH7VAL" Authority="RW" Address="0x4002101C" Width="32" Description="CH7 Touch Sample Value Register"/>
+      <Register Name="TCH_CH8VAL" Authority="RW" Address="0x40021020" Width="32" Description="CH8 Touch Sample Value Register"/>
+      <Register Name="TCH_CH9VAL" Authority="RW" Address="0x40021024" Width="32" Description="CH9 Touch Sample Value Register"/>
+      <Register Name="TCH_CH10VAL" Authority="RW" Address="0x40021028" Width="32" Description="CH10 Touch Sample Value Register"/>
+      <Register Name="TCH_CH11VAL" Authority="RW" Address="0x4002102C" Width="32" Description="CH11 Touch Sample Value Register"/>
+      <Register Name="TCH_CH12VAL" Authority="RW" Address="0x40021030" Width="32" Description="CH12 Touch Sample Value Register"/>
+      <Register Name="TCH_CH13VAL" Authority="RW" Address="0x40021034" Width="32" Description="CH13 Touch Sample Value Register"/>
+      <Register Name="TCH_CH14VAL" Authority="RW" Address="0x40021038" Width="32" Description="CH14 Touch Sample Value Register"/>
+      <Register Name="TCH_CH15VAL" Authority="RW" Address="0x4002103C" Width="32" Description="CH15 Touch Sample Value Register"/>
+      <Register Name="TCH_CH16VAL" Authority="RW" Address="0x40021040" Width="32" Description="CH16 Touch Sample Value Register"/>
+      <Register Name="TCH_CH17VAL" Authority="RW" Address="0x40021044" Width="32" Description="CH17 Touch Sample Value Register"/>
+      <Register Name="TCH_SEQ0CON" Authority="RW" Address="0x40021048" Width="32" Description="SEQ0 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ1CON" Authority="RW" Address="0x4002104C" Width="32" Description="SEQ1 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ2CON" Authority="RW" Address="0x40021050" Width="32" Description="SEQ2 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ3CON" Authority="RW" Address="0x40021054" Width="32" Description="SEQ3 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ4CON" Authority="RW" Address="0x40021058" Width="32" Description="SEQ4 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ5CON" Authority="RW" Address="0x4002105C" Width="32" Description="SEQ5 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ6CON" Authority="RW" Address="0x40021060" Width="32" Description="SEQ6 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ7CON" Authority="RW" Address="0x40021064" Width="32" Description="SEQ7 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ8CON" Authority="RW" Address="0x40021068" Width="32" Description="SEQ8 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ9CON" Authority="RW" Address="0x4002106C" Width="32" Description="SEQ9 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ10CON" Authority="RW" Address="0x40021070" Width="32" Description="SEQ10 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ11CON" Authority="RW" Address="0x40021074" Width="32" Description="SEQ11 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ12CON" Authority="RW" Address="0x40021078" Width="32" Description="SEQ12 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ13CON" Authority="RW" Address="0x4002107C" Width="32" Description="SEQ13 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ14CON" Authority="RW" Address="0x40021080" Width="32" Description="SEQ14 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ15CON" Authority="RW" Address="0x40021084" Width="32" Description="SEQ15 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ16CON" Authority="RW" Address="0x40021088" Width="32" Description="SEQ16 Mode Control Register for each sub-sequence"/>
+      <Register Name="TCH_SEQ17CON" Authority="RW" Address="0x4002108C" Width="32" Description="SEQ17 Mode Control Register for each sub-sequence"/>
+    </Peripheral>
+    <Peripheral Name="ETCB"> 
+      <Register Name="ETCB_ENABLE" Authority="RW" Address="0x40012000" Width="32" Description="ETCB使能寄存器"/>
+      <Register Name="ETCB_SWTRG" Authority="RW" Address="0x40012004" Width="32" Description="ETCB软件触发寄存器"/>
+      <Register Name="ETCB_CH0CON0" Authority="RW" Address="0x40012008" Width="32" Description="ETCB通道0控制寄存器0"/>
+      <Register Name="ETCB_CH0CON1" Authority="RW" Address="0x4001200C" Width="32" Description="ETCB通道0控制寄存器1"/>
+      <Register Name="ETCB_CH1CON0" Authority="RW" Address="0x40012010" Width="32" Description="ETCB通道1控制寄存器0"/>
+      <Register Name="ETCB_CH1CON1" Authority="RW" Address="0x40012014" Width="32" Description="ETCB通道1控制寄存器1"/>
+      <Register Name="ETCB_CH2CON0" Authority="RW" Address="0x40012018" Width="32" Description="ETCB通道2控制寄存器0"/>
+      <Register Name="ETCB_CH2CON1" Authority="RW" Address="0x4001201C" Width="32" Description="ETCB通道2控制寄存器1"/>
+      <Register Name="ETCB_CH3CON" Authority="RW" Address="0x40012030" Width="32" Description="ETCB通道3控制寄存器"/>
+      <Register Name="ETCB_CH4CON" Authority="RW" Address="0x40012034" Width="32" Description="ETCB通道4控制寄存器"/>
+      <Register Name="ETCB_CH5CON" Authority="RW" Address="0x40012038" Width="32" Description="ETCB通道5控制寄存器"/>
+      <Register Name="ETCB_CH6CON" Authority="RW" Address="0x4001203C" Width="32" Description="ETCB通道6控制寄存器"/>
+      <Register Name="ETCB_CH7CON" Authority="RW" Address="0x40012040" Width="32" Description="ETCB通道7控制寄存器"/>
+    </Peripheral>
+    <Peripheral Name="ADC"> 
+      <Register Name="ADC_ECR" Authority="RW" Address="0x40030000" Width="32" Description="时钟使能寄存器"/>
+      <Register Name="ADC_DCR" Authority="RW" Address="0x40030004" Width="32" Description="时钟禁止寄存器"/>
+      <Register Name="ADC_PMSR" Authority="RW" Address="0x40030008" Width="32" Description="功耗管理状态寄存器"/>
+      <Register Name="ADC_CR" Authority="RW" Address="0x40030010" Width="32" Description="控制寄存器"/>
+      <Register Name="ADC_MR" Authority="RW" Address="0x40030014" Width="32" Description="模式寄存器"/>
+      <Register Name="ADC_SHR" Authority="RW" Address="0x40030018" Width="32" Description="采样保持周期寄存器"/>
+      <Register Name="ADC_CSR" Authority="RW" Address="0x4003001C" Width="32" Description="状态清除寄存器"/>
+      <Register Name="ADC_SR" Authority="RW" Address="0x40030020" Width="32" Description="状态寄存器"/>
+      <Register Name="ADC_IER" Authority="RW" Address="0x40030024" Width="32" Description="中断使能寄存器"/>
+      <Register Name="ADC_IDR" Authority="RW" Address="0x40030028" Width="32" Description="中断禁止寄存器"/>
+      <Register Name="ADC_IMR" Authority="RW" Address="0x4003002C" Width="32" Description="中断使能状态寄存器"/>
+      <Register Name="ADC_SEQ0" Authority="RW" Address="0x40030030" Width="32" Description="转换序列寄存器0"/>
+      <Register Name="ADC_SEQ1" Authority="RW" Address="0x40030034" Width="32" Description="转换序列寄存器1"/>
+      <Register Name="ADC_SEQ2" Authority="RW" Address="0x40030038" Width="32" Description="转换序列寄存器2"/>
+      <Register Name="ADC_SEQ3" Authority="RW" Address="0x4003003C" Width="32" Description="转换序列寄存器3"/>
+      <Register Name="ADC_SEQ4" Authority="RW" Address="0x40030040" Width="32" Description="转换序列寄存器4"/>
+      <Register Name="ADC_SEQ5" Authority="RW" Address="0x40030044" Width="32" Description="转换序列寄存器5"/>
+      <Register Name="ADC_SEQ6" Authority="RW" Address="0x40030048" Width="32" Description="转换序列寄存器6"/>
+      <Register Name="ADC_SEQ7" Authority="RW" Address="0x4003004C" Width="32" Description="转换序列寄存器7"/>
+      <Register Name="ADC_SEQ8" Authority="RW" Address="0x40030050" Width="32" Description="转换序列寄存器8"/>
+      <Register Name="ADC_SEQ9" Authority="RW" Address="0x40030054" Width="32" Description="转换序列寄存器9"/>
+      <Register Name="ADC_SEQ10" Authority="RW" Address="0x40030058" Width="32" Description="转换序列寄存器10"/>
+      <Register Name="ADC_SEQ11" Authority="RW" Address="0x4003005C" Width="32" Description="转换序列寄存器11"/>
+      <Register Name="ADC_SEQ12" Authority="RW" Address="0x40030060" Width="32" Description="转换序列寄存器12"/>
+      <Register Name="ADC_SEQ13" Authority="RW" Address="0x40030064" Width="32" Description="转换序列寄存器13"/>
+      <Register Name="ADC_SEQ14" Authority="RW" Address="0x40030068" Width="32" Description="转换序列寄存器14"/>
+      <Register Name="ADC_SEQ15" Authority="RW" Address="0x4003006C" Width="32" Description="转换序列寄存器15"/>
+      <Register Name="ADC_PRI" Authority="RW" Address="0x40030070" Width="32" Description="转换序列优先级寄存器"/>
+      <Register Name="ADC_TDL0" Authority="RW" Address="0x40030074" Width="32" Description="触发延时寄存器0"/>
+      <Register Name="ADC_TDL1" Authority="RW" Address="0x40030078" Width="32" Description="触发延时寄存器1"/>
+      <Register Name="ADC_SYNCR" Authority="RW" Address="0x4003007C" Width="32" Description="触发同步控制寄存器"/>
+      <Register Name="ADC_EVTRG" Authority="RW" Address="0x40030088" Width="32" Description="事件触发选择寄存器"/>
+      <Register Name="ADC_DR0" Authority="RW" Address="0x40030100" Width="32" Description="转换结果寄存器0 "/>
+      <Register Name="ADC_DR1" Authority="RW" Address="0x40030104" Width="32" Description="转换结果寄存器1"/>
+      <Register Name="ADC_DR2" Authority="RW" Address="0x40030108" Width="32" Description="转换结果寄存器2"/>
+      <Register Name="ADC_DR3" Authority="RW" Address="0x4003010c" Width="32" Description="转换结果寄存器3"/>
+      <Register Name="ADC_DR4" Authority="RW" Address="0x40030110" Width="32" Description="转换结果寄存器4"/>
+      <Register Name="ADC_DR5" Authority="RW" Address="0x40030114" Width="32" Description="转换结果寄存器5"/>
+      <Register Name="ADC_DR6" Authority="RW" Address="0x40030118" Width="32" Description="转换结果寄存器6"/>
+      <Register Name="ADC_DR7" Authority="RW" Address="0x4003011c" Width="32" Description="转换结果寄存器7"/>
+      <Register Name="ADC_DR8" Authority="RW" Address="0x40030120" Width="32" Description="转换结果寄存器8"/>
+      <Register Name="ADC_DR9" Authority="RW" Address="0x40030124" Width="32" Description="转换结果寄存器9"/>
+      <Register Name="ADC_DR10" Authority="RW" Address="0x40030128" Width="32" Description="转换结果寄存器10"/>
+      <Register Name="ADC_DR11" Authority="RW" Address="0x4003012c" Width="32" Description="转换结果寄存器11"/>
+      <Register Name="ADC_DR12" Authority="RW" Address="0x40030130" Width="32" Description="转换结果寄存器12"/>
+      <Register Name="ADC_DR13" Authority="RW" Address="0x40030134" Width="32" Description="转换结果寄存器13"/>
+      <Register Name="ADC_DR14" Authority="RW" Address="0x40030138" Width="32" Description="转换结果寄存器14"/>
+      <Register Name="ADC_DR15" Authority="RW" Address="0x4003013c" Width="32" Description="转换结果寄存器15"/>
+      <Register Name="ADC_CMP0" Authority="RW" Address="0x40030140" Width="32" Description="比较数据0寄存器"/>
+      <Register Name="ADC_CMP1" Authority="RW" Address="0x40030144" Width="32" Description="比较数据1寄存器"/>
+      <Register Name="ADC_DRMASK" Authority="RW" Address="0x40030148" Width="32" Description="禁止转换结果更新寄存器"/>
+    </Peripheral>
+    <Peripheral Name="CNTA"> 
+      <Register Name="CNTA_DATAH" Authority="RW" Address="0x40050000" Width="32" Description="Reset/Start Control Register"/>
+      <Register Name="CNTA_DATAL" Authority="RW" Address="0x40050004" Width="32" Description="General Control Register"/>
+      <Register Name="CNTA_CON" Authority="RW" Address="0x40050008" Width="32" Description="Counter Clock Prescaler Register"/>
+      <Register Name="CNTA_INTMASK" Authority="RW" Address="0x4005000C" Width="32" Description="Period Register"/>
+    </Peripheral>
+    <Peripheral Name="INT"> 
+      <Register Name="VIC_ISER" Authority="RW" Address="0xe000e100" Width="32" Description="Interrupt Set Enable Register"/>
+      <Register Name="VIC_IWER" Authority="RW" Address="0xe000e140" Width="32" Description="Interrupt Wakeup Enable Register"/>
+      <Register Name="VIC_ICER" Authority="RW" Address="0xe000e180" Width="32" Description="Interrupt Clear Enable Register"/>
+      <Register Name="VIC_IWDR" Authority="RW" Address="0xe000e1C0" Width="32" Description="Interrupt Wakeup Disable Register"/>
+      <Register Name="VIC_ISPR" Authority="RW" Address="0xe000e200" Width="32" Description="Interrupt Set Pending Register"/>
+      <Register Name="VIC_ICPR" Authority="RW" Address="0xe000e280" Width="32" Description="Interrupt Clear Pending Register"/>
+      <Register Name="VIC_IABR" Authority="RW" Address="0xe000e300" Width="32" Description="Interrupt Active Status Register"/>
+      <Register Name="VIC_IPR0" Authority="RW" Address="0xe000e400" Width="32" Description="Interrupt Priority Register 0"/>
+      <Register Name="VIC_IPR1" Authority="RW" Address="0xe000e404" Width="32" Description="Interrupt Priority Register 1"/>
+      <Register Name="VIC_IPR2" Authority="RW" Address="0xe000e408" Width="32" Description="Interrupt Priority Register 2"/>
+      <Register Name="VIC_IPR3" Authority="RW" Address="0xe000e40C" Width="32" Description="Interrupt Priority Register 3"/>
+      <Register Name="VIC_IPR4" Authority="RW" Address="0xe000e410" Width="32" Description="Interrupt Priority Register 4"/>
+      <Register Name="VIC_IPR5" Authority="RW" Address="0xe000e414" Width="32" Description="Interrupt Priority Register 5"/>
+      <Register Name="VIC_IPR6" Authority="RW" Address="0xe000e418" Width="32" Description="Interrupt Priority Register 6"/>
+      <Register Name="VIC_IPR7" Authority="RW" Address="0xe000e41C" Width="32" Description="Interrupt Priority Register 7"/>
+      <Register Name="VIC_ISR" Authority="RW" Address="0xe000eC00" Width="32" Description="Interrupt Status Register"/>
+      <Register Name="VIC_IPTR" Authority="RW" Address="0xe000eC04" Width="32" Description="Interrupt Priority Threshold Register"/>
+    </Peripheral>
+    </config>
+ </com.csky.cds.peripheral>

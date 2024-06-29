@@ -1,0 +1,354 @@
+/***********************************************************************//** 
+ * \file  sys_clk.c
+ * \brief  system clock management for cpu clock(HCLK) and peri clock(PCLK)
+ * \copyright Copyright (C) 2015-2020 @ APTCHIP
+ * <table>
+ * <tr><th> Date  <th>Version  <th>Author  <th>Description
+ * <tr><td> 2020-8-10 <td>V0.0  <td>WNN   <td>initial
+ * <tr><td> 2021-5-13 <td>V0.0  <td>ZJY   <td>initial
+ * </table>
+ * *********************************************************************
+*/
+#include <stdint.h>
+#include <sys_clk.h>
+#include <pin.h>
+#include "board_config.h"
+
+#include <csp.h>
+
+
+extern system_clk_config_t g_tSystemClkConfig[];
+
+/// This is the default clck freq of the chip
+uint32_t g_wSystemClk = 5556000;
+uint32_t g_wSystemPclk = 5556000 >> 1;
+
+
+///to match the real div to reg setting
+const uint32_t g_wHclkDiv[] = {
+	1, 1, 2, 3, 4, 5, 6, 7, 8, 12, 16, 24, 32, 36, 64, 128, 256
+};
+
+static uint32_t get_hclk(void)
+{
+	uint32_t tRslt;
+	tRslt = g_tSystemClkConfig[0].wOscFreq/g_tSystemClkConfig[0].eHclkDivider;
+	return (tRslt);
+}
+/** \brief sysctem clock (HCLK) configuration
+ * 
+ *  To set CPU frequence according to g_tSystemClkConfig
+ * 
+ *  \param[in] none.
+ *  \return csi_error_t.
+ */ 
+csi_error_t soc_sysclk_config(void)
+{	csi_error_t ret = CSI_OK;
+	uint8_t byFreqIdx = 0;
+	uint32_t wFreq;
+	uint32_t wHFreq;
+	cclk_src_e eSrc;
+	uint8_t byFlashLp = 0;
+	wFreq = g_tSystemClkConfig[0].wOscFreq;
+	eSrc = g_tSystemClkConfig[0].eSysClkSrc;
+	wHFreq = get_hclk();
+	
+//	csp_ifc_set_speed(IFC_REG_BASE, get_hclk());
+	IFC->CEDR = IFC_CLKEN;
+	IFC->MR = IFC->MR & (~(HIGH_SPEED|PF_WAIT3));
+	if (wHFreq > 24000000)
+		IFC->MR |= HIGH_SPEED | PF_WAIT2;
+    else if (wHFreq >= 16000000) 
+		IFC->MR |= HIGH_SPEED | PF_WAIT1;	
+	
+	switch (eSrc)
+	{
+		case (SRC_ISOSC): 	
+			ret = csi_isosc_enable();
+			byFlashLp = 1;
+			break;
+		case (SRC_IMOSC):	
+			switch (wFreq) 	
+			{
+				case (IMOSC_5M_VALUE):   byFreqIdx = 0;
+					break;
+				case (IMOSC_4M_VALUE):   byFreqIdx = 1;
+					break;
+				case (IMOSC_2M_VALUE):   byFreqIdx = 2;
+					break;
+				case (IMOSC_131K_VALUE): byFreqIdx = 3;
+					break;
+				default: ret = CSI_ERROR;	
+					break;
+			}
+			ret = csi_imosc_enable(byFreqIdx);
+			if (wFreq == IM_131K)
+				byFlashLp = 1;
+			break;
+		case (SRC_EMOSC):	
+			csi_pin_set_mux(PA03, PA03_OSC_XI);
+			csi_pin_set_mux(PA04, PA04_OSC_XO);
+			if (wFreq == EMOSC_32K_VALUE)
+				csp_set_em_lfmd(SYSCON, 1);
+			ret = csi_emosc_enable(wFreq);
+			break;
+		case (SRC_HFOSC):	
+			switch (wFreq) 	
+			{
+				case (HFOSC_48M_VALUE): byFreqIdx = 0;
+					break;
+				case (HFOSC_24M_VALUE): byFreqIdx = 1;
+					break;
+				case (HFOSC_12M_VALUE): byFreqIdx = 2;
+					break;
+				case (HFOSC_6M_VALUE):  byFreqIdx = 3;
+					break;
+				default: ret = CSI_ERROR;	
+					break;
+			}
+			ret = csi_hfosc_enable(byFreqIdx);
+						
+/*			if (wFreq == HF_48M)
+			{
+				csp_ifc_set_speed(IFC_REG_BASE, 48000000);
+			}
+			else if (wFreq == HF_24M)
+			{
+				csp_ifc_set_speed(IFC_REG_BASE, 24000000);
+			}*/
+			break;
+		default: 
+			break;
+	}
+	
+	csp_set_sdiv(SYSCON, g_tSystemClkConfig[0].eHclkDivider);
+	csp_set_clksrc(SYSCON, eSrc);
+	
+	csp_eflash_lpmd_enable(SYSCON, (bool)byFlashLp);
+	return ret;
+}
+
+
+/** \brief PCLK configuration
+ * 
+ *  To set PCLK frequence according to g_tSystemClkConfig
+ * 
+ *  \param[in] none.
+ *  \return csi_error_t.
+ */ 
+void soc_pclk_config(void)
+{ 	
+	csp_set_pdiv(SYSCON, g_tSystemClkConfig[0].ePclkDivider);
+}
+
+
+/** \brief Clock output configuration
+ * 
+ *  \param[in] eCloSrc: source to output
+ *  \param[in] eCloDiv: clo divider 
+ *  \param[in] tPin: output pin
+ *  \return csi_error_t.
+ */
+csi_error_t soc_clo_config(clo_src_e eCloSrc, clo_div_e eCloDiv, pin_name_e tPin)
+{ 	
+	csi_error_t ret = CSI_OK;
+	switch (tPin)
+	{
+		case (PA02):
+			csi_pin_set_mux(PA02, PA02_CLO);
+			break;
+		case (PA08):
+			csi_pin_set_mux(PA08, PA08_CLO);
+			break;
+		case (PA09):
+			csi_pin_set_mux(PA09, PA09_CLO);
+			break;
+		default:
+			ret = CSI_ERROR;
+			break;
+	}
+	
+	csp_set_clo_src(SYSCON, eCloSrc);
+	csp_set_clo_div(SYSCON, eCloDiv);
+	return ret;
+}
+
+/** \brief prei clk enable in SYSCON level
+ *
+ *  \param[in] wModule: module name
+ *  \return none
+ */
+void soc_clk_enable(int32_t wModule)
+{
+    //TODO
+	if(wModule < 32U)
+		csp_pcer0_clk_en(SYSCON, (uint32_t)wModule);
+	else
+		csp_pcer1_clk_en(SYSCON, (uint32_t)wModule - 32U);
+}
+
+/** \brief prei clk disable in SYSCON level
+ *
+ *  \param[in] wModule: module name
+ *  \return none
+ */
+void soc_clk_disable(int32_t wModule)
+{
+    //TODO
+	if(wModule < 32U)
+		csp_pder0_clk_dis(SYSCON, (uint32_t)wModule);
+	else
+		csp_pder1_clk_dis(SYSCON, (uint32_t)wModule - 32U);
+}
+
+/** \brief to get CPU frequence according to the current reg content
+ *  g_wSystemClk will be updated after excuting this function
+ *  \param[in] none.
+ *  \return csi_error_t.
+ */ 
+csi_error_t soc_get_cpu_freq(void)
+{	
+	//csi_error_t ret = CSI_OK;
+	cclk_src_e eClkSrc;
+	uint8_t  byHclkDiv;
+	uint32_t wHfoFreq;
+	uint32_t wImoFreq;
+	
+    eClkSrc = ((cclk_src_e) csp_get_clksrc(SYSCON));
+	switch(eClkSrc)
+	{ 	case (SRC_ISOSC): 	
+			g_wSystemClk = ISOSC_VALUE;
+			break;
+		case (SRC_EMOSC): 	
+			g_wSystemClk = EMOSC_VALUE;
+			break;
+		case (SRC_IMOSC):	
+			wImoFreq = csp_get_imosc_fre(SYSCON);
+			switch (wImoFreq)
+			{
+				case (0): 
+					g_wSystemClk = IMOSC_5M_VALUE;
+					break;
+				case (1): 
+					g_wSystemClk = IMOSC_4M_VALUE;
+					break;
+				case (2): 
+					g_wSystemClk = IMOSC_2M_VALUE;	
+					break;
+				case (3): 
+					g_wSystemClk = IMOSC_131K_VALUE;	
+					break;
+				default: 
+					return CSI_ERROR;	
+					break;
+			}
+			break;
+		case  (SRC_HFOSC):	
+			wHfoFreq =  csp_get_hfosc_fre(SYSCON);
+			switch (wHfoFreq)
+			{
+				case (0): 
+					g_wSystemClk = HFOSC_48M_VALUE;
+					//uint32_t temp = HFOSC_48M_VALUE;
+					break;
+				case (1): 
+					g_wSystemClk = HFOSC_24M_VALUE;
+					break;
+				case (2): 
+					g_wSystemClk = HFOSC_12M_VALUE;	
+					break;
+				case (3): 
+					g_wSystemClk = HFOSC_6M_VALUE;	
+					break;
+				default:  
+					return CSI_ERROR;	
+					break;
+			}
+			break;
+		default:
+			return CSI_ERROR;
+			break;
+	}
+	byHclkDiv = csp_get_hclk_div(SYSCON);
+
+	
+	//g_wSystemClk = g_wSystemClk / g_wHclkDiv[byHclkDiv];
+	g_wSystemClk = g_wSystemClk/g_wHclkDiv[byHclkDiv];
+	
+	return CSI_OK;
+}
+
+/** \brief To get PCLK frequence according to the current reg content.
+ *  g_wSystemClk will be updated after excuting this function.
+ *  \param[in] none.
+ *  \return csi_error_t.
+ */ 
+uint32_t soc_get_apb_freq(uint32_t idx)
+{
+    uint32_t wDiv, wPdiv = 1;
+	wDiv = csp_get_pdiv(SYSCON);
+	if(wDiv == 0)
+		wPdiv = 1;
+	else if(wDiv == 1)
+		wPdiv = 2;
+	else if(wDiv & 0x08)
+		wPdiv = 16;
+	else if(wDiv & 0x04)
+		wPdiv = 8;
+	else if(wDiv & 0x02)
+		wPdiv = 4;
+	
+	g_wSystemPclk = g_wSystemClk / wPdiv;
+	return g_wSystemPclk;
+}
+
+/** \brief To get CORET frequence.
+ *  Make sure to excute soc_get_cpu_freq() after clock block changing
+ *  \param[in] none.
+ *  \return g_wSystemClk.
+ */ 
+uint32_t soc_get_coretim_freq(void)
+{
+    return g_wSystemClk;
+}
+
+/** \brief To get CORET frequence 
+ *  Make sure to excute soc_get_peri_freq() after clock block changing
+ *  \param[in] none.
+ *  \return g_wSystemClk.
+ */ 
+uint32_t soc_get_pclk_freq(void)
+{
+    return g_wSystemPclk;
+}
+
+/** \brief to set clock status in PM mode 
+ *  when IWDT is enabled, trying to stop ISOSC in stop mode would be invalid
+ *  refer to GCER in SYSCON chapter for detailed description
+ *  \param[in] eClk: clock to be configured
+ *  \param[in] bEnable: enable or disable
+ *  \return none.
+ */ 
+void soc_clk_pm_enable(clk_pm_e eClk, bool bEnable)
+{
+	csp_clk_pm_enable(SYSCON, eClk, bEnable);
+}
+
+
+uint32_t soc_get_timer_freq(uint32_t idx)
+{
+	csp_bt_t *bt_base  = NULL;
+	switch(idx)
+	{
+		case 0:
+			bt_base = (csp_bt_t *)APB_BT0_BASE;
+			break;
+		case 1:
+			bt_base = (csp_bt_t *)APB_BT1_BASE;
+			break;
+		default:
+			return soc_get_pclk_freq();
+	}
+	
+	return soc_get_pclk_freq()/(csp_bt_get_pscr(bt_base) + 1);
+}
