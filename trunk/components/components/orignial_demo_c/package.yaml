@@ -27,7 +27,6 @@ build_config:
   define: ~
   libs: ~
   libpath: ~
-source_file:
-
+source_file: ~
 def_config: ~
 install: ~

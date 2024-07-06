@@ -33,3 +33,6 @@ link_config:
   path: ~
   library: ~
 field: ~
+suitableChip: ~
+homepage: ~
+soc_config: ~

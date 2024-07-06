@@ -1,6 +1,6 @@
 name: original_csi_c
 version: v1.0.0
-description: 来自SDK1.1.4
+description: ""
 tag: ""
 keywords: ~
 author:
@@ -27,7 +27,7 @@ build_config:
   define: ~
   libs: ~
   libpath: ~
-source_file:~
+source_file:
 
 def_config: ~
 install: ~
