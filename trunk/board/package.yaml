@@ -127,7 +127,6 @@ depends:
 defconfig: ~
 source_file:
   - src/*.c
-  - src/startup.S
 #  - src/system.c
 link_config:
   path: ~
