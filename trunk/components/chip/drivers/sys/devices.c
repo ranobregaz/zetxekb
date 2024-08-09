@@ -30,45 +30,45 @@
 //#define IS_CHIP_1023 1
 //#define IS_CHIP_S003 1
 
-const csi_perip_info_t g_soc_info[] = {
-	
-	{CK801_ADDR_BASE,			CORET_IRQn,			0,    DEV_CORET_TAG},
-    {APB_SYS_BASE,				SYSCON_IRQn,        0,    DEV_SYSCON_TAG},
-    {APB_IFC_BASE,              IFC_IRQn,           0,    DEV_IFC_TAG},
-    {APB_ADC0_BASE,             ADC_IRQn,			0,    DEV_ADC_TAG},
-    {APB_EPT0_BASE,           	EPT0_IRQn,          0,    DEV_EPT_TAG},
-	/// for IWDT
-	{APB_SYS_BASE,           	SYSCON_IRQn,        0,    DEV_WDT_TAG}, 
-	/// for WWDT
-    {APB_WWDT_BASE,           	WWDT_IRQn,          1,    DEV_WDT_TAG},
-	{AHB_CRC_BASE,           	-1,           		0,    DEV_CRC_TAG},
-    {APB_GPTA0_BASE,           	GPT0_IRQn,          0,    DEV_GPT_TAG},
-
-#if defined(IS_CHIP_102) || defined(IS_CHIP_1021) || defined(IS_CHIP_1022) || defined(IS_CHIP_1023)
-    {APB_RTC_BASE,           	RTC_IRQn,           0,    DEV_RTC_TAG},
-#endif
-    {APB_UART0_BASE,           	UART0_IRQn,         0,    DEV_UART_TAG},
-#if defined(IS_CHIP_1023)
-    {APB_UART1_BASE,            UART1_IRQn,         1,    DEV_UART_TAG},
-#endif
-	{APB_UART2_BASE,           	UART2_IRQn,         2,    DEV_UART_TAG},
-    {APB_I2C0_BASE,             I2C_IRQn,           0,    DEV_IIC_TAG},
-    {APB_SPI0_BASE,             SPI_IRQn,           0,    DEV_SPI_TAG},
-#if defined(IS_CHIP_102) || defined(IS_CHIP_1023)
-    {APB_SIO0_BASE,             SIO_IRQn,           0,    DEV_SIO_TAG},
-#endif
-	{APB_GPIOA0_BASE,           EXI0_IRQn,          0,    DEV_EXI_TAG},
-    {APB_GPIOB0_BASE,           EXI1_IRQn,          1,    DEV_EXI_TAG},
-    {APB_CNTA_BASE,            	CNTA_IRQn,          0,    DEV_CNTA_TAG},
-#if defined(IS_CHIP_1021) || defined(IS_CHIP_1023)
-    {APB_TKEY_BASE,             TKEY_IRQn,          0,    DEV_TKEY_TAG},
-#endif
-    {APB_LPT_BASE,            	LPT_IRQn,           0,    DEV_LPT_TAG},
-    {APB_BT0_BASE,              BT0_IRQn,           0,    DEV_BT_TAG},
-	{APB_BT1_BASE,              BT1_IRQn,           1,    DEV_BT_TAG},
-    {APB_ETCB_BASE,      		-1,                 0,    DEV_ETCB_TAG},
-    {0, 0, 0, 0}
-};
+//const csi_perip_info_t g_soc_info[] = {
+//	
+//	{CK801_ADDR_BASE,			CORET_IRQn,			0,    DEV_CORET_TAG},
+//    {APB_SYS_BASE,				SYSCON_IRQn,        0,    DEV_SYSCON_TAG},
+//    {APB_IFC_BASE,              IFC_IRQn,           0,    DEV_IFC_TAG},
+//    {APB_ADC0_BASE,             ADC_IRQn,			0,    DEV_ADC_TAG},
+//    {APB_EPT0_BASE,           	EPT0_IRQn,          0,    DEV_EPT_TAG},
+//	/// for IWDT
+//	{APB_SYS_BASE,           	SYSCON_IRQn,        0,    DEV_WDT_TAG}, 
+//	/// for WWDT
+//    {APB_WWDT_BASE,           	WWDT_IRQn,          1,    DEV_WDT_TAG},
+//	{AHB_CRC_BASE,           	-1,           		0,    DEV_CRC_TAG},
+//    {APB_GPTA0_BASE,           	GPT0_IRQn,          0,    DEV_GPT_TAG},
+//
+//#if defined(IS_CHIP_102) || defined(IS_CHIP_1021) || defined(IS_CHIP_1022) || defined(IS_CHIP_1023)
+//    {APB_RTC_BASE,           	RTC_IRQn,           0,    DEV_RTC_TAG},
+//#endif
+//    {APB_UART0_BASE,           	UART0_IRQn,         0,    DEV_UART_TAG},
+//#if defined(IS_CHIP_1023)
+//    {APB_UART1_BASE,            UART1_IRQn,         1,    DEV_UART_TAG},
+//#endif
+//	{APB_UART2_BASE,           	UART2_IRQn,         2,    DEV_UART_TAG},
+//    {APB_I2C0_BASE,             I2C_IRQn,           0,    DEV_IIC_TAG},
+//    {APB_SPI0_BASE,             SPI_IRQn,           0,    DEV_SPI_TAG},
+//#if defined(IS_CHIP_102) || defined(IS_CHIP_1023)
+//    {APB_SIO0_BASE,             SIO_IRQn,           0,    DEV_SIO_TAG},
+//#endif
+//	{APB_GPIOA0_BASE,           EXI0_IRQn,          0,    DEV_EXI_TAG},
+//    {APB_GPIOB0_BASE,           EXI1_IRQn,          1,    DEV_EXI_TAG},
+//    {APB_CNTA_BASE,            	CNTA_IRQn,          0,    DEV_CNTA_TAG},
+//#if defined(IS_CHIP_1021) || defined(IS_CHIP_1023)
+//    {APB_TKEY_BASE,             TKEY_IRQn,          0,    DEV_TKEY_TAG},
+//#endif
+//    {APB_LPT_BASE,            	LPT_IRQn,           0,    DEV_LPT_TAG},
+//    {APB_BT0_BASE,              BT0_IRQn,           0,    DEV_BT_TAG},
+//	{APB_BT1_BASE,              BT1_IRQn,           1,    DEV_BT_TAG},
+//    {APB_ETCB_BASE,      		-1,                 0,    DEV_ETCB_TAG},
+//    {0, 0, 0, 0}
+//};
 
 const csi_irqmap_t irq_map[] = {
 	
@@ -125,153 +125,153 @@ const csi_clkmap_t clk_map[] = {
 };
 
 
-const csi_pinmap_t gpio_pinmap[] = {
-    {PA00,           0,     0,           GPIO_PIN_INPUT },
-    {PA01,           0,     1,           GPIO_PIN_INPUT },
-    {PA02,           0,     2,           GPIO_PIN_INPUT },
-    {PA03,           0,     3,           GPIO_PIN_INPUT },
-    {PA04,           0,     4,           GPIO_PIN_INPUT },
-    {PA05,           0,     5,           GPIO_PIN_INPUT },
-    {PA06,           0,     6,           GPIO_PIN_INPUT },
-    {PA07,           0,     7,           GPIO_PIN_INPUT },
-    {PA08,           0,     8,           GPIO_PIN_INPUT },
-    {PA09,           0,     9,           GPIO_PIN_INPUT },
-    {PA010,          0,     10,          GPIO_PIN_INPUT },
-    {PA011,          0,     11,          GPIO_PIN_INPUT },
-    {PA012,          0,     12,          GPIO_PIN_INPUT },
-    {PA013,          0,     13,          GPIO_PIN_INPUT },
-    {PA014,          0,     14,          GPIO_PIN_INPUT },
-    {PB00,           1,     0,           GPIO_PIN_INPUT },
-    {PB01,           1,     1,           GPIO_PIN_INPUT },
-    {PB02,           1,     2,           GPIO_PIN_INPUT },
-    {PB03,           1,     3,           GPIO_PIN_INPUT },
-    {PB04,           1,     4,           GPIO_PIN_INPUT },
-    {PB05,           1,     5,           GPIO_PIN_INPUT },
-    {0xFFFFFFFFU,   0xFFU, 0xFFU,        0xFFFFFFFFU   },
-};
+//const csi_pinmap_t gpio_pinmap[] = {
+//    {PA00,           0,     0,           GPIO_PIN_INPUT },
+//    {PA01,           0,     1,           GPIO_PIN_INPUT },
+//    {PA02,           0,     2,           GPIO_PIN_INPUT },
+//    {PA03,           0,     3,           GPIO_PIN_INPUT },
+//    {PA04,           0,     4,           GPIO_PIN_INPUT },
+//    {PA05,           0,     5,           GPIO_PIN_INPUT },
+//    {PA06,           0,     6,           GPIO_PIN_INPUT },
+//    {PA07,           0,     7,           GPIO_PIN_INPUT },
+//    {PA08,           0,     8,           GPIO_PIN_INPUT },
+//    {PA09,           0,     9,           GPIO_PIN_INPUT },
+//    {PA010,          0,     10,          GPIO_PIN_INPUT },
+//    {PA011,          0,     11,          GPIO_PIN_INPUT },
+//    {PA012,          0,     12,          GPIO_PIN_INPUT },
+//    {PA013,          0,     13,          GPIO_PIN_INPUT },
+//    {PA014,          0,     14,          GPIO_PIN_INPUT },
+//    {PB00,           1,     0,           GPIO_PIN_INPUT },
+//    {PB01,           1,     1,           GPIO_PIN_INPUT },
+//    {PB02,           1,     2,           GPIO_PIN_INPUT },
+//    {PB03,           1,     3,           GPIO_PIN_INPUT },
+//    {PB04,           1,     4,           GPIO_PIN_INPUT },
+//    {PB05,           1,     5,           GPIO_PIN_INPUT },
+//    {0xFFFFFFFFU,   0xFFU, 0xFFU,        0xFFFFFFFFU   },
+//};
 
-const csi_pinmap_t adc_pinmap[] = {
-    {PB01,           0,     1,           PB01_ADC_AIN0 },
-    {PA00,           0,     2,           PA00_ADC_AIN1 },
-    {PA01,           0,     3,           PA01_ADC_AIN2 },
-    {PA03,           0,     4,           PA03_ADC_AIN3 },
-	{PA05,           0,     5,           PA05_ADC_AIN4 },
-	{PA06,           0,     6,           PA06_ADC_AIN5 },
-	{PA07,           0,     7,           PA07_ADC_AIN6 },
-	{PB02,           0,     8,           PB02_ADC_AIN7 },
-	{PB03,           0,     9,           PB03_ADC_AIN8 },
-	{PA08,           0,     10,          PA08_ADC_AIN9 },
-	{PA09,           0,     11,          PA09_ADC_AIN10 },
-	{PA010,          0,     12,          PA010_ADC_AIN11 },
-	{PA011,          0,     13,          PA011_ADC_AIN12 },
-	{PA012,          0,     14,          PA012_ADC_AIN13 },
-	{PA013,          0,     15,          PA013_ADC_AIN14 },
-	{PB00,           0,     16,          PB00_ADC_AIN15 },
-    {0xFFFFFFFFU,   0xFFU, 0xFFU,       0xFFFFFFFFU },
-};
+//const csi_pinmap_t adc_pinmap[] = {
+//    {PB01,           0,     1,           PB01_ADC_AIN0 },
+//    {PA00,           0,     2,           PA00_ADC_AIN1 },
+//    {PA01,           0,     3,           PA01_ADC_AIN2 },
+//    {PA03,           0,     4,           PA03_ADC_AIN3 },
+//	{PA05,           0,     5,           PA05_ADC_AIN4 },
+//	{PA06,           0,     6,           PA06_ADC_AIN5 },
+//	{PA07,           0,     7,           PA07_ADC_AIN6 },
+//	{PB02,           0,     8,           PB02_ADC_AIN7 },
+//	{PB03,           0,     9,           PB03_ADC_AIN8 },
+//	{PA08,           0,     10,          PA08_ADC_AIN9 },
+//	{PA09,           0,     11,          PA09_ADC_AIN10 },
+//	{PA010,          0,     12,          PA010_ADC_AIN11 },
+//	{PA011,          0,     13,          PA011_ADC_AIN12 },
+//	{PA012,          0,     14,          PA012_ADC_AIN13 },
+//	{PA013,          0,     15,          PA013_ADC_AIN14 },
+//	{PB00,           0,     16,          PB00_ADC_AIN15 },
+//    {0xFFFFFFFFU,   0xFFU, 0xFFU,       0xFFFFFFFFU },
+//};
 
-const csi_pinmap_t uart_pinmap[] = {
-    {PA01,            0,     PIN_UART_RX,    PA01_UART0_RX  },
-    {PA00,            0,     PIN_UART_TX,    PA00_UART0_TX  },
-	{PA05,            0,     PIN_UART_RX,    PA05_UART0_RX  },
-    {PA012,           0,     PIN_UART_TX,    PA012_UART0_TX  },
-	{PB02,            0,     PIN_UART_RX,    PB02_GROUP1_UART0_RX  },
-    {PB03,            0,     PIN_UART_TX,    PB03_GROUP1_UART0_TX  },
-    {PA04,            1,     PIN_UART_TX,    PA04_UART1_RX  },
-    {PA03,            1,     PIN_UART_RX,    PA03_UART1_TX  },
-    {PA013,           1,     PIN_UART_TX,    PA013_UART1_RX  },
-    {PB00,            1,     PIN_UART_TX,    PB00_UART1_TX  },
-    {PA015,           1,     PIN_UART_RX,    PA015_UART1_RX  },
-    {PA014,           1,     PIN_UART_TX,    PA014_UART1_TX  },
-    {PA00,            2,     PIN_UART_RX,    PA00_UART2_RX  },
-    {PA01,            2,     PIN_UART_TX,    PA01_UART2_TX  },
-    {PA07,            2,     PIN_UART_RX,    PA07_UART2_RX  },
-    {PA06,            2,     PIN_UART_TX,    PA06_UART2_TX  },
-    {PB05,            2,     PIN_UART_RX,    PB05_UART2_RX },
-    {PB04,            2,     PIN_UART_TX,    PB04_UART2_TX },
-    {0xFFFFFFFFU, 0xFFU, 0xFFU,      0xFFFFFFFFU  },
-};
+//const csi_pinmap_t uart_pinmap[] = {
+//    {PA01,            0,     PIN_UART_RX,    PA01_UART0_RX  },
+//    {PA00,            0,     PIN_UART_TX,    PA00_UART0_TX  },
+//	{PA05,            0,     PIN_UART_RX,    PA05_UART0_RX  },
+//    {PA012,           0,     PIN_UART_TX,    PA012_UART0_TX  },
+//	{PB02,            0,     PIN_UART_RX,    PB02_GROUP1_UART0_RX  },
+//    {PB03,            0,     PIN_UART_TX,    PB03_GROUP1_UART0_TX  },
+//    {PA04,            1,     PIN_UART_TX,    PA04_UART1_RX  },
+//    {PA03,            1,     PIN_UART_RX,    PA03_UART1_TX  },
+//    {PA013,           1,     PIN_UART_TX,    PA013_UART1_RX  },
+//    {PB00,            1,     PIN_UART_TX,    PB00_UART1_TX  },
+//    {PA015,           1,     PIN_UART_RX,    PA015_UART1_RX  },
+//    {PA014,           1,     PIN_UART_TX,    PA014_UART1_TX  },
+//    {PA00,            2,     PIN_UART_RX,    PA00_UART2_RX  },
+//    {PA01,            2,     PIN_UART_TX,    PA01_UART2_TX  },
+//    {PA07,            2,     PIN_UART_RX,    PA07_UART2_RX  },
+//    {PA06,            2,     PIN_UART_TX,    PA06_UART2_TX  },
+//    {PB05,            2,     PIN_UART_RX,    PB05_UART2_RX },
+//    {PB04,            2,     PIN_UART_TX,    PB04_UART2_TX },
+//    {0xFFFFFFFFU, 0xFFU, 0xFFU,      0xFFFFFFFFU  },
+//};
 
-const csi_pinmap_t iic_pinmap[] = {
-	{PA00,            0, 	PIN_IIC_SDA, 	PA00_I2C_SDA },
-    {PA01,            0, 	PIN_IIC_SCL, 	PA01_I2C_SCL },
-	{PA03,            0, 	PIN_IIC_SDA, 	PA03_I2C_SDA },
-	{PA04,            0, 	PIN_IIC_SCL, 	PA04_I2C_SCL },
-	{PA07,            0, 	PIN_IIC_SDA, 	PA03_I2C_SDA },
-    {PB02,            0, 	PIN_IIC_SCL, 	PA04_I2C_SCL },
-	{PA013,           0, 	PIN_IIC_SDA, 	PA013_I2C_SDA },
-    {PB00,            0, 	PIN_IIC_SCL, 	PB00_I2C_SCL },
-	{PA014,           0, 	PIN_IIC_SDA, 	PA014_I2C_SDA },
-    {PA015,           0, 	PIN_IIC_SCL, 	PA015_I2C_SCL },
-	{PA06,            0, 	PIN_IIC_SCL, 	PA06_I2C_SCL },
-    {0xFFFFFFFFU, 0xFFU,       0xFFU,   0xFFFFFFFFU},
-};
+//const csi_pinmap_t iic_pinmap[] = {
+//	{PA00,            0, 	PIN_IIC_SDA, 	PA00_I2C_SDA },
+//    {PA01,            0, 	PIN_IIC_SCL, 	PA01_I2C_SCL },
+//	{PA03,            0, 	PIN_IIC_SDA, 	PA03_I2C_SDA },
+//	{PA04,            0, 	PIN_IIC_SCL, 	PA04_I2C_SCL },
+//	{PA07,            0, 	PIN_IIC_SDA, 	PA03_I2C_SDA },
+//    {PB02,            0, 	PIN_IIC_SCL, 	PA04_I2C_SCL },
+//	{PA013,           0, 	PIN_IIC_SDA, 	PA013_I2C_SDA },
+//    {PB00,            0, 	PIN_IIC_SCL, 	PB00_I2C_SCL },
+//	{PA014,           0, 	PIN_IIC_SDA, 	PA014_I2C_SDA },
+//    {PA015,           0, 	PIN_IIC_SCL, 	PA015_I2C_SCL },
+//	{PA06,            0, 	PIN_IIC_SCL, 	PA06_I2C_SCL },
+//    {0xFFFFFFFFU, 0xFFU,       0xFFU,   0xFFFFFFFFU},
+//};
 
-const csi_pinmap_t spi_pinmap[] = {
-    {PA06,            0,    PIN_SPI_CS,    	PA06_SPI_NSS  },
-    {PA09,            0,    PIN_SPI_SCK,   	PA09_SPI_SCK  },
-    {PA010,           0,    PIN_SPI_MOSI,   PA010_SPI_MOSI },
-    {PA011,           0,    PIN_SPI_MISO,   PA011_SPI_MISO },
-	{PB05,            0,    PIN_SPI_CS,    	PB05_SPI_NSS  },
-    {PB04,            0,    PIN_SPI_SCK,   	PB04_SPI_SCK  },
-    {PA014,           0,    PIN_SPI_MOSI,   PA014_SPI_MOSI },
-    {PA015,           0,    PIN_SPI_MISO,   PA015_SPI_MISO },
-	{PA07,            0,    PIN_SPI_CS,    	PA07_GROUP0_SPI_NSS  },
-    {PA06,            0,    PIN_SPI_SCK,   	PA06_GROUP0_SPI_SCK  },
-    {PA04,            0,    PIN_SPI_MOSI,   PA04_GROUP0_SPI_MOSI },
-    {PA05,            0,    PIN_SPI_MISO,   PA05_GROUP0_SPI_MISO },
-	{PB02,            0,    PIN_SPI_SCK,   	PB02_SPI_SCK  },
-    {PB03,            0,    PIN_SPI_MOSI,   PB03_SPI_MOSI },
-    {PA08,            0,    PIN_SPI_MISO,   PA08_SPI_MISO },
-    {0xFFFFFFFFU, 0xFFU,        0xFFU,    0xFFFFFFFFU},
-};
+//const csi_pinmap_t spi_pinmap[] = {
+//    {PA06,            0,    PIN_SPI_CS,    	PA06_SPI_NSS  },
+//    {PA09,            0,    PIN_SPI_SCK,   	PA09_SPI_SCK  },
+//    {PA010,           0,    PIN_SPI_MOSI,   PA010_SPI_MOSI },
+//    {PA011,           0,    PIN_SPI_MISO,   PA011_SPI_MISO },
+//	{PB05,            0,    PIN_SPI_CS,    	PB05_SPI_NSS  },
+//    {PB04,            0,    PIN_SPI_SCK,   	PB04_SPI_SCK  },
+//    {PA014,           0,    PIN_SPI_MOSI,   PA014_SPI_MOSI },
+//    {PA015,           0,    PIN_SPI_MISO,   PA015_SPI_MISO },
+//	{PA07,            0,    PIN_SPI_CS,    	PA07_GROUP0_SPI_NSS  },
+//    {PA06,            0,    PIN_SPI_SCK,   	PA06_GROUP0_SPI_SCK  },
+//    {PA04,            0,    PIN_SPI_MOSI,   PA04_GROUP0_SPI_MOSI },
+//    {PA05,            0,    PIN_SPI_MISO,   PA05_GROUP0_SPI_MISO },
+//	{PB02,            0,    PIN_SPI_SCK,   	PB02_SPI_SCK  },
+//    {PB03,            0,    PIN_SPI_MOSI,   PB03_SPI_MOSI },
+//    {PA08,            0,    PIN_SPI_MISO,   PA08_SPI_MISO },
+//    {0xFFFFFFFFU, 0xFFU,        0xFFU,    0xFFFFFFFFU},
+//};
 
-const csi_pinmap_t cnta_pinmap[] = {
-    {PB01,            0,   0,    	PB01_CNTA_BUZ },
-    {PA05,            0,   0,   	PA05_CNTA_BUZ },
-	{PA011,           0,   0,   	PA011_CNTA_BUZ },
-    {0xFFFFFFFFU, 0xFFU,        0xFFU,    0xFFFFFFFFU},
-};
+//const csi_pinmap_t cnta_pinmap[] = {
+//    {PB01,            0,   0,    	PB01_CNTA_BUZ },
+//    {PA05,            0,   0,   	PA05_CNTA_BUZ },
+//	{PA011,           0,   0,   	PA011_CNTA_BUZ },
+//    {0xFFFFFFFFU, 0xFFU,        0xFFU,    0xFFFFFFFFU},
+//};
 
-const csi_pinmap_t bt_pinmap[] = {
-	{PA00,            0,   0,    	PA00_BT0_OUT },
-	{PA02,            0,   0,    	PA02_BT0_OUT },
-	{PA05,            0,   0,    	PA05_BT0_OUT },
-	{PA011,           0,   0,    	PA011_BT0_OUT },
-	{PA013,           0,   0,    	PA013_BT0_OUT },
-	{PA015,           0,   0,    	PA015_BT0_OUT },
-	{PB02,            0,   0,    	PB02_BT0_OUT },
-    {PB05,            0,   0,    	PB05_BT0_OUT },
-	{PA01,            1,   0,   	PA01_BT1_OUT },
-	{PA06,            1,   0,   	PA06_BT1_OUT },
-	{PA08,            0,   0,    	PA08_BT1_OUT },
-	{PA012,           0,   0,    	PA012_BT1_OUT },
-	{PA014,           1,   0,   	PA014_BT1_OUT },
-	{PB00,            1,   0,   	PB00_BT1_OUT },
-    {PB04,            1,   0,   	PB04_BT1_OUT },
-    {0xFFFFFFFFU, 0xFFU,        0xFFU,    0xFFFFFFFFU},
-};
+//const csi_pinmap_t bt_pinmap[] = {
+//	{PA00,            0,   0,    	PA00_BT0_OUT },
+//	{PA02,            0,   0,    	PA02_BT0_OUT },
+//	{PA05,            0,   0,    	PA05_BT0_OUT },
+//	{PA011,           0,   0,    	PA011_BT0_OUT },
+//	{PA013,           0,   0,    	PA013_BT0_OUT },
+//	{PA015,           0,   0,    	PA015_BT0_OUT },
+//	{PB02,            0,   0,    	PB02_BT0_OUT },
+//    {PB05,            0,   0,    	PB05_BT0_OUT },
+//	{PA01,            1,   0,   	PA01_BT1_OUT },
+//	{PA06,            1,   0,   	PA06_BT1_OUT },
+//	{PA08,            0,   0,    	PA08_BT1_OUT },
+//	{PA012,           0,   0,    	PA012_BT1_OUT },
+//	{PA014,           1,   0,   	PA014_BT1_OUT },
+//	{PB00,            1,   0,   	PB00_BT1_OUT },
+//    {PB04,            1,   0,   	PB04_BT1_OUT },
+//    {0xFFFFFFFFU, 0xFFU,        0xFFU,    0xFFFFFFFFU},
+//};
 
-const csi_pinmap_t tkey_pinmap[] = {
-    {PB01,            0,   0,    	PB01_TKEY_CH0 },
-    {PA00,            0,   1,   	PA00_TKEY_CH1 },
-	{PA01,            0,   2,    	PA01_TKEY_CH2 },
-    {PA02,            0,   3,   	PA02_TKEY_CH3 },
-	{PA03,            0,   4,    	PA03_TKEY_CH4 },
-    {PA04,            0,   5,   	PA04_TKEY_CH5 },
-	{PB02,            0,   6,    	PB02_TKEY_CH6 },
-	{PB03,            0,   7,    	PB03_TKEY_CH7 },
-	{PA08,            0,   8,   	PA08_TKEY_CH8 },
-	{PA09,            0,   9,    	PA09_TKEY_CH9 },
-	{PA010,           0,   10,   	PA010_TKEY_CH10 },
-	{PA011,           0,   11,    	PA011_TKEY_CH11 },
-	{PA012,           0,   12,   	PA012_TKEY_CH12 },
-	{PA013,           0,   13,    	PA013_TKEY_CH13 },
-	{PB00,            0,   14,    	PB00_TKEY_CH14 },
-	{PB04,            0,   15,    	PB04_TKEY_CH15 },
-	{PB05,            0,   16,    	PB05_TKEY_CH16 },
-    {0xFFFFFFFFU, 0xFFU,        0xFFU,    0xFFFFFFFFU},
-};
+//const csi_pinmap_t tkey_pinmap[] = {
+//    {PB01,            0,   0,    	PB01_TKEY_CH0 },
+//    {PA00,            0,   1,   	PA00_TKEY_CH1 },
+//	{PA01,            0,   2,    	PA01_TKEY_CH2 },
+//    {PA02,            0,   3,   	PA02_TKEY_CH3 },
+//	{PA03,            0,   4,    	PA03_TKEY_CH4 },
+//    {PA04,            0,   5,   	PA04_TKEY_CH5 },
+//	{PB02,            0,   6,    	PB02_TKEY_CH6 },
+//	{PB03,            0,   7,    	PB03_TKEY_CH7 },
+//	{PA08,            0,   8,   	PA08_TKEY_CH8 },
+//	{PA09,            0,   9,    	PA09_TKEY_CH9 },
+//	{PA010,           0,   10,   	PA010_TKEY_CH10 },
+//	{PA011,           0,   11,    	PA011_TKEY_CH11 },
+//	{PA012,           0,   12,   	PA012_TKEY_CH12 },
+//	{PA013,           0,   13,    	PA013_TKEY_CH13 },
+//	{PB00,            0,   14,    	PB00_TKEY_CH14 },
+//	{PB04,            0,   15,    	PB04_TKEY_CH15 },
+//	{PB05,            0,   16,    	PB05_TKEY_CH16 },
+//    {0xFFFFFFFFU, 0xFFU,        0xFFU,    0xFFFFFFFFU},
+//};
 
 
 /*
