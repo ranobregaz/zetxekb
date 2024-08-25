@@ -159,21 +159,21 @@ typedef enum
 }bt_cntrld_e;
 
 typedef enum{
-	BT_SYNCEN0			= 0,
+	BT_SYNCEN0		= 0,
 	BT_SYNCEN1		
 }bt_evtrg_in_e;
 /******************************************************************************
 * EVTRG : BT EVTRG Register
 ******************************************************************************/
-#define	BT_TRGSRC_POS	(0)
-#define	BT_TRGSRC_MSK	(0x0Ful << BT_TRGSRC_POS)
+#define	BT_EVTRG_SEL_POS	(0)
+#define	BT_EVTRG_SEL_MSK	(0x0Ful << BT_EVTRG_SEL_POS)
 typedef enum
 {
-	BT_TRGSRC_DIS	= 0,  	       
-	BT_TRGSRC_PEND,	
-	BT_TRGSRC_CMP,	
-	BT_TRGSRC_OVF         
-}bt_evtrg_src_e;
+	BT_EVTRG_DIS	= 0,  	       
+	BT_EVTRG_PEND,	
+	BT_EVTRG_CMP,	
+	BT_EVTRG_OVF         
+}bt_evtrg_sel_e;
 
 #define	BT_TRGOE_POS	(20)
 #define	BT_TRGOE_MSK	(0x01ul << BT_TRGOE_POS)
@@ -188,7 +188,6 @@ typedef enum
 ******************************************************************************/
 typedef enum
 {
-	BT_NONE_INT		= 	(0x00ul << 0), 		//none int
 	BT_PEND_INT    	=	(0x01ul << 0), 
 	BT_CMP_INT    	=	(0x01ul << 1),     
 	BT_OVF_INT     	=	(0x01ul << 2),  
@@ -282,6 +281,11 @@ static inline void csp_bt_set_cnt(csp_bt_t *ptBtBase, uint16_t hwCnt)
 {
 	ptBtBase->CNT = hwCnt;
 }
+static inline void csp_bt_set_evtrg(csp_bt_t *ptBtBase, uint32_t wEvTrg)
+{
+	ptBtBase->EVTRG = wEvTrg;
+}
+
 static inline uint16_t csp_bt_get_pscr(csp_bt_t *ptBtBase)
 {
 	return (uint16_t)(ptBtBase->PSCR & BT_PSCR_MSK);
@@ -294,6 +298,7 @@ static inline uint16_t csp_bt_get_cnt(csp_bt_t *ptBtBase)
 {
 	return (uint16_t)ptBtBase->CNT;
 }
+
 //
 static inline void csp_bt_clr_isr(csp_bt_t *ptBtBase, bt_int_e eIntNum)
 {
@@ -314,7 +319,6 @@ static inline void csp_bt_set_int(csp_bt_t *ptBtBase, bt_int_e eBtInt,bool bEnab
 	else
 		ptBtBase->IMCR &= ~eBtInt; 
 }
-
 //
 static inline void csp_bt_rearm_sync(csp_bt_t *ptBtBase, bt_evtrg_in_e eTrgIn)
 {
