@@ -26,41 +26,6 @@ const uint8_t  byExiNumMap[] =
 	EXI0_IRQn, EXI1_IRQn, EXI2_IRQn, EXI3_IRQn, EXI4_IRQn,
 };
 
-//static uint8_t s_byPinNum = 16;			//GPIO(A0/B0) pin num
-
-/** \brief initialize gpio data structure
- * 
- *  \param[in] ptGpioBase: GPIO port handle
- *  \param[in] port_idx: gpio index
- *  \return error code \ref csi_error_t
- */  
-//csi_error_t csi_gpio_init(csp_gpio_t *ptGpioBase, uint32_t port_idx)
-//{
-//    //CSI_PARAM_CHK(gpio, CSI_ERROR);
-//
-//    csi_error_t ret = CSI_OK;
-//
-////    if (target_get(DEV_EXI_TAG, port_idx, &gpio->dev) != CSI_OK) {
-////        ret = CSI_ERROR;
-////    }
-////
-////	s_byGpioNum = 16;
-//
-//    return ret;
-//}
-/** \brief de-initialize gpio interface
- * 
- *  \param[in] gpio: GPIO port handle
- *  \return error code \ref csi_error_t
- */ 
-//void csi_gpio_uninit(csp_gpio_t *ptGpioBase)
-//{
-//   // CSI_PARAM_CHK_NORETVAL(gpio);
-//	
-////	csp_gpio_t *reg = (csp_gpio_t *)HANDLE_REG_BASE(gpio);
-////	csp_gpio_default_Init(reg);
-////	memset(gpio, 0, sizeof(csi_gpio_t));
-//} 
 /** \brief config gpio direction
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
