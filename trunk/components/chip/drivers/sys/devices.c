@@ -13,7 +13,7 @@
 #include <soc.h>
 #include <sys_clk.h>
 #include <drv/uart.h>
-#include <drv/timer.h>
+#include <drv/bt.h>
 #include <drv/dma.h>
 #include <drv/iic.h>
 #include <drv/rtc.h>
