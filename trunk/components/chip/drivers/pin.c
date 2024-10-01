@@ -14,12 +14,13 @@
 #include <drv/pin.h>
 
 /* Private macro------------------------------------------------------*/
+/*
 #define	CSI_PINNAME_CHK(ePinName, err)		\
 	do{										\
 		if(ePinName > PB05)					\
 			return err;						\
 	}while(0)
-
+*/
 /* externs function---------------------------------------------------*/
 extern void gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp);
 extern void exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg);
@@ -58,37 +59,35 @@ static unsigned int *get_pin_name_addr(pin_name_e ePinName)
 csi_error_t csi_pin_set_mux(pin_name_e ePinName, pin_func_e ePinFunc)
 {
     csi_error_t ret = CSI_OK;
-	csp_gpio_t *gpio_base = NULL;
-	
-	CSI_PINNAME_CHK(ePinName, CSI_ERROR);
+	csp_gpio_t *ptGpioBase = NULL;
 	
 	//IO REMAP
 	if(ePinFunc == IOMAP)			
 	{
-		csp_syscon_t *sys_base = (csp_syscon_t *)APB_SYS_BASE;
+		csp_syscon_t *ptSysBase = (csp_syscon_t *)APB_SYS_BASE;
 		if(ePinName < PA08)
-			sys_base->IOMAP0 = (sys_base->IOMAP0 & ~(0x0F << 4*ePinName)) | (ePinName << 4*ePinName);
+			ptSysBase->IOMAP0 = (ptSysBase->IOMAP0 & ~(0x0F << 4*ePinName)) | (ePinName << 4*ePinName);
 		else 
 		{
 			if(ePinName < PB02)
-				sys_base->IOMAP1 = (sys_base->IOMAP1 & ~(0x0F << 4*(ePinName - 6))) |  ((ePinName - 6) << 4*(ePinName - 6));
+				ptSysBase->IOMAP1 = (ptSysBase->IOMAP1 & ~(0x0F << 4*(ePinName - 6))) |  ((ePinName - 6) << 4*(ePinName - 6));
 			else 
-				sys_base->IOMAP1 = (sys_base->IOMAP1 & ~(0x0F << 4*(ePinName - 18))) |  ((ePinName - 18) << 4*(ePinName - 18));
+				ptSysBase->IOMAP1 = (ptSysBase->IOMAP1 & ~(0x0F << 4*(ePinName - 18))) |  ((ePinName - 18) << 4*(ePinName - 18));
 		}
 	}
 	
 	if(ePinName > PA015)
 	{
-		gpio_base = (csp_gpio_t *)APB_GPIOB0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOB0_BASE;
 		ePinName = ePinName - 16;
 	}
 	else
-		gpio_base = (csp_gpio_t *)APB_GPIOA0_BASE;	
+		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;	
 	
 	if(ePinName < 8)
-		gpio_base->CONLR =(gpio_base->CONLR & ~(0xF << 4*ePinName)) | (ePinFunc << 4*ePinName);
+		ptGpioBase->CONLR =(ptGpioBase->CONLR & ~(0xF << 4*ePinName)) | (ePinFunc << 4*ePinName);
 	else
-		gpio_base->CONHR =(gpio_base->CONHR & ~(0xF << 4*(ePinName-8))) | (ePinFunc << 4*(ePinName-8));	
+		ptGpioBase->CONHR =(ptGpioBase->CONHR & ~(0xF << 4*(ePinName-8))) | (ePinFunc << 4*(ePinName-8));	
 	
     return ret;
 }
@@ -100,22 +99,20 @@ csi_error_t csi_pin_set_mux(pin_name_e ePinName, pin_func_e ePinFunc)
 pin_func_e csi_pin_get_mux(pin_name_e ePinName)
 {
     uint8_t ret = 0x0f;
-	csp_gpio_t *gpio_base = NULL;
-	
-	CSI_PINNAME_CHK(ePinName, (pin_func_e)ret);
+	csp_gpio_t *ptGpioBase = NULL;
 	
 	if(ePinName > PA015)
 	{
-		gpio_base = (csp_gpio_t *)APB_GPIOB0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOB0_BASE;
 		ePinName = ePinName - 16;
 	}
 	else
-		gpio_base = (csp_gpio_t *)APB_GPIOA0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;
 		
 	if(ePinName < 8)
-		ret = (((gpio_base->CONLR) >> 4 * ePinName) & 0x0Ful);
+		ret = (((ptGpioBase->CONLR) >> 4 * ePinName) & 0x0Ful);
 	else
-		ret = (((gpio_base->CONHR) >> 4 * (ePinName - 8)) & 0x0Ful);
+		ret = (((ptGpioBase->CONHR) >> 4 * (ePinName - 8)) & 0x0Ful);
 		
     return (pin_func_e)ret;
 }
@@ -125,31 +122,29 @@ pin_func_e csi_pin_get_mux(pin_name_e ePinName)
  *  \param[in] ePullMode: gpio pull mode; pull none/pull up/pull down
  *  \return error code \ref csi_error_t
  */  
-csi_error_t csi_pin_pull_mode(pin_name_e ePinName, csi_pin_pull_mode_e ePullMode)
+csi_error_t csi_pin_pull_mode(pin_name_e ePinName, csi_gpio_pull_mode_e ePullMode)
 {
     csi_error_t ret = CSI_OK;
-	csp_gpio_t *gpio_base = NULL;
-	
-	CSI_PINNAME_CHK(ePinName, CSI_ERROR);
+	csp_gpio_t *ptGpioBase = NULL;
 	
 	if(ePinName > PA015)
 	{
-		gpio_base = (csp_gpio_t *)APB_GPIOB0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOB0_BASE;
 		ePinName = ePinName - 16;
 	}
 	else
-		gpio_base = (csp_gpio_t *)APB_GPIOA0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;
 		
 	switch(ePullMode)
 	{
 		case GPIO_PULLNONE:
-			csp_gpio_pullnone(gpio_base, ePinName);			//pull none
+			csp_gpio_pullnone(ptGpioBase, ePinName);			//pull none
 			break;
 		case GPIO_PULLUP:
-			csp_gpio_pullup(gpio_base, ePinName);			//pull up
+			csp_gpio_pullup(ptGpioBase, ePinName);			//pull up
 			break;
 		case GPIO_PULLDOWN:
-			csp_gpio_pulldown(gpio_base, ePinName);			//pull down
+			csp_gpio_pulldown(ptGpioBase, ePinName);			//pull down
 			break;
 		default:
 			ret = CSI_ERROR;
@@ -164,22 +159,20 @@ csi_error_t csi_pin_pull_mode(pin_name_e ePinName, csi_pin_pull_mode_e ePullMode
  *  \param[in] eSpeed: gpio pin speed
  *  \return error code \ref csi_error_t
  */  
-csi_error_t csi_pin_speed(pin_name_e ePinName, csi_pin_speed_e eSpeed)
+csi_error_t csi_pin_speed(pin_name_e ePinName, csi_gpio_speed_e eSpeed)
 {
 	csi_error_t ret = CSI_OK;
-	csp_gpio_t *gpio_base = NULL;
-	
-	CSI_PINNAME_CHK(ePinName, CSI_ERROR);
+	csp_gpio_t *ptGpioBase = NULL;
 	
 	if(ePinName > PA015)
 	{
-		gpio_base = (csp_gpio_t *)APB_GPIOB0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOB0_BASE;
 		ePinName = ePinName -16;
 	}
 	else
-		gpio_base = (csp_gpio_t *)APB_GPIOA0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;
 	
-	csp_gpio_speed_set(gpio_base, ePinName, (uint8_t)eSpeed);
+	csp_gpio_speed_set(ptGpioBase, ePinName, (uint8_t)eSpeed);
 	
 	return ret;
 }
@@ -190,26 +183,23 @@ csi_error_t csi_pin_speed(pin_name_e ePinName, csi_pin_speed_e eSpeed)
  *  \param[in] eDrive: gpio pin drive level, week/strong = 0/1
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_pin_drive(pin_name_e ePinName, csi_pin_drive_e eDrive)
+csi_error_t csi_pin_drive(pin_name_e ePinName, csi_gpio_drive_e eDrive)
 {
 #if defined(IS_CHIP_102) || defined(IS_CHIP_1022)
 	return CSI_ERROR;
 #endif
 	csi_error_t ret = CSI_OK;
-	csp_gpio_t *gpio_base = NULL;
-
-	
-	CSI_PINNAME_CHK(ePinName, CSI_ERROR);
+	csp_gpio_t *ptGpioBase = NULL;
 	
 	if(ePinName > PA015)
 	{
-		gpio_base = (csp_gpio_t *)APB_GPIOB0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOB0_BASE;
 		ePinName = ePinName -16;
 	}
 	else
-		gpio_base = (csp_gpio_t *)APB_GPIOA0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;
 	
-	csp_gpio_drv_set(gpio_base, ePinName, (uint8_t)eDrive);
+	csp_gpio_drv_set(ptGpioBase, ePinName, (uint8_t)eDrive);
 		
     return ret;
 }
@@ -220,30 +210,29 @@ csi_error_t csi_pin_drive(pin_name_e ePinName, csi_pin_drive_e eDrive)
  *  \param[in] eInputMode:  INPUT_CMOS/INPUT_TTL
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_pin_input_mode(pin_name_e ePinName, csi_pin_input_mode_e eInputMode)
+csi_error_t csi_pin_input_mode(pin_name_e ePinName, csi_gpio_input_mode_e eInputMode)
 {
 #if defined(IS_CHIP_102) || defined(IS_CHIP_1021) || defined(IS_CHIP_1022) || defined(IS_CHIP_S003)
 	return CSI_ERROR;
 #endif
 	csi_error_t ret = CSI_OK;
-	csp_gpio_t *gpio_base = NULL;
+	csp_gpio_t *ptGpioBase = NULL;
 	
-	CSI_PINNAME_CHK(ePinName, CSI_ERROR);
 	if(ePinName > PA015)
 	{
-		gpio_base = (csp_gpio_t *)APB_GPIOB0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOB0_BASE;
 		ePinName = ePinName -16;
 	}
 	else
-		gpio_base = (csp_gpio_t *)APB_GPIOA0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;
 	
 	switch (eInputMode)
 	{
-		case (GPIO_INPUT_TTL2):	csp_gpio_ccm_ttl2(gpio_base, ePinName);
+		case (GPIO_INPUT_TTL2):	csp_gpio_ccm_ttl2(ptGpioBase, ePinName);
 			break;
-		case (GPIO_INPUT_TTL1): csp_gpio_ccm_ttl1(gpio_base, ePinName);
+		case (GPIO_INPUT_TTL1): csp_gpio_ccm_ttl1(ptGpioBase, ePinName);
 			break;
-		case (GPIO_INPUT_CMOS):	csp_gpio_ccm_cmos(gpio_base, ePinName);
+		case (GPIO_INPUT_CMOS):	csp_gpio_ccm_cmos(ptGpioBase, ePinName);
 			break;
 		default:
 			ret = CSI_ERROR;
@@ -258,28 +247,26 @@ csi_error_t csi_pin_input_mode(pin_name_e ePinName, csi_pin_input_mode_e eInputM
  *  \param[in] eOutMode: push-pull/open drain
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_pin_output_mode(pin_name_e ePinName, csi_pin_output_mode_e eOutMode)
+csi_error_t csi_pin_output_mode(pin_name_e ePinName, csi_gpio_output_mode_e eOutMode)
 {
 	csi_error_t ret = CSI_OK;
-	csp_gpio_t *gpio_base = NULL;
-	
-	CSI_PINNAME_CHK(ePinName, CSI_ERROR);
+	csp_gpio_t *ptGpioBase = NULL;
 	
 	if(ePinName > PA015)
 	{
-		gpio_base = (csp_gpio_t *)APB_GPIOB0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOB0_BASE;
 		ePinName = ePinName -16;
 	}
 	else
-		gpio_base = (csp_gpio_t *)APB_GPIOA0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;
 		
 	switch(eOutMode)
 	{
 		case GPIO_PUSH_PULL:
-			csp_gpio_opendrain_dis(gpio_base, ePinName);	//push-pull mode
+			csp_gpio_opendrain_dis(ptGpioBase, ePinName);	//push-pull mode
 			break;
 		case GPIO_OPEN_DRAIN:
-			csp_gpio_opendrain_en(gpio_base, ePinName);		//open drain mode 
+			csp_gpio_opendrain_en(ptGpioBase, ePinName);		//open drain mode 
 			break;
 		default:
 			ret = CSI_ERROR;
@@ -298,7 +285,6 @@ uint8_t csi_pin_get_num(pin_name_e ePinName)
 {
     uint8_t ret = 44;
 	unsigned int *pin_mess = NULL;
-	CSI_PINNAME_CHK(ePinName, (pin_func_e)ret);
 	
 	pin_mess = get_pin_name_addr(ePinName);
 	ret = (uint8_t)pin_mess[1];					//gpio pin number
@@ -312,10 +298,8 @@ uint8_t csi_pin_get_num(pin_name_e ePinName)
  *  \param[in] eTrgEdge: rising edge; falling edge;	both edge;
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_pin_irq_mode(pin_name_e ePinName, csi_exi_grp_e eExiGrp, csi_pin_irq_mode_e eTrgEdge)
+csi_error_t csi_pin_irq_mode(pin_name_e ePinName, csi_exi_grp_e eExiGrp, csi_gpio_irq_mode_e eTrgEdge)
 {
-	CSI_PINNAME_CHK(ePinName, CSI_ERROR);
-	
 	csi_error_t ret = CSI_OK;
 	csp_gpio_t *ptGpioBase = NULL;
 	
@@ -337,7 +321,7 @@ csi_error_t csi_pin_irq_mode(pin_name_e ePinName, csi_exi_grp_e eExiGrp, csi_pin
 		
 	return ret;
 }
-/** \brief pinirq enable
+/** \brief pin irq enable
  * 
  *  \param[in] ePinName: pin mask,0x0001~0xffff
  *  \param[in] bEnable: true or false
@@ -345,9 +329,6 @@ csi_error_t csi_pin_irq_mode(pin_name_e ePinName, csi_exi_grp_e eExiGrp, csi_pin
  */ 
 csi_error_t csi_pin_irq_enable(pin_name_e ePinName, csi_exi_grp_e eExiGrp, bool bEnable)
 {
-
-	CSI_PINNAME_CHK(ePinName, CSI_ERROR);
-	
 	csp_gpio_t *ptGpioBase = NULL;
 	uint32_t byIrqNum = EXI0_IRQn;
 	
@@ -397,31 +378,73 @@ csi_error_t csi_pin_irq_enable(pin_name_e ePinName, csi_exi_grp_e eExiGrp, bool 
 	
 	return CSI_OK;
 }
-/** \brief  gpio toggle
+/** \brief  gpio pin toggle
  * 
  *  \param[in] ePinName: gpio pin name
  *  \return error code \ref csi_error_t
  */
 csi_error_t csi_pin_toggle(pin_name_e ePinName)
 {
-	CSI_PINNAME_CHK(ePinName, CSI_ERROR);
-	
-	csp_gpio_t *gpio_base = NULL;
+	csp_gpio_t *ptGpioBase = NULL;
 	uint32_t wDat;
 	
 	if(ePinName > PA015)
 	{
-		gpio_base = (csp_gpio_t *)APB_GPIOB0_BASE;
+		ptGpioBase = (csp_gpio_t *)APB_GPIOB0_BASE;
 		ePinName = ePinName -16;
 	}
 	else
-		gpio_base = (csp_gpio_t *)APB_GPIOA0_BASE;				//pin
+		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;				
 	
-	wDat = (gpio_base->ODSR >> ePinName) & 0x01;
+	wDat = (ptGpioBase->ODSR >> ePinName) & 0x01;
 	if(wDat) 
-		gpio_base->CODR = (1ul << ePinName);
+		ptGpioBase->CODR = (1ul << ePinName);
 	else
-		gpio_base->SODR = (1ul << ePinName);
+		ptGpioBase->SODR = (1ul << ePinName);
+	
+	return CSI_OK;
+}
+
+/** \brief  gpio pin set high(output = 1)
+ * 
+ *  \param[in] ePinName: gpio pin name
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_pin_set_high(pin_name_e ePinName)
+{
+	csp_gpio_t *ptGpioBase = NULL;
+	
+	if(ePinName > PA015)
+	{
+		ptGpioBase = (csp_gpio_t *)APB_GPIOB0_BASE;
+		ePinName = ePinName -16;
+	}
+	else
+		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;			
+	
+	csp_gpio_set_high(ptGpioBase, (uint8_t)ePinName);
+	
+	return CSI_OK;
+}
+
+/** \brief   gpio pin set low(output = 0)
+ * 
+ *  \param[in] ePinName: gpio pin name
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_pin_set_low(pin_name_e ePinName)
+{
+	csp_gpio_t *ptGpioBase = NULL;
+	
+	if(ePinName > PA015)
+	{
+		ptGpioBase = (csp_gpio_t *)APB_GPIOB0_BASE;
+		ePinName = ePinName -16;
+	}
+	else
+		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;				
+	
+	csp_gpio_set_low(ptGpioBase, (uint8_t)ePinName);
 	
 	return CSI_OK;
 }

@@ -21,22 +21,19 @@
 /* Private variablesr-------------------------------------------------*/
 static uint16_t s_wIwdtTimeout	= 8200;
 
-/** \brief Initialize WDT Interface. Initializes the resources needed for the WDT interface
+/** \brief Initialize IWDT Interface. Initializes the resources needed for the WDT interface
  * 
- *  \param[in] ptIwdtBase: pointer of iwdt register structure
- *  \param[in] eOverTime: time length of system reset
+ *  \param[in] eTimeOver: time length of system reset
  *  \return error code \ref csi_error_t
 */
-csi_error_t csi_wdt_init(csp_iwdt_t *ptIwdtBase, csi_iwdt_tv_e eOverTime)
+csi_error_t csi_iwdt_init(csi_iwdt_tv_e eTimeOver)
 {
-    CSI_PARAM_CHK(ptIwdtBase, CSI_ERROR);
-    
    	uint8_t byOvt;
 	
 	if(!(csp_get_gcsr(SYSCON) & ISOSC))		//enable isosc
 		csi_isosc_enable();		
 	
-	switch (eOverTime)						//set iwdt over time(time long of reset)
+	switch (eTimeOver)						//set iwdt time over(time long of reset)
 	{
 		case IWDT_TV_128:	byOvt = 0x0;
 			break;
@@ -57,156 +54,86 @@ csi_error_t csi_wdt_init(csp_iwdt_t *ptIwdtBase, csi_iwdt_tv_e eOverTime)
 			break;
 	}
 	
-	csp_iwdt_set_ovt(ptIwdtBase, byOvt);
-	csp_iwdt_clr(ptIwdtBase);
+	csp_iwdt_set_ovt(SYSCON, byOvt);
+	csp_iwdt_clr(SYSCON);
 	
     return CSI_OK;
 }
 
 /** \brief open(start) iwdt
  * 
- *  \param[in] ptTmBase: pointer of iwdt register structure
+ *  \param[in] none
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_wdt_open(csp_iwdt_t *ptIwdtBase)
+csi_error_t csi_iwdt_open(void)
 {
-	CSI_PARAM_CHK(ptIwdtBase, CSI_ERROR);
-	
-	ptIwdtBase -> IWDEDR = EN_IWDT | IWDTE_KEY;
-	while((ptIwdtBase->IWDCR & IWDT_ST) != IWDT_BUSY);
-	ptIwdtBase -> IWDCNT = (ptIwdtBase -> IWDCNT & (~IWDT_CLR_MSK)) | IWDT_CLR << IWDT_CLR_POS;
-	while((ptIwdtBase->IWDCNT & IWDT_CLR_BUSY) == 1);
+	SYSCON -> IWDEDR = EN_IWDT | IWDTE_KEY;
+	while((SYSCON->IWDCR & IWDT_ST) != IWDT_BUSY);
+	SYSCON -> IWDCNT = (SYSCON -> IWDCNT & (~IWDT_CLR_MSK)) | IWDT_CLR << IWDT_CLR_POS;
+	while((SYSCON->IWDCNT & IWDT_CLR_BUSY) == 1);
 	
 	return CSI_OK;
 }
 
 /** \brief close(stop) iwdt
  * 
- *  \param[in] ptTmBase: pointer of iwdt register structure
+ *  \param[in] none
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_wdt_close(csp_iwdt_t *ptIwdtBase)
+csi_error_t csi_iwdt_close(void)
 {
-	CSI_PARAM_CHK(ptIwdtBase, CSI_ERROR);
-	
-	csp_iwdt_disable(ptIwdtBase);
-	
+	csp_iwdt_disable(SYSCON);
 	return CSI_OK;
 }
 
 /** \brief close(stop) iwdt
  * 
- *  \param[in] ptTmBase: pointer of iwdt register structure
+ *  \param[in] none
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_wdt_feed(csp_iwdt_t *ptIwdtBase)
+csi_error_t csi_iwdt_feed(void)
 {
-	CSI_PARAM_CHK(ptIwdtBase, CSI_ERROR);
-
-	csp_iwdt_clr(ptIwdtBase);
-	
+	csp_iwdt_clr(SYSCON);
 	return CSI_OK;
 }
 
 /** \brief iwdt INT enable/disable
  * 
- *  \param[in] ptTmBase: pointer of iwdt register structure
  *  \param[in] eIntTv: iwdt interrupt timer length(timer over), 1/2/3/4/5/6/7_8
  *  \param[in] bEnable: enable/disable INT
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_wdt_irq_enable(csp_iwdt_t *ptIwdtBase, csi_iwdt_intv_e eIntTv, bool bEnable)
+csi_error_t csi_iwdt_irq_enable(csi_iwdt_intv_e eIntTv, bool bEnable)
 {
-	CSI_PARAM_CHK(ptIwdtBase, CSI_ERROR);
-
-	csp_iwdt_set_intt(ptIwdtBase, eIntTv);					//iwdt interrupt timer, 1/2/3/4/5/6/7_8
-	csp_syscon_int_enable(ptIwdtBase, IWDT_INT, bEnable);	//enable iwdt interrupt
+	csp_iwdt_set_intt(SYSCON, eIntTv);					//iwdt interrupt timer, 1/2/3/4/5/6/7_8
+	csp_syscon_int_enable(SYSCON, IWDT_INT, bEnable);	//enable iwdt interrupt
 	
 	if(bEnable)
-		csi_vic_enable_irq(SYSCON_IRQn);					//enable iwdt irq
+		csi_vic_enable_irq(SYSCON_IRQn);				//enable iwdt irq
 	else
-		csi_vic_disable_irq(SYSCON_IRQn);					//disable iwdt irq
+		csi_vic_disable_irq(SYSCON_IRQn);				//disable iwdt irq
 
 	return CSI_OK;
 }
-/** \brief Attach the callback handler to wwdt
- *  \param[in] ptWdt: operate handle
- *  \param[in] callback: callback function
- *  \param[in] arg: callback's param
- *  \return error code \ref csi_error_t
-*/
-//csi_error_t csi_wdt_attach_callback(csi_wdt_t *ptWdt, void *callback, void *arg)
-//{
-//    CSI_PARAM_CHK(ptWdt, CSI_ERROR);
-//	csp_wwdt_t *wdt_base = (csp_wwdt_t *)HANDLE_REG_BASE(ptWdt);
-//	
-//    ptWdt->callback = callback;
-//    ptWdt->arg = arg;
-//    csi_irq_attach((uint32_t)ptWdt->dev.irq_num, &wdt_irq_handler, &ptWdt->dev);
-//    csi_irq_enable((uint32_t)ptWdt->dev.irq_num);
-//	
-//	if(HANDLE_DEV_IDX(ptWdt) == 1){				//wwdt int
-//		
-//		csp_wwdt_int_enable(wdt_base,true);	//enable wwdt int
-//	}
-//	else {
-//		csp_syscon_int_enable((csp_syscon_t *)wdt_base, IWDT_INT, ENABLE);
-//
-//	}
-//		
-//	
-//    return CSI_OK;
-//}
-
-/** \brief Detach the callback handler
- *  \param[in] ptWdt: operate handle
- *  \return error code \ref csi_error_t
-*/
-//void csi_wdt_detach_callback(csi_wdt_t *ptWdt)
-//{
-//	CSI_PARAM_CHK(ptWdt, CSI_ERROR);
-//	csp_wwdt_t *wdt_base = (csp_wwdt_t *)HANDLE_REG_BASE(ptWdt);
-//	
-//   ptWdt->callback = NULL;
-//   ptWdt->arg = NULL;
-//   
-//	csi_irq_disable((uint32_t)(ptWdt->dev.irq_num));
-//   csi_irq_detach((uint32_t)(ptWdt->dev.irq_num));
-//	
-//	
-//	if(HANDLE_DEV_IDX(ptWdt) == 1){				//wwdt int
-//		
-//		csp_wwdt_int_enable(wdt_base,false);	//disable wwdt int
-//	}
-//	else {
-//		csp_syscon_int_enable((csp_syscon_t *)wdt_base, IWDT_INT, DISABLE);
-//
-//	}
-//}
-
 /** \brief Check if wdt is running
  * 
- *  \param[in] ptTmBase: pointer of iwdt register structure
  *  \return true->running, false->stopped
 */
-bool csi_wdt_is_running(csp_iwdt_t *ptIwdtBase)
+bool csi_iwdt_is_running(void)
 {
-	//CSI_PARAM_CHK(ptIwdtBase, CSI_ERROR);
-	return csp_iwdt_rd_st(ptIwdtBase);;
-	
+	return csp_iwdt_rd_st(SYSCON);;
 }
 
 /** \brief Get the remaining time to timeout
  * 
- *  \param[in] ptIwdtBase: pointer of iwdt register structure
+ *  \param[in] SYSCON: pointer of iwdt register structure
  *  \return the remaining time of wdt(ms)
 */
-uint32_t csi_wdt_get_remaining_time(csp_iwdt_t *ptIwdtBase)
+uint32_t csi_iwdt_get_remaining_time(void)
 {
-	CSI_PARAM_CHK(ptIwdtBase, CSI_ERROR);
 	uint32_t wRTime, wCntMax = 0x3f;
 	
-	switch ((ptIwdtBase->IWDCR & IWDT_OVT_MSK) >> IWDT_OVT_POS)
+	switch ((SYSCON->IWDCR & IWDT_OVT_MSK) >> IWDT_OVT_POS)
 	{
 		case (0): wCntMax = 0x3f;
 			break;
@@ -227,23 +154,18 @@ uint32_t csi_wdt_get_remaining_time(csp_iwdt_t *ptIwdtBase)
 		default :
 			break;
 	}
-	wRTime = csp_iwdt_get_cnt(ptIwdtBase) * s_wIwdtTimeout/wCntMax;
+	wRTime = csp_iwdt_get_cnt(SYSCON) * s_wIwdtTimeout/wCntMax;
 
 	return wRTime;
 }
 
 /** \brief enable or disable WDT when stop in debug mode
  * 
- *  \param[in] ptIwdtBase: pointer of iwdt register structure
  *  \param[in] bEnable: enable/disable 
  *  \return  none
 */
-csi_error_t csi_wdt_debug_enable(csp_iwdt_t *ptIwdtBase, bool bEnable)
+csi_error_t csi_iwdt_debug_enable(bool bEnable)
 {
-	CSI_PARAM_CHK(ptIwdtBase, CSI_ERROR);
-	
-	csp_iwdt_debug_enable(ptIwdtBase, bEnable);
-	
+	csp_iwdt_debug_enable(SYSCON, bEnable);
 	return CSI_OK;
-	
 }
