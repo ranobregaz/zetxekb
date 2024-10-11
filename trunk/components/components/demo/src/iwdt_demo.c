@@ -37,19 +37,19 @@ int iwdt_demo(void)
 	{
 		case IWDT_DEMO_NORMAL:
 		
-			csi_wdt_init(IWDT, IWDT_TV_1000);				//reset time = 1s
-			csi_wdt_open(IWDT);								//start iwdt
+			csi_wdt_init(IWDT_TV_1000);					//reset time = 1s
+			csi_wdt_open();								//start iwdt
 //			mdelay(500);
 //			mdelay(400);
-//			csi_wdt_feed(IWDT);								//feed iwdt
+//			csi_wdt_feed(IWDT);							//feed iwdt
 //			mdelay(500);
 			
 			break;
 		case IWDT_DEMO_INTER:
 		
-			csi_wdt_init(IWDT, IWDT_TV_1000);				//reset time = 2s
-			csi_wdt_irq_enable(IWDT,IWDT_INT_4_8, ENABLE);	//iwdt interrupt timer 
-			csi_wdt_open(IWDT);								//start iwdt
+			csi_wdt_init(IWDT_TV_1000);					//reset time = 1s
+			csi_wdt_irq_enable(IWDT_INT_4_8, ENABLE);	//iwdt interrupt timer 
+			csi_wdt_open();								//start iwdt
 //			mdelay(600);
 			break;
 		default:
