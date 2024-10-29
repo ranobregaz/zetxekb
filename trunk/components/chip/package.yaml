@@ -103,6 +103,7 @@ source_file:
   - drivers/*.c
   - drivers/sys/*.c
   - drivers/sys/*.S
+  - drivers/pin.c
 ## 第五部分：配置信息
 # def_config:                              # 组件的可配置项
 #   CONFIG_DEBUG: y
