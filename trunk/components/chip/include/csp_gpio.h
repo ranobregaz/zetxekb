@@ -186,23 +186,23 @@ typedef enum
 /******************************************************************************
 ************************** Exported functions ************************
 ******************************************************************************/
-extern void csp_gpio_default_Init(csp_gpio_t *ptGpioBase);
-extern void csp_igrp_default_Init(csp_igrp_t *igrp_base);
-extern void csp_gpio_mux_init(csp_gpio_t *ptGpioBase,gpio_byte_e eByte,uint32_t wVal);
-extern int  csp_gpio_mux_set(csp_gpio_t *ptGpioBase,uint8_t byPinNum,uint8_t af_mode);
-extern int  csp_gpio_mux_get(csp_gpio_t *ptGpioBase,uint8_t byPinNum);
-extern void csp_gpio_dir_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum,gpio_dir_e eDir);
-extern void csp_gpio_inputoutput_dis(csp_gpio_t *ptGpioBase,uint8_t byPinNum);
-//
-extern void csp_gpio_set_value(csp_gpio_t *ptGpioBase,uint8_t byPinNum,gpio_pin_state_e eState);
-extern void csp_gpio_toggle(csp_gpio_t *ptGpioBase,uint8_t byPinNum);
-//
-extern uint32_t get_gpio_exi_intnum(gpio_igrp_e eExiGrp);
-//extern void csp_gpio_set_port_irq(csp_gpio_t *ptGpioBase, uint32_t wValue, bool bEnable);
-extern void csp_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp);
-extern void csp_gpio_exi_config(csp_gpio_t *ptGpioBase,uint8_t byPinNum,gpio_igrp_e eExiGrp,exi_trigger_e eGpioTrig, bool bExiEn);
-//extern void csp_exi_set_port_irq(csp_syscon_t *ptSysconBase,uint32_t wValue,bool bEnable);
-extern void csp_exi_trigger_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrig);
+//extern void csp_gpio_default_Init(csp_gpio_t *ptGpioBase);
+//extern void csp_igrp_default_Init(csp_igrp_t *igrp_base);
+//extern void csp_gpio_mux_init(csp_gpio_t *ptGpioBase,gpio_byte_e eByte,uint32_t wVal);
+//extern int  csp_gpio_mux_set(csp_gpio_t *ptGpioBase,uint8_t byPinNum,uint8_t af_mode);
+//extern int  csp_gpio_mux_get(csp_gpio_t *ptGpioBase,uint8_t byPinNum);
+//extern void csp_gpio_dir_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum,gpio_dir_e eDir);
+//extern void csp_gpio_inputoutput_dis(csp_gpio_t *ptGpioBase,uint8_t byPinNum);
+////
+//extern void csp_gpio_set_value(csp_gpio_t *ptGpioBase,uint8_t byPinNum,gpio_pin_state_e eState);
+//extern void csp_gpio_toggle(csp_gpio_t *ptGpioBase,uint8_t byPinNum);
+////
+//extern uint32_t get_gpio_exi_intnum(gpio_igrp_e eExiGrp);
+////extern void csp_gpio_set_port_irq(csp_gpio_t *ptGpioBase, uint32_t wValue, bool bEnable);
+//extern void csp_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp);
+//extern void csp_gpio_exi_config(csp_gpio_t *ptGpioBase,uint8_t byPinNum,gpio_igrp_e eExiGrp,exi_trigger_e eGpioTrig, bool bExiEn);
+////extern void csp_exi_set_port_irq(csp_syscon_t *ptSysconBase,uint32_t wValue,bool bEnable);
+//extern void csp_exi_trigger_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrig);
 
 /******************************************************************************
 ********************* gpio inline Functions Declaration ***********************
