@@ -10,7 +10,7 @@
 */
 /* Includes ---------------------------------------------------------------*/
 #include <string.h>
-#include <timer.h>
+#include <bt.h>
 #include <pin.h>
 
 #include "csp.h"
@@ -36,7 +36,7 @@ typedef enum{
 int timer_demo(void)
 {
 	int iRet = 0;
-	csi_timer_t tTimer;							//timer Parameter config structure
+	csi_bt_pwm_config_t tTimer;							//timer Parameter config structure
 	timer_demo_e eTmDemo = TIMER_DEMO_TIMING;
 	
 	switch(eTmDemo)
@@ -44,21 +44,21 @@ int timer_demo(void)
 		case TIMER_DEMO_TIMING:
 			
 			csi_bt_timer_init(BT0, 1000);		//1000us = 1ms
-			csi_bt_open(BT0);					//start  timer
+			csi_bt_start(BT0);					//start  timer
 			break;
 		case TIMER_DEMO_PWM:
 			
 			csi_pin_set_mux(PB02, PB02_BT0_OUT);					//PB02 pwm output	
 			
 			//init timer pwm para
-			tTimer.byIdleLevel 	= T_IDLE_HIGH;						//pwm ouput idle level
-			tTimer.byStartLevel = T_START_HIGH;						//pwm ouput start level
+			tTimer.byIdleLevel 	= BT_PWM_IDLE_HIGH;					//pwm ouput idle level
+			tTimer.byStartLevel = BT_PWM_START_HIGH;					//pwm ouput start level
 			tTimer.byDutyCycle 	= 40;								//pwm ouput duty cycle			
 			tTimer.wFreq 		= 10000;							//pwm ouput frequency
-			tTimer.byInter 		= TIMER_PEND_INT | TIMER_CMP_INT;	//interrupt(PEND and CMP)
+			tTimer.byInter 		= BT_INTSRC_PEND | BT_INTSRC_CMP;	//interrupt(PEND and CMP)
 			
 			csi_bt_pwm_init(BT0, &tTimer);
-			csi_bt_open(BT0);									//start  timer
+			csi_bt_start(BT0);									//start  timer
 			
 			break;
 		default:
