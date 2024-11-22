@@ -20,9 +20,7 @@ hw_info:
   flash_program: ""
 build_config:
   include:
-    - ../../csi/include/drv/
-    - ../../chip/include/
-    - ../../chip/drivers/sys/
+    - include
   internal_include: ~
   cflag: -O0  -g3
   cxxflag: -O0  -g3
@@ -31,6 +29,6 @@ build_config:
   libs: ~
   libpath: ~
 source_file:
-
+   - src/*.c
 def_config: ~
 install: ~
