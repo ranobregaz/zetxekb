@@ -14,9 +14,10 @@
 #define _DEMO_H
 
 /* Includes ------------------------------------------------------------------*/
-extern int gpio_demo(void);
-extern int uart_demo(void);
-extern int timer_demo(void);
-extern int iwdt_demo(void);
+//gpio port
+extern int gpio_port_ouput_demo(void);
+extern int gpio_port_input_demo(void);
+extern int gpio_port_irq_demo(void);
+
 
 #endif
