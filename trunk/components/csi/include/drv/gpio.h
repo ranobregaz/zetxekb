@@ -48,8 +48,8 @@ typedef enum {
  */
 typedef enum {
 	GPIO_DIR_GPD		= 0,
-    GPIO_DIR_INPUT,    					///< GPIO as input
-    GPIO_DIR_OUTPUT             		///< GPIO as output
+    GPIO_DIR_INPUT,    					//GPIO as input
+    GPIO_DIR_OUTPUT             		//GPIO as output
 } csi_gpio_dir_e;
 
 /**
@@ -57,8 +57,8 @@ typedef enum {
  * \brief    GPIO pin state define
  */
 typedef enum {
-    GPIO_PIN_LOW 		= 0,           ///< GPIO low level
-    GPIO_PIN_HIGH,                     ///< GPIO high level
+    GPIO_PIN_LOW 		= 0,           //GPIO low level
+    GPIO_PIN_HIGH,                     //GPIO high level
 } csi_gpio_pin_state_e;
 
 /**
@@ -66,9 +66,9 @@ typedef enum {
  * \brief    GPIO pull mode define
  */
 typedef enum {
-    GPIO_PULLNONE		= 0,    		///< Pull none 
-    GPIO_PULLUP,                  		///< Pull up 
-    GPIO_PULLDOWN,               		///< Pull down 
+    GPIO_PULLNONE		= 0,    		//Pull none 
+    GPIO_PULLUP,                  		//Pull up 
+    GPIO_PULLDOWN,               		//Pull down 
 } csi_gpio_pull_mode_e;	
 
 /**
@@ -76,8 +76,8 @@ typedef enum {
  * \brief    GPIO output mode define
  */
 typedef enum {
-	GPIO_PUSH_PULL 		= 0,			///< push-pull output
-	GPIO_OPEN_DRAIN,					///< open drain output
+	GPIO_PUSH_PULL 		= 0,			//push-pull output
+	GPIO_OPEN_DRAIN,					//open drain output
 } csi_gpio_output_mode_e;
 
 /**
@@ -95,9 +95,9 @@ typedef enum {
  * \brief    GPIO irq triger type
  */
 typedef enum {
-    GPIO_IRQ_RISING_EDGE  = 0,    		///< Interrupt mode for rising edge
-    GPIO_IRQ_FALLING_EDGE,        		///< Interrupt mode for falling edge
-    GPIO_IRQ_BOTH_EDGE,          		///< Interrupt mode for both edge
+    GPIO_IRQ_RISING_EDGE  = 0,    		//Interrupt mode for rising edge
+    GPIO_IRQ_FALLING_EDGE,        		//Interrupt mode for falling edge
+    GPIO_IRQ_BOTH_EDGE,          		//Interrupt mode for both edge
 } csi_gpio_irq_mode_e;
 
 /**
@@ -236,32 +236,6 @@ csi_error_t csi_gpio_port_irq_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, cs
 */
 csi_error_t csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, bool bEnable);
 
-/** 
-  \brief 	   config gpio irq mode(assign exi group)
-  \param[in]   ptGpioBase	pointer of gpio register structure
-  \param[in]   byPinNum		pin num,0~15
-  \param[in]   eExiGrp		exi group; EXI_GRP0 ~EXI_GRP19
-  \param[in]   eTrgEdge		rising edge; falling edge;	both edge;
-  \return 	   error code \ref csi_error_t
- */ 
-//csi_error_t csi_gpio_irq_mode_ex(csp_gpio_t *ptGpioBase,uint8_t byPinNum, csi_exi_grp_e eExiGrp, csi_gpio_irq_mode_e eTrgEdge);
-
-/** 
-  \brief 	   gpio irq enable (assign exi group)
-  \param[in]   ptGpioBase	GPIO port handle
-  \param[in]   byPinNum		pin num,0~15
-  \param[in]   bEnable		true or false
-  \return 	   error code \ref csi_error_t
- */ 
-//csi_error_t csi_gpio_irq_enable_ex(csp_gpio_t *ptGpioBase, uint8_t byPinNum, csi_exi_grp_e eExiGrp, bool bEnable);
-
-/**
-  \brief       Set debonce of gpio when gpio configed as input
-  \param[in]   gpio        pointer of gpio register structure
-  \param[in]   pin_mask    Pin mask need to be set
-  \param[in]   enbale      0: disable   1:enable
-  \return      Error code
-*/
 //csi_error_t csi_gpio_debonce(csi_gpio_t *gpio, uint32_t pin_mask, bool enable);
 /**
   \brief       Set one or zero to the selected pin mask

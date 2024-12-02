@@ -60,137 +60,60 @@ typedef enum{
 
 /**
   \brief       Initialize WDT Interface. Initializes the resources needed for the WDT interface 
-  \param[in]   ptIwdtBase	pointer of iwdt register structure
   \param[in]   eOverTime    time length of system reset
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_wdt_init(csp_iwdt_t *ptIwdtBase, csi_iwdt_tv_e eOverTime);
-
-/**
-  \brief       De-initialize WDT Interface. stops operation and releases the software resources used by the interface
-  \param[in]   wdt    handle to operate
-  \return      None
-*/
-//void csi_wdt_uninit(csi_wdt_t *wdt);
-
-/**
-  \brief       Set the WDT value
-  \param[in]   wdt    handle to operate
-  \param[in]   ms     the timeout value(ms)
-  \return      error code \ref csi_error_t
-*/
-//csi_error_t csi_wdt_set_timeout(csi_wdt_t *wdt, uint32_t ms);
-
-/**
-  \brief       Start the WDT
-  \param[in]   wdt    handle to operate
-  \return      error code \ref csi_error_t
-*/
-//csi_error_t csi_wdt_start(csi_wdt_t *wdt);
-
-/**
-  \brief       Stop the WDT
-  \param[in]   wdt    handle to operate
-  \return      None
-*/
-//void csi_wdt_stop(csi_wdt_t *wdt);
+csi_error_t csi_iwdt_init(csi_iwdt_tv_e eTimeOver);
 
 /** 
   \brief 	   open(start) iwdt
-  \param[in]   ptIwdtBase	pointer of iwdt register structure
+  \param[in]   none
   \return 	   error code \ref csi_error_t
  */ 
-csi_error_t csi_wdt_open(csp_iwdt_t *ptIwdtBase);
+csi_error_t csi_iwdt_open(void);
 
 /** 
   \brief 	   close(stop) iwdt
-  \param[in]   ptIwdtBase	pointer of iwdt register structure
+  \param[in]   none
   \return 	   error code \ref csi_error_t
  */ 
-csi_error_t csi_wdt_close(csp_iwdt_t *ptIwdtBase);
+csi_error_t csi_iwdt_close(void);
 
 /**
   \brief       Feed the WDT
-  \param[in]   ptIwdtBase	pointer of iwdt register structure
+  \param[in]   none
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_wdt_feed(csp_iwdt_t *ptIwdtBase);
+csi_error_t csi_iwdt_feed(void);
 
 /**
   \brief       Get the remaining time to timeout
-  \param[in]   ptIwdtBase	pointer of iwdt register structure
+  \param[in]   none
   \return      the remaining time of wdt(ms)
 */
-uint32_t csi_wdt_get_remaining_time(csp_iwdt_t *ptIwdtBase);
+uint32_t csi_iwdt_get_remaining_time(void);
     
 /**
   \brief       Check if wdt is running
-  \param[in]   ptIwdtBase	pointer of iwdt register structure
+  \param[in]   none
   \return      true->running, false->stopped
 */
-bool csi_wdt_is_running(csp_iwdt_t *ptIwdtBase);
+bool csi_iwdt_is_running(void);
 
 /** 
   \brief 	   iwdt INT enable/disable
-  \param[in]   ptIwdtBase	pointer of iwdt register structure
   \param[in]   eIntTv		iwdt interrupt timer length(timer over), 1/2/3/4/5/6/7_8
   \param[in]   bEnable		enable/disable INT
   \return 	   error code \ref csi_error_t
  */
-csi_error_t csi_wdt_irq_enable(csp_iwdt_t *ptIwdtBase, csi_iwdt_intv_e eIntTv, bool bEnable);
-
-/**
-  \brief       Attach the callback handler to wdt
-  \param[in]   wdt         operate handle
-  \param[in]   callback    callback function
-  \param[in]   arg         callback's param
-  \return      error code \ref csi_error_t
-*/
-//csi_error_t csi_wdt_attach_callback(csi_wdt_t *wdt, void *callback, void *arg);
-
-/**
-  \brief       Detach the callback handler
-  \param[in]   wdt    operate handle
-  \return      None
-*/
-//void csi_wdt_detach_callback(csi_wdt_t *wdt);
-
-/**
-  \brief       Enable wdt power manage
-  \param[in]   wdt    wdt handle to operate
-  \return      error code \ref csi_error_t
-*/
-//csi_error_t csi_wdt_enable_pm(csi_wdt_t *wdt);
-
-/**
-  \brief       Disable wdt power manage
-  \param[in]   wdt    wdt handle to operate
-  \return      None
-*/
-//void csi_wdt_disable_pm(csi_wdt_t *wdt);
-
-/**
-  \brief      set wwdt window, ONLY valid for WWDT
-  \param[in]   wdt    wdt handle to operate
-  \return      error code \ref csi_error_t
-*/
-//csi_error_t csi_wdt_set_window_time(csi_wdt_t *wdt, uint32_t ms);
+csi_error_t csi_iwdt_irq_enable(csi_iwdt_intv_e eIntTv, bool bEnable);
 
 /**
   \brief      enable or disable WDT when stop in debug mode
-  \param[in]   wdt    wdt handle to operate
   \param	   bEnable 
   \return      none
 */
-csi_error_t csi_wdt_debug_enable(csp_iwdt_t *ptIwdtBase, bool bEnable);
-
-/**
-  \brief      set wwdt window, ONLY valid for WWDT
-  \param[in]   wdt    wdt handle to operate
-  \param	   eVal   iwdt intv
-  \return      error code \ref csi_error_t
-*/
-//csi_error_t csi_wdt_set_int_time(csi_wdt_t *wdt, csi_iwdt_intv_e eVal);
+csi_error_t csi_iwdt_debug_enable(bool bEnable);
 
 
 #ifdef __cplusplus
