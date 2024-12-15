@@ -104,17 +104,17 @@ void RTCIntHandler(void)
 void UART0IntHandler(void) 
 {
     // ISR content ...
-	csi_uart_irqhandler(0);
+	//csi_uart_irqhandler(0);
 }
 void UART1IntHandler(void) 
 {
     // ISR content ...
-	csi_uart_irqhandler(1);
+	//csi_uart_irqhandler(1);
 }
 void UART2IntHandler(void) 
 {
     // ISR content ...
-	csi_uart_irqhandler(2);
+	//csi_uart_irqhandler(2);
 }
 void I2CIntHandler(void) 
 {

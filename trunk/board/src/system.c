@@ -38,7 +38,7 @@ __attribute__((weak)) void system_init(void)
 	//csi_reliability_init();
 	//csi_wdt_init(&tIwdt, 0);
 	//csi_wdt_stop(&tIwdt);
-	csi_wdt_close(IWDT);
+	csi_iwdt_close();				//close iwdt
 	soc_sysclk_config();			//sysclk config
 	soc_pclk_config();				//pclk config
 	soc_get_cpu_freq();
