@@ -47,7 +47,6 @@ typedef enum{
 int gpio_port_ouput_demo(void)
 {
 	int iRet = 0;
-	uint32_t wStatus;
 	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02;
 	
 	csi_gpio_port_dir(GPIOA0, wPinMask, GPIO_DIR_OUTPUT);			//gpio_port as output 
@@ -116,7 +115,6 @@ int gpio_port_input_demo(void)
 int gpio_port_irq_demo(void)
 {
 	int iRet = 0;
-	uint32_t wStatus;
 	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02 | PINMASK_PA05; //PA00/PA02/PA05 	
 
 	csi_gpio_port_dir(GPIOA0, wPinMask, GPIO_DIR_INPUT);			//input
