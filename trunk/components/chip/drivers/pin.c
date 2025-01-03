@@ -14,13 +14,6 @@
 #include <drv/pin.h>
 
 /* Private macro------------------------------------------------------*/
-/*
-#define	CSI_PINNAME_CHK(ePinName, err)		\
-	do{										\
-		if(ePinName > PB05)					\
-			return err;						\
-	}while(0)
-*/
 /* externs function---------------------------------------------------*/
 extern void gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp);
 extern void exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg);
