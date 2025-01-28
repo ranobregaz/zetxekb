@@ -22,39 +22,38 @@ typedef enum{
 	IWDT_DEMO_INTER				//IWDT interrupt mode
 }iwdt_demo_e;
 
-/** \brief timer test
+
+/** \brief iwdt normal mode
  * 
  *  \param[in] none
  *  \return error code
  */
-int iwdt_demo(void)
+int iwdt_normal_demo(void)
 {
 	int iRet = 0;
 
-	iwdt_demo_e eIwdtDemo = IWDT_DEMO_INTER;
-	
-	switch(eIwdtDemo)
-	{
-		case IWDT_DEMO_NORMAL:
-		
-			csi_iwdt_init(IWDT_TV_1000);					//reset time = 1s
-			csi_iwdt_open();								//start iwdt
-//			mdelay(500);
-//			mdelay(400);
-//			csi_wdt_feed(IWDT);							//feed iwdt
-//			mdelay(500);
+	csi_iwdt_init(IWDT_TV_1000);			//reset time = 1s
+	csi_iwdt_open();						//open iwdt
+//	mdelay(500);
+//	mdelay(400);
+//	csi_wdt_feed(IWDT);						//feed iwdt
+//	mdelay(500);
 			
-			break;
-		case IWDT_DEMO_INTER:
-		
-			csi_iwdt_init(IWDT_TV_1000);					//reset time = 1s
-			csi_iwdt_irq_enable(IWDT_INT_4_8, ENABLE);	//iwdt interrupt timer 
-			csi_iwdt_open();								//start iwdt
-//			mdelay(600);
-			break;
-		default:
-			break;
-	}
-	
+	return iRet;
+}
+/** \brief iwdt working with interrupt
+ * 
+ *  \param[in] none
+ *  \return error code
+ */
+int iwdt_irq_demo(void)
+{
+	int iRet = 0;
+
+	csi_iwdt_init(IWDT_TV_1000);					//reset time = 1s
+	csi_iwdt_irq_enable(IWDT_INT_4_8, ENABLE);		//iwdt interrupt timer 
+	csi_iwdt_open();								//start iwdt
+//	mdelay(600);
+
 	return iRet;
 }
