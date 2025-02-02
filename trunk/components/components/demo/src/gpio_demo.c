@@ -11,15 +11,12 @@
 /* Includes ---------------------------------------------------------------*/
 #include <string.h>
 #include "sys_clk.h"
-#include <gpio.h>
-#include <pin.h>
-#include "csp.h"
+#include <drv/gpio.h>
+#include <drv/pin.h>
 
 #include "demo.h"
 /* externs function--------------------------------------------------------*/
-
 /* externs variablesr------------------------------------------------------*/
-
 /* Private macro-----------------------------------------------------------*/
 #define		PINMASK_PA00		(0x01ul << 0)	
 #define		PINMASK_PA01		(0x01ul << 1)
@@ -33,11 +30,6 @@
 #define		PINMASK_PB02		(0x01ul << 2)
 #define		PINMASK_PB05		(0x01ul << 5)
 /* Private variablesr------------------------------------------------------*/
-typedef enum{
-	GPIO_DEMO_OUPUT		= 0,		//gpio output
-	GPIO_DEMO_INPUT,				//gpio input
-	GPIO_DEMO_INTER					//gpio interrupt
-}gpio_demo_e;
 
 /** \brief gpio port output demo 
  * 
@@ -121,12 +113,6 @@ int gpio_port_irq_demo(void)
 	csi_gpio_port_pull_mode(GPIOA0, wPinMask, GPIO_PULLUP);			//pullup
 	csi_gpio_port_irq_mode(GPIOA0,wPinMask,GPIO_IRQ_FALLING_EDGE);	//falling edge
 	csi_gpio_port_irq_enable(GPIOA0,wPinMask,ENABLE);				//enable gpio interrupt
-	
-//	csi_pin_set_mux(PA02,GPIO_PIN_INPUT);
-//	csi_pin_pull_mode(PA02,GPIO_PULLUP);
-//	csi_pin_irq_mode(PA02,EXI_GRP2, GPIO_IRQ_FALLING_EDGE);
-//	csi_pin_irq_enable(PA02,EXI_GRP2, ENABLE);
-
 	
 	return iRet;
 }

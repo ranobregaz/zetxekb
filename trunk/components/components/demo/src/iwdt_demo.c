@@ -10,18 +10,14 @@
 */
 /* Includes ---------------------------------------------------------------*/
 #include <string.h>
-#include "iwdt.h"
-#include "pin.h"
+#include <drv/iwdt.h>
+#include <drv/pin.h>
+
 #include "demo.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
-typedef enum{
-	IWDT_DEMO_NORMAL	= 0,	//IWDT normal mode
-	IWDT_DEMO_INTER				//IWDT interrupt mode
-}iwdt_demo_e;
-
 
 /** \brief iwdt normal mode
  * 

@@ -10,60 +10,53 @@
 */
 /* Includes ---------------------------------------------------------------*/
 #include <string.h>
-#include <bt.h>
-#include <pin.h>
+#include <drv/bt.h>
+#include <drv/pin.h>
 
-#include "csp.h"
 #include "demo.h"
 /* externs function--------------------------------------------------------*/
-
 /* externs variablesr------------------------------------------------------*/
-
 /* Private macro-----------------------------------------------------------*/
-
 /* Private variablesr------------------------------------------------------*/
-typedef enum{
-	TIMER_DEMO_TIMING		= 0,	//TIMER timing
-	TIMER_DEMO_PWM,					//TIMER pwm
-}timer_demo_e;
 
-
-/** \brief timer test
+/** \brief bt timer
  * 
  *  \param[in] none
  *  \return error code
  */
-int timer_demo(void)
+int bt_timer_demo(void)
 {
 	int iRet = 0;
-	csi_bt_pwm_config_t tTimer;							//timer Parameter config structure
-	timer_demo_e eTmDemo = TIMER_DEMO_TIMING;
+			
+	csi_bt_timer_init(BT0, 1000);		//1000us = 1ms
+	csi_bt_start(BT0);					//start  timer
+
+	return iRet;
+}
+
+/** \brief bt pwm ouput
+ * 
+ *  \param[in] none
+ *  \return error code
+ */
+int bt_pwm_demo(void)
+{
+	int iRet = 0;
+	csi_bt_pwm_config_t tPwmCfg;								//timer Parameter config structure
 	
-	switch(eTmDemo)
-	{
-		case TIMER_DEMO_TIMING:
+	csi_pin_set_mux(PB02, PB02_BT0_OUT);						//PB02 pwm output	
+	
+	//init timer pwm para config
+	tPwmCfg.byIdleLevel 	= BT_PWM_IDLE_HIGH;					//pwm ouput idle level
+	tPwmCfg.byStartLevel	= BT_PWM_START_HIGH;				//pwm ouput start level
+	tPwmCfg.byDutyCycle 	= 40;								//pwm ouput duty cycle			
+	tPwmCfg.wFreq 			= 10000;							//pwm ouput frequency
+	tPwmCfg.byInter 		= BT_INTSRC_PEND | BT_INTSRC_CMP;	//interrupt(PEND and CMP)
+	
+	csi_bt_pwm_init(BT0, &tPwmCfg);
+	csi_bt_start(BT0);											//start  timer
 			
-			csi_bt_timer_init(BT0, 1000);		//1000us = 1ms
-			csi_bt_start(BT0);					//start  timer
-			break;
-		case TIMER_DEMO_PWM:
-			
-			csi_pin_set_mux(PB02, PB02_BT0_OUT);					//PB02 pwm output	
-			
-			//init timer pwm para
-			tTimer.byIdleLevel 	= BT_PWM_IDLE_HIGH;					//pwm ouput idle level
-			tTimer.byStartLevel = BT_PWM_START_HIGH;					//pwm ouput start level
-			tTimer.byDutyCycle 	= 40;								//pwm ouput duty cycle			
-			tTimer.wFreq 		= 10000;							//pwm ouput frequency
-			tTimer.byInter 		= BT_INTSRC_PEND | BT_INTSRC_CMP;	//interrupt(PEND and CMP)
-			
-			csi_bt_pwm_init(BT0, &tTimer);
-			csi_bt_start(BT0);									//start  timer
-			
-			break;
-		default:
-			break;
-	}
+	
 	
 	return iRet;
 }
