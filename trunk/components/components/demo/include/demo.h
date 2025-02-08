@@ -19,5 +19,18 @@ extern int gpio_port_ouput_demo(void);
 extern int gpio_port_input_demo(void);
 extern int gpio_port_irq_demo(void);
 
+//pin 
+extern int pin_output_demo(void);
+extern int pin_input_demo(void);
+extern int pin_irq_demo(void);
+
+//bt
+extern int bt_timer_demo(void);
+extern int bt_pwm_demo(void);
+
+//iwdt
+extern int iwdt_normal_demo(void);
+extern int iwdt_irq_demo(void);
+
 
 #endif
