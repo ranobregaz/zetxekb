@@ -116,6 +116,13 @@ csi_error_t csi_pin_output_mode(pin_name_e ePinName, csi_gpio_output_mode_e eOut
 uint8_t csi_pin_get_num(pin_name_e ePinName);
 
 /** 
+  \brief 	   Get the value of  selected pin 
+  \param[in]   ePinName		gpio pin name, defined in soc.h.
+  \return 	   According to the bit mask, the corresponding pin status is obtained
+*/
+uint32_t csi_pin_read(pin_name_e ePinName);
+
+/** 
   \brief       config pin irq mode(assign exi group)
   \param[in]   ePinName		pin name
   \param[in]   eExiGrp		exi group; EXI_GRP0 ~EXI_GRP19
