@@ -312,10 +312,10 @@ typedef enum {
     PA015_UART1_RX		  	=  7U,
 	PA015_SPI_MISO			=  8U,
 	
-	GPIO_PIN_GPD			=  0U,
-	GPIO_PIN_INPUT			=  1U,		//input
-	GPIO_PIN_OUTPUT			=  2U,		//output
-	GPIO_GPPIN_OUTPUT_MONI	=  3U,		//output with monitor
+	PIN_GPD					=  0U,
+	PIN_INPUT				=  1U,		//input
+	PIN_OUTPUT				=  2U,		//output
+	PIN_OUTPUT_MONI			=  3U,		//output with monitor
 	
 	IOMAP					=  10U
 	
