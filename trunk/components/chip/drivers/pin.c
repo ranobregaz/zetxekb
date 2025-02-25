@@ -284,6 +284,24 @@ uint8_t csi_pin_get_num(pin_name_e ePinName)
 						
     return ret;
 }
+/** \brief Get the value of  selected pin 
+ *  \param[in] ePinName: gpio pin name, defined in soc.h.
+ *  \return According to the bit mask, the corresponding pin status is obtained
+*/
+uint32_t csi_pin_read(pin_name_e ePinName)
+{
+	csp_gpio_t *ptGpioBase = NULL;
+	
+	if(ePinName > PA015)
+	{
+		ptGpioBase = (csp_gpio_t *)APB_GPIOB0_BASE;
+		ePinName = ePinName -16;
+	}
+	else
+		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;	
+		
+	return (csp_gpio_read_input_port(ptGpioBase) & (0x01ul << ePinName));
+}
 /** \brief config pin irq mode(assign exi group)
  * 
  *  \param[in] ePinName: pin name
