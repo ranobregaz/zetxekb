@@ -29,6 +29,6 @@ build_config:
   libs: ~
   libpath: ~
 source_file:
-   - src/*.c
+  - src/*.c
 def_config: ~
 install: ~
