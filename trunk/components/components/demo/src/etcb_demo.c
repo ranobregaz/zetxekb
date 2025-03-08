@@ -23,45 +23,52 @@ typedef enum{
 	ETB_DEMO_MORE_TRG_ONE			//ETB more trigger one
 }etb_trg_mode_e;
 
-/** \brief etcb test
+/** \brief etcb one trg one 
  * 
  *  \param[in] none
  *  \return error code
  */
-int etcb_demo(void)
+int etcb_one_trg_one_demo(void)
 {
 	int iRet = 0;
 	uint8_t ch;
 	csi_etb_config_t tEtbConfig;	
-	etb_trg_mode_e eEtbDemo = ETB_DEMO_ONE_TRG_ONE;
+			
+	//para config
+	tEtbConfig.eChType 	= ETB_ONE_TRG_ONE;		//one channel trigger one channel
+	tEtbConfig.bySrcIp 	= ETB_EXI_TRGOUT0;		//exi group0 as trigger source
+	tEtbConfig.bySrcIp1 = 0xff;						
+	tEtbConfig.bySrcIp2 = 0xff;
+	tEtbConfig.byDstIp 	= ETB_BT0_SYNCIN0;		//bt0 syncin0
+	tEtbConfig.byDstIp1 = 0xff;
+	tEtbConfig.byDstIp2 = 0xff;
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
 	
-	switch(eEtbDemo)
-	{
-		case ETB_DEMO_ONE_TRG_ONE:
+	iRet = csi_etb_init();
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);
+	iRet |= csi_etb_ch_config(ch,&tEtbConfig);
 			
-			//para init config
-			tEtbConfig.ch_type = ETB_ONE_TRIGGER_ONE;		//one channel trigger one channel
-			tEtbConfig.src_ip = ETB_EXI_TRGOUT0;			//exi group0 as trigger source
-			tEtbConfig.src_ip1 = 0xff;						
-			tEtbConfig.src_ip2 = 0xff;
-			tEtbConfig.dst_ip = ETB_BT0_SYNCIN0;			//bt0 syncin0
-			tEtbConfig.dst_ip1 = 0xff;
-			tEtbConfig.dst_ip2 = 0xff;
-			tEtbConfig.trig_mode = ETB_HARDWARE_TRG;
-			
-			iRet = csi_etb_init();
-			ch = csi_etb_ch_alloc(tEtbConfig.ch_type);
-			iRet |= csi_etb_ch_config(ch,&tEtbConfig);
-			
-			break;
-		case ETB_DEMO_ONE_TRG_MORE:
-			break;;
-		case ETB_DEMO_MORE_TRG_ONE:
-			break;
-		default:
-			iRet = CSI_ERROR;
-			break;
-	}
-			
+	return iRet;
+}
+
+/** \brief etcb one trg more 
+ * 
+ *  \param[in] none
+ *  \return error code
+ */
+int etcb_one_trg_more_demo(void)
+{
+	int iRet = 0;
+	return iRet;
+}
+
+/** \brief etcb more trg one 
+ * 
+ *  \param[in] none
+ *  \return error code
+ */
+int etcb_more_trg_one_demo(void)
+{
+	int iRet = 0;
 	return iRet;
 }
