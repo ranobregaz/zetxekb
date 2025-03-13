@@ -163,18 +163,6 @@ csi_error_t csi_etb_init(void)
 
     return CSI_OK;
 }
-
-/**
-  \brief       Uninit the etb device
-  \return      none
-*/
-//void csi_etb_uninit(void)
-//{
-//    csp_etb_t *etb_base;
-//    etb_base = (csp_etb_t *)APB_ETCB_BASE;
-//    wj_etb_disable(etb_base);
-//}
-
 /** \brief alloc an etb channel
  * 
  *  \param[in] eChType: etb channel work mode
@@ -186,7 +174,7 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
     uint32_t result = csi_irq_save();
 
     switch (eChType) {
-        case ETB_MORE_TRIGGER_ONE:
+        case ETB_MORE_TRG_ONE:
             ret_ch = 0;
             if (check_is_alloced(ret_ch) < 0) 
                 ret = CSI_ERROR;
@@ -194,7 +182,7 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
                 ret = ret_ch;
 				
             break;
-        case ETB_ONE_TRIGGER_MORE:
+        case ETB_ONE_TRG_MORE:
             for (ret_ch = 1; ret_ch < 3; ret_ch++) 
 			{
                 if (check_is_alloced(ret_ch) != -1) 
@@ -207,7 +195,7 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
                 ret = ret_ch;
 				
             break;
-        case ETB_ONE_TRIGGER_ONE:
+        case ETB_ONE_TRG_ONE:
             for (ret_ch = 3; ret_ch < 32; ret_ch++) 
 			{
                 if (check_is_alloced(ret_ch) != -1)
@@ -230,7 +218,6 @@ int32_t csi_etb_ch_alloc(csi_etb_ch_type_e eChType)
     csi_irq_restore(result);
     return ret;
 }
-
 /** \brief free an etb channel
  * 
  *  \param[in] eChId: etb channel work mode
@@ -242,7 +229,6 @@ void csi_etb_ch_free(csi_etb_chid_e eChId)
     set_ch_alloc_status(eChId, 0U);
     csi_irq_restore(result);
 }
-
 /** \brief config etb channel
  *  \param[in] eChId: etb channel id
  *  \param[in] ptConfig: the config structure pointer for etb channel
@@ -253,28 +239,28 @@ csi_error_t csi_etb_ch_config(csi_etb_chid_e eChId, csi_etb_config_t *ptConfig)
     CSI_PARAM_CHK(ptConfig, CSI_ERROR);
 	csi_error_t ret = CSI_OK;
 	
-	switch(ptConfig->ch_type)
+	switch(ptConfig->eChType)
 	{
-		case ETB_ONE_TRIGGER_ONE:				//channel num = [3:7]
+		case ETB_ONE_TRG_ONE:					//channel num = [3:7]
 			if(eChId > ETB_CH2_ID)
 			{
-				csp_etb_one_trg_one_set(ETCB, eChId, ptConfig->src_ip, ptConfig->dst_ip, ptConfig->trig_mode);
+				csp_etb_one_trg_one_set(ETCB, eChId, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->eTrgMode);
 				csp_etb_chx_en(ETCB, eChId);	//enable etb channel 
 			}
 			else
 				ret = CSI_ERROR;
 
 			break;
-		case ETB_ONE_TRIGGER_MORE:				//channel num = [1:2]		
+		case ETB_ONE_TRG_MORE:					//channel num = [1:2]		
 			if((eChId == ETB_CH1_ID) || (eChId == ETB_CH2_ID))
-				etb_one_trg_more_set(ETCB, eChId, ptConfig->src_ip, ptConfig->dst_ip, ptConfig->dst_ip1, ptConfig->dst_ip2,ptConfig->trig_mode);
+				etb_one_trg_more_set(ETCB, eChId, ptConfig->bySrcIp, ptConfig->byDstIp, ptConfig->byDstIp1, ptConfig->byDstIp2,ptConfig->eTrgMode);
 			else
 				ret = CSI_ERROR;
 				
 			break;
-		case ETB_MORE_TRIGGER_ONE:				//channel num = 0
+		case ETB_MORE_TRG_ONE:					//channel num = 0
 			if(eChId == ETB_CH0_ID)
-				etb_more_trg_one_set(ETCB,ptConfig->src_ip, ptConfig->src_ip1, ptConfig->src_ip2, ptConfig->dst_ip, ptConfig->trig_mode);
+				etb_more_trg_one_set(ETCB,ptConfig->bySrcIp, ptConfig->bySrcIp1, ptConfig->bySrcIp2, ptConfig->byDstIp, ptConfig->eTrgMode);
 			else
 				ret = CSI_ERROR;
 			
@@ -286,7 +272,6 @@ csi_error_t csi_etb_ch_config(csi_etb_chid_e eChId, csi_etb_config_t *ptConfig)
 
     return ret;
 }
-
 /** \brief etb channel sw force triger
  * 
  *  \param[in] eChId: etb channel id
@@ -296,13 +281,12 @@ void csi_etb_ch_swtrig(csi_etb_chid_e eChId)
 {
 	csp_etb_ch_swtrg_en(ETCB, eChId);
 }
-
 /**
   \brief       start an etb channel
   \param[in]   eChId      etb channel id
   \return      none
 */
-void csi_etb_ch_open(csi_etb_chid_e eChId)
+void csi_etb_ch_start(csi_etb_chid_e eChId)
 {
 	etb_channel_enable(ETCB,eChId, ENABLE);
 }
@@ -312,7 +296,7 @@ void csi_etb_ch_open(csi_etb_chid_e eChId)
   \param[in]   etb        etb channel id
   \return      none
 */
-void csi_etb_ch_close(csi_etb_chid_e eChId)
+void csi_etb_ch_stop(csi_etb_chid_e eChId)
 {
     etb_channel_enable(ETCB, eChId, DISABLE);
 }
