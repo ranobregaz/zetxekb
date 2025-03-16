@@ -19,15 +19,6 @@
 extern "C" {
 #endif
 
-//typedef struct csi_wdt csi_wdt_t;
-//
-//struct csi_wdt {
-//    csi_dev_t       dev;
-//    void            (*callback)(csi_wdt_t *wdt,  void *arg);
-//    void            *arg;
-//    void            *priv;
-//};
-
 /**
  * \enum     csi_iwdt_intv_e
  * \brief    IWDT interrupt timer(timer over) select
