@@ -131,12 +131,6 @@ typedef struct {
 csi_error_t csi_etb_init(void);
 
 /**
-  \brief       Uninit the etb device
-  \return      none
-*/
-//void csi_etb_uninit(void);
-
-/**
   \brief       alloc an etb channel
   \param[in]   eChType		etb channel work mode
   \return      channel id or CSI_ERROR
@@ -157,7 +151,6 @@ void csi_etb_ch_free(csi_etb_chid_e eChId);
   \return      csi error code
 */
 csi_error_t csi_etb_ch_config(csi_etb_chid_e eChId, csi_etb_config_t *ptConfig);
-
 
 /** 
   \brief 	   etb channel sw force triger
