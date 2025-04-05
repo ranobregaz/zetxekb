@@ -1,6 +1,6 @@
 /***********************************************************************//** 
- * \file  timer.c
- * \brief  csi timer driver
+ * \file  bt.c
+ * \brief  csi bt driver
  * \copyright Copyright (C) 2015-2021 @ APTCHIP
  * <table>
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
@@ -47,6 +47,19 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, uint32_t wTimeOut)
 	
     return CSI_OK;
 }
+/** \brief set bt count mode
+ * 
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \param[in] eCntMode: bt count mode, one pulse/continuous
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_bt_count_mode(csp_bt_t *ptBtBase, csi_bt_cntmode_e eCntMode)
+{
+	csp_bt_count_mode(ptBtBase, eCntMode);
+	
+	return CSI_OK;
+}
+
 /** \brief start bt
  * 
  *  \param[in] ptBtBase: pointer of bt register structure
@@ -121,12 +134,12 @@ csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg)
 	csi_clk_enable((uint32_t *)ptBtBase);								//bt clk enable
 	csp_bt_soft_rst(ptBtBase);											//reset bt
 		
-	wClkDiv = (soc_get_pclk_freq() / ptBtPwmCfg->wFreq / 60000);			//bt clk div value
+	wClkDiv = (soc_get_pclk_freq() / ptBtPwmCfg->wFreq / 60000);		//bt clk div value
 	if(wClkDiv == 0)
 		wClkDiv = 1;
 	
 	wPrdrLoad  = (soc_get_pclk_freq() / (wClkDiv * ptBtPwmCfg->wFreq));	//prdr load value
-	wCmpLoad = wPrdrLoad * ptBtPwmCfg->byDutyCycle /100;					//cmp load value
+	wCmpLoad = wPrdrLoad * ptBtPwmCfg->byDutyCycle /100;				//cmp load value
 		
 	wCrVal = BT_CLK_EN | (BT_IMMEDIATE << BT_SHDW_POS) | (BT_CONTINUOUS << BT_OPM_POS) | (BT_PCLKDIV << BT_EXTCKM_POS) |
 				(BT_CNTRLD_EN << BT_CNTRLD_POS) | (ptBtPwmCfg->byIdleLevel << BT_IDLEST_POS) | (ptBtPwmCfg->byIdleLevel << BT_STARTST_POS);
@@ -137,17 +150,17 @@ csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg)
 	
 	if(ptBtPwmCfg->byInter)
 	{
-		csp_bt_set_int(ptBtBase, ptBtPwmCfg->byInter, true);				//enable interrupt
+		csp_bt_set_int(ptBtBase, ptBtPwmCfg->byInter, true);			//enable interrupt
 		csi_irq_enable((uint32_t *)ptBtBase);							//enable bt irq
 	}
 	
 	return CSI_OK;
 }
-/** \brief  updata timer para and cmp reg value
+/** \brief  updata bt para and cmp reg value
  * 
- *  \param[in] ptBtBase: pointer of timer register structure
- *  \param[in] hwPrdr: timer padr reg  value
- *  \param[in] hwCmp: timer cmp reg value
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \param[in] hwPrdr: bt padr reg  value
+ *  \param[in] hwCmp: bt cmp reg value
  *  \return none
  */
 csi_error_t csi_bt_prdr_cmp_updata(csp_bt_t *ptBtBase, uint16_t hwPrdr, uint16_t hwCmp) 
@@ -156,9 +169,9 @@ csi_error_t csi_bt_prdr_cmp_updata(csp_bt_t *ptBtBase, uint16_t hwPrdr, uint16_t
 	csp_bt_set_cmp(ptBtBase, hwCmp);						//bt cmp load value
 	return CSI_OK;
 }
-/** \brief  updata timer pwm duty cycle
+/** \brief  updata bt pwm duty cycle
  * 
- *  \param[in] ptBtBase: pointer of timer register structure
+ *  \param[in] ptBtBase: pointer of bt register structure
  *  \param[in] byDutyCycle: duty cycle(0 -> 100)
  *  \return none
  */
@@ -171,9 +184,9 @@ csi_error_t csi_bt_pwm_duty_cycle_updata(csp_bt_t *ptBtBase, uint8_t byDutyCycle
 	return CSI_OK;
 }
 
-/** \brief  updata timer pwm freq and duty cycle
+/** \brief  updata bt pwm freq and duty cycle
  * 
- *  \param[in] ptBtBase: pointer of timer register structure
+ *  \param[in] ptBtBase: pointer of bt register structure
  *  \param[in] wfreq: pwm frequency  
  *  \param[in] byDutyCycle: pwm duty cycle(0 -> 100)
  *  \return none
@@ -190,11 +203,11 @@ csi_error_t csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDuty
 	return CSI_OK;
 }
 
-/** \brief timer sync input evtrg config  
+/** \brief bt sync input evtrg config  
  * 
- *  \param[in] ptBtBase: pointer of timer register structure
- *  \param[in] eTrgin: timer sync evtrg input channel(0~1)
- *  \param[in] eTrgMode: timer evtrg mode, continuous/once
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \param[in] eTrgin: bt sync evtrg input channel(0~1)
+ *  \param[in] eTrgMode: bt evtrg mode, continuous/once
  *  \param[in] bAutoRearm: auto rearm, ENABLE/DISABLE(true/false)
  *  \return error code \ref csi_error_t
  */
@@ -212,10 +225,10 @@ csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trg
 	
 	return CSI_OK;
 }
-/** \brief rearm timer sync evtrg  
+/** \brief rearm bt sync evtrg  
  * 
- *  \param[in] ptBtBase: pointer of timer register structure
- *  \param[in] eTrgin: timer sync evtrg input channel(0~1)
+ *  \param[in] ptBtBase: pointer of bt register structure
+ *  \param[in] eTrgin: bt sync evtrg input channel(0~1)
  *  \return error code \ref csi_error_t
  */
 csi_error_t csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin)
@@ -224,9 +237,9 @@ csi_error_t csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin)
 	
 	return CSI_OK;
 }
-/** \brief timer evtrg output config
+/** \brief bt evtrg output config
  * 
- *  \param[in] ptBtBase:pointer of timer register structure
+ *  \param[in] ptBtBase:pointer of bt register structure
  *  \param[in] byEvtrg: trigger event (byEvtrg =  0)
  *  \param[in] eTrgSrc: BT evtrg source(1~3) 
  *  \param[in] eTrgPrd: event count period
@@ -246,10 +259,10 @@ csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byEvtrg, csi_bt_trgsrc_
 }
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-/** \brief start timer by sync event
+/** \brief start bt by sync event
  * 
- *  \param[in] ptBtBase: handle timer handle to operate
- *  \param[in] wTimeOut: tthe timeout for timer, unit: us
+ *  \param[in] ptBtBase: handle bt handle to operate
+ *  \param[in] wTimeOut: tthe timeout for bt, unit: us
  *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_bt_start_sync(csp_bt_t *ptBtBase, uint32_t wTimeOut)
