@@ -44,6 +44,15 @@ typedef enum
 }csi_bt_pwmlev_e;
 
 /**
+ * \enum     csi_bt_workmode_e
+ * \brief    BT count mode  
+ */
+typedef enum{
+	BT_CNT_ONEPULSE	= 0,			//one pulse 	
+	BT_CNT_CONTINUOUS				//continuous		
+}csi_bt_cntmode_e;
+
+/**
  * \enum     csi_bt_trgin_e
  * \brief    BT sync trigger input 
  */
@@ -93,6 +102,14 @@ typedef enum
   \return      error code \ref csi_error_t
 */
 csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, uint32_t wTimeOut);
+
+/** 
+  \brief 	   set work mode
+  \param[in]   ptBtBase		pointer of bt register structure
+  \param[in]   eCntMode		bt count mode, one pulse/continuous
+  \return 	   error code \ref csi_error_t
+ */ 
+csi_error_t csi_bt_count_mode(csp_bt_t *ptBtBase, csi_bt_cntmode_e eCntMode);
 
 /** 
   \brief 	   start bt

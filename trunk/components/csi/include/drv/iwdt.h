@@ -48,13 +48,22 @@ typedef enum{
 	IWDT_TV_8200			//8200ms = 8.2s 
 }csi_iwdt_tv_e;
 
+/**
+ * \enum     csi_wwdt_intsrc_e
+ * \brief    WWDT interrupt source 
+ */
+typedef enum
+{
+	IWDT_INTSRC_NONE   =	(0x00ul << 0), 		//NONE interrupt
+	IWDT_INTSRC_ALARM    =	(0x01ul << 8)		//ALARM interrupt
+}csi_wwdt_intsrc_e;
 
 /**
-  \brief       Initialize WDT Interface. Initializes the resources needed for the WDT interface 
-  \param[in]   eOverTime    time length of system reset
+  \brief       Initialize iwdt Interface. Initializes the resources needed for the WDT interface 
+  \param[in]   eTimeOut    time length of system reset
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_iwdt_init(csi_iwdt_tv_e eTimeOver);
+csi_error_t csi_iwdt_init(csi_iwdt_tv_e eTimeOut);
 
 /** 
   \brief 	   open(start) iwdt
@@ -71,37 +80,37 @@ csi_error_t csi_iwdt_open(void);
 csi_error_t csi_iwdt_close(void);
 
 /**
-  \brief       Feed the WDT
+  \brief       feed the iwdt
   \param[in]   none
   \return      error code \ref csi_error_t
 */
 csi_error_t csi_iwdt_feed(void);
 
 /**
-  \brief       Get the remaining time to timeout
+  \brief       get the remaining time to timeout
   \param[in]   none
-  \return      the remaining time of wdt(ms)
+  \return      the remaining time of iwdt, unit: ms
 */
 uint32_t csi_iwdt_get_remaining_time(void);
     
 /**
-  \brief       Check if wdt is running
+  \brief       check if wdt is running
   \param[in]   none
   \return      true->running, false->stopped
 */
 bool csi_iwdt_is_running(void);
 
 /** 
-  \brief 	   iwdt INT enable/disable
+  \brief 	   iwdt irq enable/disable
   \param[in]   eIntTv		iwdt interrupt timer length(timer over), 1/2/3/4/5/6/7_8
-  \param[in]   bEnable		enable/disable INT
+  \param[in]   bEnable		enable/disable irq
   \return 	   error code \ref csi_error_t
  */
 csi_error_t csi_iwdt_irq_enable(csi_iwdt_intv_e eIntTv, bool bEnable);
 
 /**
-  \brief      enable or disable WDT when stop in debug mode
-  \param	   bEnable 
+  \brief       enable or disable iwdt when stop in debug mode
+  \param[in]   bEnable 
   \return      none
 */
 csi_error_t csi_iwdt_debug_enable(bool bEnable);
