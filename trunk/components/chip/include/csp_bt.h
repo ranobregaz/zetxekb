@@ -250,12 +250,14 @@ static inline void csp_bt_clk_en(csp_bt_t *ptBtBase)
 {
 	ptBtBase->CR |= BT_CLK_EN;
 }
-
 static inline void csp_bt_updata_en(csp_bt_t *ptBtBase)
 {
 	ptBtBase->CR |= (BT_UPDATE_EN << BT_UPDATA_POS);
 }
-
+static inline void csp_bt_count_mode(csp_bt_t *ptBtBase, bt_opm_e eOpm)
+{
+	ptBtBase->CR = (ptBtBase->CR & ~BT_OPM_MSK) | (eOpm << BT_OPM_POS);
+}
 static inline void csp_bt_soft_rst(csp_bt_t *ptBtBase)
 {
 	ptBtBase->RSSR = (ptBtBase->RSSR & (~BT_SRR_MSK)) | (BT_SRR_EN << BT_SRR_POS);
