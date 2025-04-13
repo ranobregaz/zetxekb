@@ -19,11 +19,8 @@
 /******************************************************************************
 ************************** WWDT Structure Definition ****************************
 ******************************************************************************/
-/**
-*******************************************************************************
-@brief WWDT Structure
-*******************************************************************************
-*/
+/// \struct csp_wwdt_t
+/// \brief WWDT Reg Description
  typedef volatile struct
  { 
 
@@ -35,7 +32,6 @@
     __OM  uint32_t  ICR;             /**< Interrupt Disable Register         */
 
  } csp_wwdt_t, *csp_wwd_ptr;
-
 
 /******************************************************************************
 ************************** WWDT Registers Definition ****************************
@@ -50,18 +46,19 @@
 /******************************************************************************
 * CFGR : WWDT Configuraton Registers
 ******************************************************************************/
- #define WWDT_WND_MSK      	(0xFFul )   
- #define WWDT_PSC_POS      	(8ul)      
- #define WWDT_PSC_MSK		(0x3 << WWDT_PSC_POS)
+#define WWDT_WND_MSK      	(0xFFul )   
+#define WWDT_PSC_POS      	(8ul)      
+#define WWDT_PSC_MSK		(0x03 << WWDT_PSC_POS)
  
- #define WWDT_DBGEN_POS		(10)
- #define WWDT_DBGEN_MSK		(0x1 << WWDT_DBGEN_POS)
+#define WWDT_DBGEN_POS		(10)
+#define WWDT_DBGEN_MSK		(0x01 << WWDT_DBGEN_POS)
 
 /******************************************************************************
 * RISR/MISR/IMCR/ICR : Interrupt related Register
 ******************************************************************************/
- #define WWDT_EVI_POS			(0x0ul)                
- #define WWDT_EVI_MSK			(0x1 << WWDT_EVI_POS)
+#define WWDT_EVI_POS			(0x0ul)                
+#define WWDT_EVI_MSK			(0x01 << WWDT_EVI_POS)
+#define WWDT_EVI_INT			(0x01 << WWDT_EVI_POS)
 
 static inline void csp_wwdt_set_cnt(csp_wwdt_t * ptWwdtBase, uint32_t wVal)
 {

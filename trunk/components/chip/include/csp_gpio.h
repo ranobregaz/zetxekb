@@ -23,7 +23,7 @@
 #define GPIO_RESET_VALUE  	(0x00000000)
 
 /// \struct csp_gpio_t
-/// \brief GPIO reg description
+/// \brief GPIO Reg Description
 typedef struct
 {
 	__IOM  uint32_t  CONLR;		//0x0000	Control Low Register                
