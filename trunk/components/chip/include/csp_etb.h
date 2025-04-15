@@ -47,7 +47,7 @@ typedef struct {
 } wj_etb_ch1_2_regs_t;
 
 /// \struct csp_etb_t
-/// \brief ETB reg description     
+/// \brief ETB Reg Description     
 typedef struct {
     __IOM uint32_t ETB_EN;          //0x00 (R/W) ETB enable Register                   
     __IOM uint32_t SOFTTRIG;        //0x04 (R/W) Software trigger Configure Register   
