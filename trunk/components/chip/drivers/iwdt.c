@@ -19,21 +19,22 @@
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
-static uint16_t s_wIwdtTimeout	= 8200;
+static uint32_t s_wIwdtTimeout	= 8200;
 
 /** \brief Initialize IWDT Interface. Initializes the resources needed for the WDT interface
  * 
- *  \param[in] eTimeOver: time length of system reset
+ *  \param[in] eTimeOut: the timeout value (time length of system reset)
  *  \return error code \ref csi_error_t
 */
-csi_error_t csi_iwdt_init(csi_iwdt_tv_e eTimeOver)
+csi_error_t csi_iwdt_init(csi_iwdt_tv_e eTimeOut)
 {
    	uint8_t byOvt;
 	
 	if(!(csp_get_gcsr(SYSCON) & ISOSC))		//enable isosc
 		csi_isosc_enable();		
 	
-	switch (eTimeOver)						//set iwdt time over(time long of reset)
+	s_wIwdtTimeout = eTimeOut;
+	switch (eTimeOut)						//set iwdt time over(time long of reset)
 	{
 		case IWDT_TV_128:	byOvt = 0x0;
 			break;
@@ -86,7 +87,7 @@ csi_error_t csi_iwdt_close(void)
 	return CSI_OK;
 }
 
-/** \brief close(stop) iwdt
+/** \brief feed iwdt
  * 
  *  \param[in] none
  *  \return error code \ref csi_error_t
@@ -97,7 +98,7 @@ csi_error_t csi_iwdt_feed(void)
 	return CSI_OK;
 }
 
-/** \brief iwdt INT enable/disable
+/** \brief iwdt irq enable/disable
  * 
  *  \param[in] eIntTv: iwdt interrupt timer length(timer over), 1/2/3/4/5/6/7_8
  *  \param[in] bEnable: enable/disable INT
@@ -115,7 +116,7 @@ csi_error_t csi_iwdt_irq_enable(csi_iwdt_intv_e eIntTv, bool bEnable)
 
 	return CSI_OK;
 }
-/** \brief Check if wdt is running
+/** \brief check if wdt is running
  * 
  *  \return true->running, false->stopped
 */
@@ -124,10 +125,10 @@ bool csi_iwdt_is_running(void)
 	return csp_iwdt_rd_st(SYSCON);;
 }
 
-/** \brief Get the remaining time to timeout
+/** \brief get the remaining time to timeout
  * 
- *  \param[in] SYSCON: pointer of iwdt register structure
- *  \return the remaining time of wdt(ms)
+ *  \param[in] none
+ *  \return the remaining time of wdt, unit: ms
 */
 uint32_t csi_iwdt_get_remaining_time(void)
 {
@@ -159,7 +160,7 @@ uint32_t csi_iwdt_get_remaining_time(void)
 	return wRTime;
 }
 
-/** \brief enable or disable WDT when stop in debug mode
+/** \brief enable or disable iwdt when stop in debug mode
  * 
  *  \param[in] bEnable: enable/disable 
  *  \return  none
