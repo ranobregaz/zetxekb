@@ -56,7 +56,6 @@ extern csp_bt_t  		*BT0;
 extern csp_bt_t  		*BT1;
 extern csp_crc_t 		*CRC;
 extern csp_rtc_t 		*RTC;
-
 extern csp_iwdt_t		*IWDT;
 
 #endif
