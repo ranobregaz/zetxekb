@@ -12,10 +12,11 @@
 /* Includes ------------------------------------------------------------------*/
 
 #include <soc.h>
-#include <gpio.h>
-#include <uart.h>
-#include <adc.h>
-#include <pin.h>
+#include <drv/gpio.h>
+#include <drv/uart.h>
+#include <drv/adc.h>
+#include <drv/pin.h>
+
 #include "board_config.h"
 #include "csp.h"
 /* externs function--------------------------------------------------------*/
@@ -246,14 +247,14 @@ void BT0IntHandler(void)
     // ISR content ...
 	volatile uint32_t wMisr = csp_bt_get_isr(BT0);
 	
-	if(wMisr & BT_PEND_INT)
+	if(wMisr & BT_PEND_INT)					//PEND interrupt
 	{
 		csp_bt_clr_isr(BT0, BT_PEND_INT);
 		csi_pin_toggle(PA01);
 		//csp_gpio_set_high(GPIOA0, 1);
 	}
 	
-	if(wMisr & BT_CMP_INT)
+	if(wMisr & BT_CMP_INT)					//CMP interrupt
 	{
 		csp_bt_clr_isr(BT0, BT_CMP_INT);
 		csi_pin_toggle(PA01);
@@ -268,14 +269,14 @@ void BT1IntHandler(void)
 	// ISR content ...
 	volatile uint32_t wMisr = csp_bt_get_isr(BT1);
 	
-	if(wMisr & BT_PEND_INT)
+	if(wMisr & BT_PEND_INT)				//PEND interrupt
 	{
 		csp_bt_clr_isr(BT1, BT_PEND_INT);
 		csi_pin_toggle(PA01);
 		//csp_gpio_set_high(GPIOA0, 1);
 	}
 	
-	if(wMisr & BT_CMP_INT)
+	if(wMisr & BT_CMP_INT)				//CMP interrupt
 	{
 		csp_bt_clr_isr(BT1, BT_CMP_INT);
 		csi_pin_toggle(PA01);
