@@ -39,30 +39,30 @@
 int gpio_port_ouput_demo(void)
 {
 	int iRet = 0;
-	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02;
+	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02;				//GPIOA0端口，PA00/PA02
 	
-	csi_gpio_port_dir(GPIOA0, wPinMask, GPIO_DIR_OUTPUT);			//gpio_port as output 
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//gpio_port high
+	csi_gpio_port_dir(GPIOA0, wPinMask, GPIO_DIR_OUTPUT);			//GPIOA0 端口配置为输出
+	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//输出高
 	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 0);						//gpio_port low
+	csi_gpio_port_write(GPIOA0, wPinMask, 0);						//输出低
 	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//gpio_port high
-	mdelay(100);
-	
-	csi_gpio_port_output_mode(GPIOA0, wPinMask, GPIO_OPEN_DRAIN);	//open drain of ouput
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//gpio_port high
-	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 0);						//gpio_port low
-	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//gpio_port high
+	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//输出高
 	mdelay(100);
 	
-	csi_gpio_port_output_mode(GPIOA0, wPinMask, GPIO_PUSH_PULL);	//push pull of output
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//gpio_port high
+	csi_gpio_port_output_mode(GPIOA0, wPinMask, GPIO_OPEN_DRAIN);	//GPIOA0 端口配置为开漏输出
+	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//输出高
 	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 0);						//gpio_port low
+	csi_gpio_port_write(GPIOA0, wPinMask, 0);						//输出低
 	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//gpio_port high
+	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//输出高
+	mdelay(100);
+	
+	csi_gpio_port_output_mode(GPIOA0, wPinMask, GPIO_PUSH_PULL);	//GPIOA0 端口配置为推挽输出
+	csi_gpio_port_write(GPIOA0, wPinMask, 1);						///输出高
+	mdelay(100);
+	csi_gpio_port_write(GPIOA0, wPinMask, 0);						//输出低
+	mdelay(100);
+	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//输出高
 	mdelay(100);
 	
 	return iRet;
@@ -77,20 +77,20 @@ int gpio_port_input_demo(void)
 {
 	int iRet = 0;
 	uint32_t wStatus;
-	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02;
+	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02;				//GPIOA0端口，PA00/PA02
 	
-	csi_gpio_port_dir(GPIOA0, wPinMask, GPIO_DIR_INPUT);			//gpio_port as output 
-	csi_gpio_port_pull_mode(GPIOA0, wPinMask, GPIO_PULLNONE);		//pullnone
+	csi_gpio_port_dir(GPIOA0, wPinMask, GPIO_DIR_INPUT);			//GPIOA0 端口配置为输入
+	csi_gpio_port_pull_mode(GPIOA0, wPinMask, GPIO_PULLNONE);		//无上下拉
 	mdelay(100);
 	wStatus = csi_gpio_port_read(GPIOA0,wPinMask);
 	while(wStatus != 0);
 	
-	csi_gpio_port_pull_mode(GPIOA0, wPinMask, GPIO_PULLUP);			//pullup
+	csi_gpio_port_pull_mode(GPIOA0, wPinMask, GPIO_PULLUP);			//上拉
 	mdelay(100);
 	wStatus = csi_gpio_port_read(GPIOA0,wPinMask);
 	while(wStatus != wPinMask);
 	
-	csi_gpio_port_pull_mode(GPIOA0, wPinMask, GPIO_PULLDOWN);		//pulldown
+	csi_gpio_port_pull_mode(GPIOA0, wPinMask, GPIO_PULLDOWN);		//下拉
 	mdelay(100);
 	wStatus = csi_gpio_port_read(GPIOA0,wPinMask);
 	while(wStatus != 0);
@@ -107,12 +107,12 @@ int gpio_port_input_demo(void)
 int gpio_port_irq_demo(void)
 {
 	int iRet = 0;
-	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02 | PINMASK_PA05; //PA00/PA02/PA05 	
+	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02 | PINMASK_PA05; //GPIOA0端口，PA00/PA02/PA05
 
-	csi_gpio_port_dir(GPIOA0, wPinMask, GPIO_DIR_INPUT);			//input
-	csi_gpio_port_pull_mode(GPIOA0, wPinMask, GPIO_PULLUP);			//pullup
-	csi_gpio_port_irq_mode(GPIOA0,wPinMask,GPIO_IRQ_FALLING_EDGE);	//falling edge
-	csi_gpio_port_irq_enable(GPIOA0,wPinMask,ENABLE);				//enable gpio interrupt
+	csi_gpio_port_dir(GPIOA0, wPinMask, GPIO_DIR_INPUT);			//端口配置为输入
+	csi_gpio_port_pull_mode(GPIOA0, wPinMask, GPIO_PULLUP);			//上拉
+	csi_gpio_port_irq_mode(GPIOA0,wPinMask,GPIO_IRQ_FALLING_EDGE);	//下降沿
+	csi_gpio_port_irq_enable(GPIOA0,wPinMask,ENABLE);				//使能GPIOA0端口对应外部中断
 	
 	return iRet;
 }

@@ -17,11 +17,7 @@
 /* externs variablesr------------------------------------------------------*/
 /* Private macro-----------------------------------------------------------*/
 /* Private variablesr------------------------------------------------------*/
-typedef enum{
-	ETB_DEMO_ONE_TRG_ONE	= 0,	//ETB one trigger one
-	ETB_DEMO_ONE_TRG_MORE,			//ETB one trigger more
-	ETB_DEMO_MORE_TRG_ONE			//ETB more trigger one
-}etb_trg_mode_e;
+
 
 /** \brief etcb one trg one 
  * 
@@ -32,21 +28,21 @@ int etcb_one_trg_one_demo(void)
 {
 	int iRet = 0;
 	uint8_t ch;
-	csi_etb_config_t tEtbConfig;	
+	csi_etb_config_t tEtbConfig;				//ETB 参数配置结构体	
 			
 	//para config
-	tEtbConfig.eChType 	= ETB_ONE_TRG_ONE;		//one channel trigger one channel
-	tEtbConfig.bySrcIp 	= ETB_EXI_TRGOUT0;		//exi group0 as trigger source
+	tEtbConfig.eChType 	= ETB_ONE_TRG_ONE;		//单个源触发单个目标
+	tEtbConfig.bySrcIp 	= ETB_EXI_TRGOUT0;		//外部中断组0作为触发源
 	tEtbConfig.bySrcIp1 = 0xff;						
 	tEtbConfig.bySrcIp2 = 0xff;
-	tEtbConfig.byDstIp 	= ETB_BT0_SYNCIN0;		//bt0 syncin0
+	tEtbConfig.byDstIp 	= ETB_BT0_SYNCIN0;		//BT0 同步输入0作为目标事件
 	tEtbConfig.byDstIp1 = 0xff;
 	tEtbConfig.byDstIp2 = 0xff;
-	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;
+	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
 	
-	iRet = csi_etb_init();
-	ch = csi_etb_ch_alloc(tEtbConfig.eChType);
-	iRet |= csi_etb_ch_config(ch,&tEtbConfig);
+	iRet = csi_etb_init();						//初始化(使能)ETB
+	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//获取ETB空闲通道
+	iRet |= csi_etb_ch_config(ch,&tEtbConfig);	//配置并启动ETB通道
 			
 	return iRet;
 }
