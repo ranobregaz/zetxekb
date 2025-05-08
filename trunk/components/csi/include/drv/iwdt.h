@@ -21,7 +21,7 @@ extern "C" {
 
 /**
  * \enum     csi_iwdt_intv_e
- * \brief    IWDT interrupt timer(timer over) select
+ * \brief    IWDT interrupt timer(timer out) select
  */
 typedef enum{
 	IWDT_INT_1_8 	= 0,
@@ -31,11 +31,11 @@ typedef enum{
 	IWDT_INT_5_8, 
 	IWDT_INT_6_8, 
 	IWDT_INT_7_8
-}csi_iwdt_intv_e;
+}csi_iwdt_into_e;
 
 /**
  * \enum     csi_iwdt_tv_e
- * \brief    IWDT time over, unit: ms
+ * \brief    IWDT time out, unit: ms
  */
 typedef enum{
 	IWDT_TV_128 	= 0,	//128ms
@@ -46,24 +46,24 @@ typedef enum{
 	IWDT_TV_3100,			//3100ms = 3.1s 
 	IWDT_TV_4100, 			//4100ms = 4.1s
 	IWDT_TV_8200			//8200ms = 8.2s 
-}csi_iwdt_tv_e;
+}csi_iwdt_to_e;
 
 /**
- * \enum     csi_wwdt_intsrc_e
- * \brief    WWDT interrupt source 
+ * \enum     csi_iwdt_intsrc_e
+ * \brief    IWDT interrupt source 
  */
 typedef enum
 {
 	IWDT_INTSRC_NONE   =	(0x00ul << 0), 		//NONE interrupt
 	IWDT_INTSRC_ALARM    =	(0x01ul << 8)		//ALARM interrupt
-}csi_wwdt_intsrc_e;
+}csi_iwdt_intsrc_e;
 
 /**
   \brief       Initialize iwdt Interface. Initializes the resources needed for the WDT interface 
   \param[in]   eTimeOut    time length of system reset
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_iwdt_init(csi_iwdt_tv_e eTimeOut);
+csi_error_t csi_iwdt_init(csi_iwdt_to_e eTimeOut);
 
 /** 
   \brief 	   open(start) iwdt
@@ -106,7 +106,7 @@ bool csi_iwdt_is_running(void);
   \param[in]   bEnable		enable/disable irq
   \return 	   error code \ref csi_error_t
  */
-csi_error_t csi_iwdt_irq_enable(csi_iwdt_intv_e eIntTv, bool bEnable);
+csi_error_t csi_iwdt_irq_enable(csi_iwdt_into_e eIntTo, bool bEnable);
 
 /**
   \brief       enable or disable iwdt when stop in debug mode
