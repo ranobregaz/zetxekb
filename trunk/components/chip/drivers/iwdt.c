@@ -26,7 +26,7 @@ static uint32_t s_wIwdtTimeout	= 8200;
  *  \param[in] eTimeOut: the timeout value (time length of system reset)
  *  \return error code \ref csi_error_t
 */
-csi_error_t csi_iwdt_init(csi_iwdt_tv_e eTimeOut)
+csi_error_t csi_iwdt_init(csi_iwdt_to_e eTimeOut)
 {
    	uint8_t byOvt;
 	
@@ -104,9 +104,9 @@ csi_error_t csi_iwdt_feed(void)
  *  \param[in] bEnable: enable/disable INT
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_iwdt_irq_enable(csi_iwdt_intv_e eIntTv, bool bEnable)
+csi_error_t csi_iwdt_irq_enable(csi_iwdt_into_e eIntTo, bool bEnable)
 {
-	csp_iwdt_set_intt(SYSCON, eIntTv);					//iwdt interrupt timer, 1/2/3/4/5/6/7_8
+	csp_iwdt_set_intt(SYSCON, eIntTo);					//iwdt interrupt timer, 1/2/3/4/5/6/7_8
 	csp_syscon_int_enable(SYSCON, IWDT_INT, bEnable);	//enable iwdt interrupt
 	
 	if(bEnable)
