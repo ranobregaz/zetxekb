@@ -36,21 +36,21 @@ csi_error_t csi_iwdt_init(csi_iwdt_to_e eTimeOut)
 	s_wIwdtTimeout = eTimeOut;
 	switch (eTimeOut)						//set iwdt time over(time long of reset)
 	{
-		case IWDT_TV_128:	byOvt = 0x0;
+		case IWDT_TO_128:	byOvt = 0x0;
 			break;
-		case IWDT_TV_256: 	byOvt = 0x1;
+		case IWDT_TO_256: 	byOvt = 0x1;
 			break;
-		case IWDT_TV_512: 	byOvt = 0x2;
+		case IWDT_TO_512: 	byOvt = 0x2;
 			break;
-		case IWDT_TV_1000: 	byOvt = 0x3;
+		case IWDT_TO_1000: 	byOvt = 0x3;
 			break;
-		case IWDT_TV_2000:	byOvt = 0x4;
+		case IWDT_TO_2000:	byOvt = 0x4;
 			break;
-		case IWDT_TV_3100:	byOvt = 0x5;
+		case IWDT_TO_3100:	byOvt = 0x5;
 			break;
-		case IWDT_TV_4100: 	byOvt = 0x6;
+		case IWDT_TO_4100: 	byOvt = 0x6;
 			break;
-		case IWDT_TV_8200:
+		case IWDT_TO_8200:
 		default:	byOvt = 0x7;
 			break;
 	}
