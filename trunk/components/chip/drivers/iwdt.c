@@ -34,7 +34,7 @@ csi_error_t csi_iwdt_init(csi_iwdt_to_e eTimeOut)
 		csi_isosc_enable();		
 	
 	s_wIwdtTimeout = eTimeOut;
-	switch (eTimeOut)						//set iwdt time over(time long of reset)
+	switch (eTimeOut)						//set iwdt time out(time long of reset)
 	{
 		case IWDT_TO_128:	byOvt = 0x0;
 			break;
