@@ -38,14 +38,14 @@ typedef enum{
  * \brief    IWDT time out, unit: ms
  */
 typedef enum{
-	IWDT_TV_128 	= 0,	//128ms
-	IWDT_TV_256,			//256ms
-	IWDT_TV_512,			//512ms
-	IWDT_TV_1000,			//1000ms = 1s
-	IWDT_TV_2000,			//2000ms = 2s 
-	IWDT_TV_3100,			//3100ms = 3.1s 
-	IWDT_TV_4100, 			//4100ms = 4.1s
-	IWDT_TV_8200			//8200ms = 8.2s 
+	IWDT_TO_128 	= 0,	//128ms
+	IWDT_TO_256,			//256ms
+	IWDT_TO_512,			//512ms
+	IWDT_TO_1000,			//1000ms = 1s
+	IWDT_TO_2000,			//2000ms = 2s 
+	IWDT_TO_3100,			//3100ms = 3.1s 
+	IWDT_TO_4100, 			//4100ms = 4.1s
+	IWDT_TO_8200			//8200ms = 8.2s 
 }csi_iwdt_to_e;
 
 /**
