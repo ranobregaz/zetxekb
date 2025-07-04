@@ -6,6 +6,7 @@
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-9-14 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2021-1-8  <td>V0.1  <td>WNN   <td>modify
+ * <tr><td> 2021-5-20  <td>V0.2  <td>YYM   <td>modify
  * </table>
  * *********************************************************************
 */
@@ -14,19 +15,13 @@
 #define _DRV_LPT_H_
 
 #include <drv/common.h>
+#include "csp.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef struct csi_lpt csi_lpt_t;
-
-struct csi_lpt{
-    csi_dev_t        dev;
-    void            (*callback)(csi_lpt_t *lpt, void *arg);
-    void            *arg;
-    void            *priv;
-} ;
+#define ERR_LPT_CLK      0xfffff
 
 typedef enum
 {     
@@ -78,196 +73,189 @@ typedef enum
 	LPT_INT_PEND,
 }csi_lpt_int_t;
 
-/**
-  \brief       Initialize LPT Interface. Initializes the resources needed for the LPT interface
-  \param[in]   lpt    handle lpt handle to operate
-  \param[in]   idx      lpt index
-  \return      error code \ref csi_error_t
-*/
-csi_error_t csi_lpt_init(csi_lpt_t *lpt, uint32_t idx);
+typedef struct
+{
+	csi_lpt_startpol_t eStartpol;
+	csi_lpt_idlepol_t  eIdlepol;
+	csi_lpt_clksrc_t   eClksrc;
+	uint8_t            byCycle;
+	uint32_t           wFreq;
+	
+}csi_lpt_pwm_config_t;
+
+/** \brief initialize lpt data structure
+ *  \param[in] ptLptBase:pointer of lpt register structure
+ *  \param[in] eClk: clk source selection
+ *  \param[in] wTimeOut: the timeout for bt, unit: ms
+ *  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_t eClk, uint32_t wms);
 
 /**
   \brief       De-initialize LPT Interface. stops operation and releases the software resources used by the interface
-  \param[in]   lpt    handle lpt handle to operate
+  \param[in]   ptLptBase:pointer of lpt register structure
   \return      None
 */
-void csi_lpt_uninit(csi_lpt_t *lpt);
+void csi_lpt_uninit(csp_lpt_t *ptLptBase);
 
-/**
-  \brief       Start lpt
-  \param[in]   lpt         handle lpt handle to operate
-  \param[in]   timeout_us  the timeout for lpt
-  \param[in]   clk_src     lpt clk source
-  \return      error code \ref csi_error_t
-*/
-csi_error_t csi_lpt_start(csi_lpt_t *lpt, csi_lpt_clksrc_t clk_src, uint32_t timeout_us);
+/** \brief lpt start
+ * 
+ *  \param[in] ptLptBase:pointer of lpt register structure
+ *  \return error code \ref csi_error_t
+ */
+csi_error_t csi_lpt_start(csp_lpt_t *ptLptBase);
 
 /**
   \brief       Stop lpt
-  \param[in]   lpt    handle lpt handle to operate
+  \param[in]   ptLptBase:pointer of lpt register structure
   \return      None
 */
-void csi_lpt_stop(csi_lpt_t *lpt);
+void csi_lpt_stop(csp_lpt_t *ptLptBase);
 
 /**
   \brief       Get lpt remaining value
-  \param[in]   lpt    handle lpt handle to operate
+  \param[in]   ptLptBase:pointer of lpt register structure
   \return      lpt    remaining value
 */
-uint32_t csi_lpt_get_remaining_value(csi_lpt_t *lpt);
+uint32_t csi_lpt_get_remaining_value(csp_lpt_t *ptLptBase);
 
 /**
   \brief       Get lpt load value
-  \param[in]   lpt    handle lpt handle to operate
+  \param[in]   ptLptBase:pointer of lpt register structure
   \return      lpt    load value
 */
-uint32_t csi_lpt_get_load_value(csi_lpt_t *lpt);
+uint32_t csi_lpt_get_load_value(csp_lpt_t *ptLptBase);
 
 /**
   \brief       Check lpt is running
-  \param[in]   lpt    handle lpt handle to operate
+  \param[in]   ptLptBase:pointer of lpt register structure
   \return      true->running, false->stopped
 */
-bool csi_lpt_is_running(csi_lpt_t *lpt);
-
-/**
-  \brief       Attach the callback handler to lpt
-  \param[in]   lpt       operate handle.
-  \param[in]   callback    callback function
-  \param[in]   arg         callback's param
-  \return      error  code \ref csi_error_t
-*/
-csi_error_t csi_lpt_attach_callback(csi_lpt_t *lpt, void *callback, void *arg);
-
-/**
-  \brief       Detach the callback handler
-  \param[in]   lpt    operate handle.
-*/
-void csi_lpt_detach_callback(csi_lpt_t *lpt);
+bool csi_lpt_is_running(csp_lpt_t *ptLptBase);
 
 /**
   \brief       Enable lpt power manage
-  \param[in]   lpt    lpt handle to operate.
+  \param[in]   ptLptBase:pointer of lpt register structure
+  \param[in]   eLptInt:irq mode
+  \param[in]   bEnable:lpt irq enable or disable
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_lpt_enable_pm(csi_lpt_t *lpt);
+csi_error_t csi_lpt_irq_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable);
+
+/**
+  \brief       Enable lpt power manage
+  \param[in]   ptLptBase:pointer of lpt register structure
+  \return      error code \ref csi_error_t
+*/
+csi_error_t csi_lpt_enable_pm(csp_lpt_t *ptLptBase);
 
 /**
   \brief       Disable lpt power manage
-  \param[in]   lpt    lpt handle to operate.
+  \param[in]   ptLptBase:pointer of lpt register structure
 */
-void csi_lpt_disable_pm(csi_lpt_t *lpt);
+void csi_lpt_disable_pm(csp_lpt_t *ptLptBase);
 
-/**
-  \brief       lpt pwm init
-  \param[in]   lpt			lpt handle to operate.
-  \param[in]   init_polar   lpt pwm output initial polarity
-  \param[in]   stop_lev     lpt pwm output stop level
-*/
-csi_error_t csi_lpt_pwm_init(csi_lpt_t *lpt, csi_lpt_startpol_t pol_lev, csi_lpt_idlepol_t idle_lev);
-
-/** \brief start lpt pwm
+/** \brief lpt pwm init
  * 
- *  \param[in] lpt: handle lpt handle to operate
- *  \param eClk: clk source selection
- *  \param[in] freq: pwm frequency  
- *  \param[in] duty cycle: duty cycle(0 -> 100)
+ *  \param[in] ptLptBase:pointer of lpt register structure
+ *  \param[in] ptLptPara: pointer of lpt parameter structure
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_pwm_start(csi_lpt_t *lpt, csi_lpt_clksrc_t eClk, uint32_t freq, uint32_t duty_cycle) ;
+csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t* ptLptPara);
+
 
 /** \brief lpt work as a timer(sync start)
  * 
- *  \param[in] lpt: LPT handle to operate
+ *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] eClk: lpt clock source selection
  *  \param[in] wms: ms
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_start_sync(csi_lpt_t *lpt, csi_lpt_clksrc_t eClk, uint32_t wms);
+csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_t eClk, uint32_t wms);
 
 /** \brief start lpt pwm by external sync
  * 
- *  \param[in] lpt: handle lpt handle to operate
+ *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param eClk: clk source selection
  *  \param[in] freq: pwm frequency  in Hz
  *  \param[in] duty cycle: duty cycle(0 -> 100)
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_pwm_start_sync(csi_lpt_t *lpt, csi_lpt_clksrc_t eClk, uint32_t freq, uint32_t duty_cycle);
+csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_t eClk, uint32_t freq, uint32_t duty_cycle);
 
 /** \brief change lpt duty cycle
  * 
- *  \param lpt: LPT handle to operate
+ *  \param ptLptBase:pointer of lpt register structure
  *  \param duty_cycle: lpt clock source selection
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_change_duty(csi_lpt_t *lpt, uint32_t duty_cycle);
+csi_error_t csi_lpt_change_duty(csp_lpt_t *ptLptBase, uint32_t duty_cycle);
 
 /** 
   \brief updata lpt pwm freq para: (prdr and cmp value)
-  \param[in] lpt: handle lpt handle to operate
+  \param[in] ptLptBase:pointer of lpt register structure
   \param[in] hwCmp: duty cycle
   \param[in] hwPrdr: period 
   \param[in] mode_updata: updata mode 
   \return none
  */
-void csi_lpt_pwm_para_updata(csi_lpt_t *lpt, uint16_t hwCmp, uint16_t hwPrdr, csi_lpt_updata_t mode_updata);
+void csi_lpt_pwm_para_updata(csp_lpt_t *ptLptBase, uint16_t hwCmp, uint16_t hwPrdr, csi_lpt_updata_t mode_updata);
 
 /** \brief lpt sync window config  
  * 
- *  \param[in] lpt: LPT handle to operate
+ *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param bCrossEnable: window cross enable/disable
  *  \param bInvEnable: window invert enable/disable
  *  \param hwOffset: window start point from CNT=ZRO
  *  \param hwWindow: window width
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_set_sync_window(csi_lpt_t *lpt, bool bCrossEnable, bool bInvEnable, uint16_t hwOffset, uint16_t hwWindow);
+csi_error_t csi_lpt_set_sync_window(csp_lpt_t *ptLptBase, bool bCrossEnable, bool bInvEnable, uint16_t hwOffset, uint16_t hwWindow);
 
 /** \brief lpt sync config  
  * 
- *  \param[in] lpt: LPT handle to operate
+ *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param bySync: select sync
  *  \param tSyncMode: LPT_TRG_CONT/LPT_TRG_ONCE
  *  \param bARearmEnable: auto rearm enable/disable
  *  \return csi_error_t
  */
-csi_error_t csi_lpt_set_sync(csi_lpt_t *lpt, uint8_t bySync, csi_lpt_syncmode_t tSyncMode, bool bARearmEnable);
+csi_error_t csi_lpt_set_sync(csp_lpt_t *ptLptBase, uint8_t bySync, csi_lpt_syncmode_t tSyncMode, bool bARearmEnable);
 
 
 /** \brief restart lpt sync 
  * 
- *  \param[in] lpt: LPT handle to operate
+ *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param bySync: sync select
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_rearm_sync(csi_lpt_t *lpt, uint8_t bySync);
+csi_error_t csi_lpt_rearm_sync(csp_lpt_t *ptLptBase, uint8_t bySync);
 
 /** \brief lpt evtrg source output config  
  * 
- *  \param[in] lpt: LPT handle to operate
+ *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] lpt_trgsrc: lpt evtrg source(1~4) 
  *  \param[in] trg_prd: event count period 
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_set_evtrg(csi_lpt_t *lpt, uint8_t  byEvtrg, csi_lpt_trgsrc_t tTrgSrc, uint8_t trg_prd);
+csi_error_t csi_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t  byEvtrg, csi_lpt_trgsrc_t tTrgSrc, uint8_t trg_prd);
 
 /** \brief lpt set frequency 
  * 
- *  \param[in] lpt: LPT handle to operate
+ *  \param[in] ptLptBase:pointer of lpt register structure
  *  \param[in] eClk: lpt clock source selection
  *  \param[in] wHz: frequency
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_lpt_set_fre(csi_lpt_t *lpt, csi_lpt_clksrc_t eClk, uint16_t wHz);
+csi_error_t csi_lpt_set_fre(csp_lpt_t *ptLptBase, csi_lpt_clksrc_t eClk, uint16_t wHz);
 
 /** \brief LPT software sync enable control
  * 
- *  \param lpt: LPT handle to operate
+ *  \param ptLptBase:pointer of lpt register structure
  *  \param bEnable: ENABLE/DISABLE
  *  \return void
  */
-void csi_lpt_swsync_enable(csi_lpt_t *lpt, bool bEnable);
+void csi_lpt_swsync_enable(csp_lpt_t *ptLptBase, bool bEnable);
 
 #ifdef __cplusplus
 }

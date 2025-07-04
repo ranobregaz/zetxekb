@@ -6,6 +6,7 @@
  * <tr><th> Date  <th>Version  <th>Author  <th>Description
  * <tr><td> 2020-9-01 <td>V0.0  <td>ZJY   <td>initial
  * <tr><td> 2021-1-8  <td>V0.1  <td>WNN   <td>modify
+ * <tr><td> 2021-5-20 <td>V0.2  <td>YYM   <td>modify
  * </table>
  * *********************************************************************
 */
@@ -17,7 +18,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include <soc.h>
 
-/// \struct csp_adc_t
+/// \struct csp_lpt_t
 /// \brief LPT reg description   
 typedef struct
 {
@@ -314,28 +315,80 @@ typedef enum
 #define	LPT_CNT_POS			(0)
 #define	LPT_CNT_MSK			(0xFFFFul << LPT_CNT_POS)
 
-/******************************************************************************
-********************** LPT External Functions Declaration *********************
-******************************************************************************/
-extern void csp_lpt_int_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable);
-extern void csp_lpt_pwm_config(csp_lpt_t *ptLptBase, lpt_idlest_e eIdle, lpt_pol_e ePol, uint32_t wFreq,uint8_t byDutyCycle);
-extern void csp_lpt_data_update(csp_lpt_t *ptLptBase, uint16_t hwCmp, uint16_t hwPrdr);				
-extern uint8_t csp_lpt_get_work_state(csp_lpt_t *ptLptBase);
-
-
-csp_error_t csp_lpt_set_evtrg(csp_lpt_t *ptLptBase, uint8_t byEvtrg, lpt_trgsrc_e eTrgSrc);
-csp_error_t csp_lpt_swf_trg(csp_lpt_t *ptLptBase, uint8_t byTrg);
-csp_error_t csp_lpt_sync_enable(csp_lpt_t *ptLptBase, uint8_t byTrg, bool bEnable);
-csp_error_t csp_lpt_set_sync_mode(csp_lpt_t *ptLptBase, uint8_t byTrg, lpt_syncmd_e eMd);
-csp_error_t csp_lpt_rearm_sync(csp_lpt_t *ptLptBase,uint8_t byTrg);
-csp_error_t csp_lpt_auto_rearm_enable(csp_lpt_t *ptLptBase, uint8_t byTrg, bool bEnable);
-csp_error_t csp_lpt_set_trgprd(csp_lpt_t *ptLptBase, uint8_t byTrg, uint8_t byPeriod);
-csp_error_t csp_lpt_set_trgcnt(csp_lpt_t *ptLptBase, uint8_t byTrg, uint8_t byCnt);
-csp_error_t csp_lpt_trg_enable(csp_lpt_t *ptLptBase, uint8_t byTrg, bool bEnable);
 		
 /******************************************************************************
 ********************** LPT inline Functions Declaration ***********************
 ******************************************************************************/
+static inline void csp_lpt_int_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable)
+{
+	if(bEnable)
+		ptLptBase->IMCR |= 0x1 << eLptInt; 
+	else
+		ptLptBase->IMCR &= ~(0x1 <<eLptInt); 
+}
+
+static inline void csp_lpt_data_update(csp_lpt_t *ptLptBase,uint16_t hwPrdr, uint16_t hwCmp)
+{
+	ptLptBase->PRDR = hwPrdr;
+	ptLptBase->CMP = hwCmp;		
+}
+
+static inline uint8_t csp_lpt_get_work_state(csp_lpt_t *ptLptBase)
+{
+	if(ptLptBase->RSSR & LPT_START)
+		return ENABLE;
+	else
+		return DISABLE;
+		
+}
+
+static inline void csp_lpt_set_evtrg(csp_lpt_t *ptLptBase, lpt_trgsrc_e eTrgSrc)
+{
+	ptLptBase->EVTRG = (ptLptBase->EVTRG & ~LPT_TRGSRC_MSK) |(eTrgSrc << LPT_TRGSRC_POS);
+}
+
+static inline void csp_lpt_swf_trg(csp_lpt_t *ptLptBase, uint8_t byTrg)
+{
+	ptLptBase->EVSWF = LPT_EVSWF;
+}
+
+static inline void csp_lpt_sync_enable(csp_lpt_t *ptLptBase,bool bEnable)
+{
+	ptLptBase->SYNCR = (ptLptBase->SYNCR & ~LPT_SYNCEN_MSK)| (bEnable<<LPT_SYNCEN_POS);
+}
+
+static inline void csp_lpt_set_sync_mode(csp_lpt_t *ptLptBase,lpt_syncmd_e eMd)
+{
+	ptLptBase->SYNCR = (ptLptBase->SYNCR & ~LPT_OSTMD_MSK) | (eMd << LPT_OSTMD_POS);
+}
+
+static inline void csp_lpt_rearm_sync(csp_lpt_t *ptLptBase)
+{
+	ptLptBase->SYNCR |= LPT_REARM;
+}
+
+static inline void csp_lpt_auto_rearm_enable(csp_lpt_t *ptLptBase,bool bEnable)
+{
+	ptLptBase -> SYNCR = (ptLptBase -> SYNCR & ~LPT_AREARM_MSK)| (bEnable <<LPT_AREARM_POS);
+}
+
+static inline void csp_lpt_set_trgprd(csp_lpt_t *ptLptBase,uint8_t byPeriod)
+{
+	ptLptBase->EVPS = (ptLptBase->EVPS & ~LPT_TRGEVPRD_MSK)| LPT_TRGEVPRD(byPeriod);
+}
+
+static inline void csp_lpt_set_trgcnt(csp_lpt_t *ptLptBase,uint8_t byCnt)
+{
+	ptLptBase->EVPS = (ptLptBase->EVPS & ~LPT_TRGEVCNT_MSK)| LPT_TRGEVCNT(byCnt);
+}
+
+static inline void csp_lpt_trg_enable(csp_lpt_t *ptLptBase,bool bEnable)
+{
+	ptLptBase->EVTRG = (ptLptBase->EVTRG & ~LPT_TRG0OE_MSK) | (bEnable << LPT_TRG0OE_POS);
+}
+
+
+
 static inline void csp_lpt_set_start_im_enable(csp_lpt_t *ptLptBase, bool bEnable)
 {
 	ptLptBase->CEDR = (ptLptBase->CEDR & ~LPT_SHDWSTP_MSK) | (bEnable << LPT_SHDWSTP_POS);
@@ -513,5 +566,6 @@ static inline void csp_lpt_set_sync_window(csp_lpt_t *ptLptBase, uint16_t hwOffs
 {
 	ptLptBase -> TRGFWR = (ptLptBase -> TRGFWR & ~LPT_WINDOW_MSK)| (hwOffset << LPT_WINDOW_POS );
 }
+
 #endif
 
