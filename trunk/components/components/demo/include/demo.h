@@ -35,4 +35,8 @@ extern int iwdt_irq_demo(void);
 //etcb demo
 int etcb_one_trg_one_demo(void);
 
+//lpt demo
+extern int lpt_timer_demo(void);
+extern int lpt_pwm_demo(void);
+
 #endif
