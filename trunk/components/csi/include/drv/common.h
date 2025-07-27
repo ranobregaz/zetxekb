@@ -42,8 +42,6 @@ extern "C" {
 #define CSI_ASSERT(expr)        ((void)0U)
 #endif
 
-#define CONFIG_PARAM_CHECK
-
 #ifdef CONFIG_PARAM_CHECK
 #define CSI_PARAM_CHK(para, err)                    \
     do {                                            \
@@ -77,10 +75,6 @@ typedef enum {
     CSI_BUSY        = -2,
     CSI_TIMEOUT     = -3,
     CSI_UNSUPPORTED = -4,
-	CSI_ERR_UARTNO  = -5,
-	CSI_ERR_UARTBASE  = -6,
-	CSI_ERR_UARTPARAM  = -7,
-	CSI_ERR_UARTRXEMPTY  = -8,
 } csi_error_t;
 
 typedef struct {
