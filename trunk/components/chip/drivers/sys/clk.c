@@ -206,9 +206,6 @@ csi_error_t csi_emosc_enable(uint32_t wFreq)
 	//wait for EMOSC to stable
 	while(!(csp_get_ckst(SYSCON)& EMOSC));
 	return CSI_OK;
-	
-//	csp_emosc_enable(SYSCON_REG_BASE,EMOSC_VALUE);
-//	return CSI_OK;
 }
 
 /** \brief emosc disable

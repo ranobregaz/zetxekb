@@ -40,9 +40,8 @@ __attribute__((weak)) void system_init(void)
 	//csi_wdt_stop(&tIwdt);
 	csi_iwdt_close();				//close iwdt
 	soc_sysclk_config();			//sysclk config
-	soc_pclk_config();				//pclk config
-	soc_get_cpu_freq();
-	soc_get_apb_freq(0);
+	soc_get_sclk_freq();
+	soc_get_pclk_freq();
 	csi_tick_init();
 	
 	CK_CPU_ENALLNORMALIRQ;

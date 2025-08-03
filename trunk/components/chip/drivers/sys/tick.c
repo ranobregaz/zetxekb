@@ -43,7 +43,7 @@ csi_error_t csi_tick_init(void)
     csi_tick = 0U;
 
     csi_vic_set_prio(CORET_IRQn, 0U);
-    csi_coret_config((soc_get_coretim_freq()/ CONFIG_SYSTICK_HZ), CORET_IRQn);
+    csi_coret_config((soc_get_coret_freq()/ CONFIG_SYSTICK_HZ), CORET_IRQn);
     csi_vic_enable_irq((uint32_t)CORET_IRQn);
 
     return CSI_OK;
@@ -64,7 +64,7 @@ uint32_t csi_tick_get_ms(void)
     uint32_t time;
 
     while (1) {
-        time = (csi_tick * (1000U / CONFIG_SYSTICK_HZ)) + ((csi_coret_get_load() - csi_coret_get_value()) / (soc_get_coretim_freq() / 1000U));
+        time = (csi_tick * (1000U / CONFIG_SYSTICK_HZ)) + ((csi_coret_get_load() - csi_coret_get_value()) / (soc_get_coret_freq() / 1000U));
 
         if (time >= last_time_ms) {
             break;
@@ -83,7 +83,7 @@ uint64_t csi_tick_get_us(void)
     while (1) {
         /* the time of coretim pass */
         temp = csi_coret_get_load() - csi_coret_get_value();
-        time = ((uint64_t)temp * 1000U) / ((uint64_t)soc_get_coretim_freq() / 1000U);
+        time = ((uint64_t)temp * 1000U) / ((uint64_t)soc_get_coret_freq() / 1000U);
         /* the time of csi_tick */
         time += ((uint64_t)csi_tick * (1000000U / CONFIG_SYSTICK_HZ));
 
@@ -101,7 +101,7 @@ static void _500usdelay(void)
     uint32_t load = csi_coret_get_load();
     uint32_t start = csi_coret_get_value();
     uint32_t cur;
-    uint32_t cnt = (soc_get_coretim_freq() / 1000U / 2U);
+    uint32_t cnt = (soc_get_coret_freq() / 1000U / 2U);
 
     while (1) {
         cur = csi_coret_get_value();
@@ -131,7 +131,7 @@ void _10udelay(void)
 {
     uint32_t load  = csi_coret_get_load();
     uint32_t start = csi_coret_get_value();
-    uint32_t cnt   = (soc_get_coretim_freq() / 1000U / 100U);
+    uint32_t cnt   = (soc_get_coret_freq() / 1000U / 100U);
 
     while (1) {
         uint32_t cur = csi_coret_get_value();

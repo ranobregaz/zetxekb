@@ -39,4 +39,26 @@ int etcb_one_trg_one_demo(void);
 extern int lpt_timer_demo(void);
 extern int lpt_pwm_demo(void);
 
+//gpio port
+extern int gpio_port_ouput_demo(void);
+extern int gpio_port_input_demo(void);
+extern int gpio_port_irq_demo(void);
+
+//pin 
+extern int pin_output_demo(void);
+extern int pin_input_demo(void);
+extern int pin_irq_demo(void);
+
+//bt
+extern int bt_timer_demo(void);
+extern int bt_pwm_demo(void);
+
+//iwdt
+extern int iwdt_normal_demo(void);
+extern int iwdt_irq_demo(void);
+
+//reliability
+extern void lvd_demo(void);
+extern void lvr_demo(void);
+extern void memorycheck_demo(void);
 #endif

@@ -24,7 +24,7 @@ extern "C" {
 //如果定义了DBG_PRINT2PC，串口对应脚和PC连上后，可以通过serial pane里的UART #x 看到串口数据
 //#define DBG_PRINT2PC	
 
-extern system_clk_config_t g_tSystemClkConfig[];
+//extern system_clk_config_t g_tSystemClkConfig[];
 
 
 /* example pin manager */

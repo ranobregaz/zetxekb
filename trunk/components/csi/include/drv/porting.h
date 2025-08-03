@@ -22,23 +22,8 @@
   \param[in]   idx      device index
   \return      frequence
 */
-uint32_t soc_get_apb_freq(uint32_t idx);
-uint32_t soc_get_ahb_freq(uint32_t idx);
-//uint32_t soc_get_cpu_freq(uint32_t idx);
-uint32_t soc_get_uart_freq(uint32_t idx);
-uint32_t soc_get_spi_freq(uint32_t idx);
-uint32_t soc_get_iic_freq(uint32_t idx);
-uint32_t soc_get_i2s_freq(uint32_t idx);
-uint32_t soc_get_pwm_freq(uint32_t idx);
-uint32_t soc_get_adc_freq(uint32_t idx);
-uint32_t soc_get_qspi_freq(uint32_t idx);
-uint32_t soc_get_usi_freq(uint32_t idx);
-uint32_t soc_get_timer_freq(uint32_t idx);
-uint32_t soc_get_rtc_freq(uint32_t idx);
-uint32_t soc_get_wdt_freq(uint32_t idx);
-uint32_t soc_get_sdio_freq(uint32_t idx);
-uint32_t soc_get_coretim_freq(void);
-uint32_t soc_get_cur_cpu_freq(void);
+uint32_t soc_get_coret_freq(void);
+
 
 /**
   \brief       Soc get device frequence.

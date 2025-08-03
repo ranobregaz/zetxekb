@@ -22,6 +22,10 @@
 //#define SYSCON_REG_BASE	(csp_syscon_t *)APB_SYS_BASE
 //#define IFC_REG_BASE	(csp_ifc_t *)APB_IFC_BASE
 
+
+
+
+
 typedef enum {
     SRC_IMOSC = 0,
     SRC_EMOSC,
@@ -77,15 +81,24 @@ typedef enum{
 	SCLK_DIV256	=15
 }hclk_div_e;
 
-
 /// \struct system_clk_config_t
 /// members to be used in system clock management, including osc src, osc freq(if seletable), HCLK and PCLK divider
 typedef struct {
-    cclk_src_e	eSysClkSrc;      /* select sysclk source clock */
-	uint32_t 	wOscFreq;        /* select frequence */
-    hclk_div_e 	eHclkDivider;    /* ratio between fs_mclk clock and mclk clock */
-    pclk_div_e 	ePclkDivider;    /* ratio between mclk clock and apb0 clock */
-} system_clk_config_t;
+	cclk_src_e		eClkSrc;	//clock source
+	uint32_t		wFreq;		//clock frequency
+	hclk_div_e		eSdiv;		//SDIV
+	pclk_div_e		ePdiv;		//PDIV
+	uint32_t		wSclk;	//SCLK
+	uint32_t		wPclk;
+}csi_clk_config_t;
+
+
+//typedef struct {
+//    cclk_src_e	eSysClkSrc;      /* select sysclk source clock */
+//	uint32_t 	wOscFreq;        /* select frequence */
+//    hclk_div_e 	eHclkDivider;    /* ratio between fs_mclk clock and mclk clock */
+//    pclk_div_e 	ePclkDivider;    /* ratio between mclk clock and apb0 clock */
+//} system_clk_config_t;
 
 /// \enum clk_module_t
 /// \brief all the peri clock enable bits in SYSCON level
@@ -115,15 +128,16 @@ typedef enum {
 
 
 csi_error_t soc_sysclk_config(void);
-csi_error_t soc_get_cpu_freq(void);
-csi_error_t soc_get_peri_freq(void);
-csi_error_t soc_clo_config(clo_src_e, clo_div_e, pin_name_e);
-void soc_pclk_config(void);
+uint32_t soc_get_sclk_freq(void);
 uint32_t soc_get_pclk_freq(void);
-uint32_t soc_get_coretim_freq(void);
+void soc_clk_pm_enable(clk_pm_e eClk, bool bEnable);
+csi_error_t soc_clo_config(clo_src_e, clo_div_e, pin_name_e);
+
+
+uint32_t soc_get_coret_freq(void);
 void soc_clk_pm_enable(clk_pm_e eClk, bool vEnable);
 
-//
+
 extern uint32_t soc_get_timer_freq(uint32_t idx);
 extern uint32_t g_wSystemClk;
 

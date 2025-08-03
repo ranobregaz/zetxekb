@@ -241,11 +241,11 @@ typedef enum{
 #define CLO_DIV_POS 	(12)
 
 typedef enum{
-		CLO_DIV1 = 1,
-		CLO_DIV2,	
-		CLO_DIV4,	
-		CLO_DIV8,	
-		CLO_DIV16	
+	CLO_DIV1 = 1,
+	CLO_DIV2,	
+	CLO_DIV4,	
+	CLO_DIV8,	
+	CLO_DIV16	
 }clo_div_e;
 
 #define FLASH_LPMODE_POS	15
@@ -291,23 +291,23 @@ typedef enum{
 #define EM_CMFAIL	(0x1<<18)
 #define CMD_ERR		(0x1<<29)*/
 typedef enum{
-	ISOSC_ST_INT = 0,
-	IMOSC_ST_INT,
-	EMOSC_ST_INT = 3,
-	HFOSC_ST_INT,
-	SYSTICK_ST_INT = 7,
-	IWDT_INT,
-	RAM_ERR_INT = 10,
-	LVD_INT,
-	HWD_ERR_INT,
-	EFL_ERR_INT,
-	OPL_ERR_INT,
-	EMFAIL_INT = 18,
-	EV0TRG_INT,
-	EV1TRG_INT,
-	EV2TRG_INT,
-	EV3TRG_INT,
-	CMD_ERR_INT = 29
+	ISOSC_ST_INT = 0x1<<0,
+	IMOSC_ST_INT = 0x1<<1,
+	EMOSC_ST_INT = 0x1<<3,
+	HFOSC_ST_INT = 0x1<<4,
+	SYSTICK_ST_INT = 0x1<<7,
+	IWDT_INT = 0x1<<8,
+	RAM_ERR_INT = 0x1<<10,
+	LVD_INT = 0x1<<11,
+	HWD_ERR_INT = 0x1<<12,
+	EFL_ERR_INT = 0x1<<13,
+	OPL_ERR_INT = 0x1<<14,
+	EMFAIL_INT = 0x1<<18,
+	EV0TRG_INT = 0x1<<19,
+	EV1TRG_INT = 0x1<<20,
+	EV2TRG_INT = 0x1<<21,
+	EV3TRG_INT = 0x1<<22,
+	CMD_ERR_INT = 0x1<<29,
 }syscon_int_e;
 
 /// EXI interrupt regs: EXIER/EXIDR/EXIRS/EXIAR/EXICR/EXIRS
@@ -591,14 +591,14 @@ static inline void csp_lvd_reset_regs(csp_syscon_t *ptSysconBase)
 static inline void csp_syscon_int_enable(csp_syscon_t *ptSysconBase, syscon_int_e eInt, bool bEnable)
 {
 	if (bEnable)
-		ptSysconBase->IMER |= 0x1 << eInt; 
+		ptSysconBase->IMER |= eInt; 
 	else
-		ptSysconBase->IMER &= ~(0x1 << eInt);
+		ptSysconBase->IMER &= ~(eInt);
 }
 
 static inline void csp_syscon_int_clr(csp_syscon_t *ptSysconBase, syscon_int_e eInt)
 {
-	ptSysconBase->ICR = 0x1 << eInt; 
+	ptSysconBase->ICR = eInt; 
 	
 }
 
@@ -706,29 +706,6 @@ static inline void csp_emcm_rst_enable(csp_syscon_t *ptSysconBase, bool bEnable)
 		ptSysconBase -> GCDR = EM_CMRST;
 }
 
-csp_error_t csp_syscon_evtrg_enable(csp_syscon_t *ptSysconBase, uint8_t byTrgSeln, bool bEnable);
-
-csp_error_t csp_syscon_set_evtrg(csp_syscon_t *ptSysconBase, uint8_t byTrgSeln, exi_trg_src_e eSrc);
-
-
-int  csp_hfosc_disable(csp_syscon_t *);
-int  csp_hfosc_enable(csp_syscon_t *, uint32_t );
-int  csp_imosc_disable(csp_syscon_t *);
-int  csp_imosc_enable(csp_syscon_t *, uint32_t );
-csp_error_t csp_emosc_enable(csp_syscon_t *ptSysconBase, uint32_t wFreq);
-csp_error_t csp_emosc_disable(csp_syscon_t *ptSysconBase);
-int  csp_isosc_disable(csp_syscon_t *);
-int  csp_isosc_enable(csp_syscon_t *);
-//void csp_eflash_lpmd_enable(csp_syscon_t *ptSysconBase, bool bEnable);
-csp_error_t csp_systick_enable(csp_syscon_t *);
-csp_error_t csp_systick_disable(csp_syscon_t *);
-void csp_clk_pm_enable(csp_syscon_t *ptSysconBase, clk_pm_e eClk, bool bEnable);
-void csp_iwdt_enable(csp_syscon_t *ptSysconBase);
-void csp_iwdt_reg_reset(csp_syscon_t *ptSysconBase);
-csp_error_t csp_syscon_set_evtrg_src(csp_syscon_t *ptSysconBase, uint8_t byTrgSeln, exi_trg_src_e eSrc);
-csp_error_t csp_syscon_evtrg_enable(csp_syscon_t *ptSysconBase, uint8_t byTrgSeln, bool bEnable);
-csp_error_t csp_syscon_set_evtrg_prd(csp_syscon_t *ptSysconBase, uint8_t byTrgSeln, uint8_t byPrd);
-csp_error_t csp_syscon_evtrg_cnt_clr(csp_syscon_t *ptSysconBase, uint8_t byTrgSeln);
 
 #endif  /* _CSP_SYSCON_H*/
 

@@ -17,7 +17,8 @@
 #include <csp.h>
 
 
-extern system_clk_config_t g_tSystemClkConfig[];
+//extern system_clk_config_t g_tSystemClkConfig[];
+extern csi_clk_config_t tClkConfig;
 
 /// This is the default clck freq of the chip
 uint32_t g_wSystemClk = 5556000;
@@ -32,12 +33,12 @@ const uint32_t g_wHclkDiv[] = {
 static uint32_t get_hclk(void)
 {
 	uint32_t tRslt;
-	tRslt = g_tSystemClkConfig[0].wOscFreq/g_tSystemClkConfig[0].eHclkDivider;
+	tRslt = tClkConfig.wFreq/tClkConfig.eSdiv;
 	return (tRslt);
 }
 /** \brief sysctem clock (HCLK) configuration
  * 
- *  To set CPU frequence according to g_tSystemClkConfig
+ *  To set CPU frequence according to tClkConfig
  * 
  *  \param[in] none.
  *  \return csi_error_t.
@@ -49,8 +50,8 @@ csi_error_t soc_sysclk_config(void)
 	uint32_t wHFreq;
 	cclk_src_e eSrc;
 	uint8_t byFlashLp = 0;
-	wFreq = g_tSystemClkConfig[0].wOscFreq;
-	eSrc = g_tSystemClkConfig[0].eSysClkSrc;
+	wFreq = tClkConfig.wFreq;
+	eSrc = tClkConfig.eClkSrc;
 	wHFreq = get_hclk();
 	
 //	csp_ifc_set_speed(IFC_REG_BASE, get_hclk());
@@ -86,8 +87,8 @@ csi_error_t soc_sysclk_config(void)
 				byFlashLp = 1;
 			break;
 		case (SRC_EMOSC):	
-			csi_pin_set_mux(PA03, PA03_OSC_XI);
-			csi_pin_set_mux(PA04, PA04_OSC_XO);
+			//csi_pin_set_mux(PA03, PA03_OSC_XI);
+			//csi_pin_set_mux(PA04, PA04_OSC_XO);
 			if (wFreq == EMOSC_32K_VALUE)
 				csp_set_em_lfmd(SYSCON, 1);
 			ret = csi_emosc_enable(wFreq);
@@ -107,40 +108,23 @@ csi_error_t soc_sysclk_config(void)
 					break;
 			}
 			ret = csi_hfosc_enable(byFreqIdx);
-						
-/*			if (wFreq == HF_48M)
-			{
-				csp_ifc_set_speed(IFC_REG_BASE, 48000000);
-			}
-			else if (wFreq == HF_24M)
-			{
-				csp_ifc_set_speed(IFC_REG_BASE, 24000000);
-			}*/
 			break;
 		default: 
 			break;
 	}
 	
-	csp_set_sdiv(SYSCON, g_tSystemClkConfig[0].eHclkDivider);
+	csp_set_sdiv(SYSCON, tClkConfig.eSdiv);
 	csp_set_clksrc(SYSCON, eSrc);
 	
 	csp_eflash_lpmd_enable(SYSCON, (bool)byFlashLp);
+	
+	csp_set_pdiv(SYSCON, tClkConfig.ePdiv);
+	
+	//update wSclk and wPclk in tClkConfig
+	tClkConfig.wSclk = wHFreq;
+	tClkConfig.wPclk = tClkConfig.wSclk/(0x1<<tClkConfig.ePdiv);
 	return ret;
 }
-
-
-/** \brief PCLK configuration
- * 
- *  To set PCLK frequence according to g_tSystemClkConfig
- * 
- *  \param[in] none.
- *  \return csi_error_t.
- */ 
-void soc_pclk_config(void)
-{ 	
-	csp_set_pdiv(SYSCON, g_tSystemClkConfig[0].ePclkDivider);
-}
-
 
 /** \brief Clock output configuration
  * 
@@ -149,10 +133,10 @@ void soc_pclk_config(void)
  *  \param[in] tPin: output pin
  *  \return csi_error_t.
  */
-csi_error_t soc_clo_config(clo_src_e eCloSrc, clo_div_e eCloDiv, pin_name_e tPin)
+csi_error_t soc_clo_config(clo_src_e eCloSrc, clo_div_e eCloDiv, pin_name_e ePin)
 { 	
 	csi_error_t ret = CSI_OK;
-	switch (tPin)
+	switch (ePin)
 	{
 		case (PA02):
 			csi_pin_set_mux(PA02, PA02_CLO);
@@ -201,12 +185,12 @@ void soc_clk_disable(int32_t wModule)
 		csp_pder1_clk_dis(SYSCON, (uint32_t)wModule - 32U);
 }
 
-/** \brief to get CPU frequence according to the current reg content
- *  g_wSystemClk will be updated after excuting this function
+/** \brief to get SCLK frequence according to the current reg content
+ *  tClkConfig.wSclk will be updated after excuting this function
  *  \param[in] none.
  *  \return csi_error_t.
  */ 
-csi_error_t soc_get_cpu_freq(void)
+uint32_t soc_get_sclk_freq(void)
 {	
 	//csi_error_t ret = CSI_OK;
 	cclk_src_e eClkSrc;
@@ -217,26 +201,26 @@ csi_error_t soc_get_cpu_freq(void)
     eClkSrc = ((cclk_src_e) csp_get_clksrc(SYSCON));
 	switch(eClkSrc)
 	{ 	case (SRC_ISOSC): 	
-			g_wSystemClk = ISOSC_VALUE;
+			tClkConfig.wSclk = ISOSC_VALUE;
 			break;
 		case (SRC_EMOSC): 	
-			g_wSystemClk = EMOSC_VALUE;
+			tClkConfig.wSclk = EMOSC_VALUE;
 			break;
 		case (SRC_IMOSC):	
 			wImoFreq = csp_get_imosc_fre(SYSCON);
 			switch (wImoFreq)
 			{
 				case (0): 
-					g_wSystemClk = IMOSC_5M_VALUE;
+					tClkConfig.wSclk = IMOSC_5M_VALUE;
 					break;
 				case (1): 
-					g_wSystemClk = IMOSC_4M_VALUE;
+					tClkConfig.wSclk = IMOSC_4M_VALUE;
 					break;
 				case (2): 
-					g_wSystemClk = IMOSC_2M_VALUE;	
+					tClkConfig.wSclk = IMOSC_2M_VALUE;	
 					break;
 				case (3): 
-					g_wSystemClk = IMOSC_131K_VALUE;	
+					tClkConfig.wSclk = IMOSC_131K_VALUE;	
 					break;
 				default: 
 					return CSI_ERROR;	
@@ -248,17 +232,16 @@ csi_error_t soc_get_cpu_freq(void)
 			switch (wHfoFreq)
 			{
 				case (0): 
-					g_wSystemClk = HFOSC_48M_VALUE;
-					//uint32_t temp = HFOSC_48M_VALUE;
+					tClkConfig.wSclk = HFOSC_48M_VALUE;
 					break;
 				case (1): 
-					g_wSystemClk = HFOSC_24M_VALUE;
+					tClkConfig.wSclk = HFOSC_24M_VALUE;
 					break;
 				case (2): 
-					g_wSystemClk = HFOSC_12M_VALUE;	
+					tClkConfig.wSclk = HFOSC_12M_VALUE;	
 					break;
 				case (3): 
-					g_wSystemClk = HFOSC_6M_VALUE;	
+					tClkConfig.wSclk = HFOSC_6M_VALUE;	
 					break;
 				default:  
 					return CSI_ERROR;	
@@ -273,17 +256,17 @@ csi_error_t soc_get_cpu_freq(void)
 
 	
 	//g_wSystemClk = g_wSystemClk / g_wHclkDiv[byHclkDiv];
-	g_wSystemClk = g_wSystemClk/g_wHclkDiv[byHclkDiv];
+	tClkConfig.wSclk = tClkConfig.wSclk/g_wHclkDiv[byHclkDiv];
 	
-	return CSI_OK;
+	return tClkConfig.wSclk;
 }
 
 /** \brief To get PCLK frequence according to the current reg content.
- *  g_wSystemClk will be updated after excuting this function.
+ *  tClkConfig.wPclk will be updated after excuting this function.
  *  \param[in] none.
  *  \return csi_error_t.
  */ 
-uint32_t soc_get_apb_freq(uint32_t idx)
+uint32_t soc_get_pclk_freq(void)
 {
     uint32_t wDiv, wPdiv = 1;
 	wDiv = csp_get_pdiv(SYSCON);
@@ -298,8 +281,8 @@ uint32_t soc_get_apb_freq(uint32_t idx)
 	else if(wDiv & 0x02)
 		wPdiv = 4;
 	
-	g_wSystemPclk = g_wSystemClk / wPdiv;
-	return g_wSystemPclk;
+	tClkConfig.wPclk = tClkConfig.wSclk / wPdiv;
+	return tClkConfig.wPclk;
 }
 
 /** \brief To get CORET frequence.
@@ -307,20 +290,21 @@ uint32_t soc_get_apb_freq(uint32_t idx)
  *  \param[in] none.
  *  \return g_wSystemClk.
  */ 
-uint32_t soc_get_coretim_freq(void)
+uint32_t soc_get_coret_freq(void)
 {
-    return g_wSystemClk;
+	switch (CK801CORET->CTRL & 0x4 >>2)
+	{
+		case 0: return g_wSystemClk/8;
+			break;
+		case 1: return g_wSystemClk;
+			break;
+		default:
+			return g_wSystemClk;
+			break;
+	}
+	
 }
 
-/** \brief To get CORET frequence 
- *  Make sure to excute soc_get_peri_freq() after clock block changing
- *  \param[in] none.
- *  \return g_wSystemClk.
- */ 
-uint32_t soc_get_pclk_freq(void)
-{
-    return g_wSystemPclk;
-}
 
 /** \brief to set clock status in PM mode 
  *  when IWDT is enabled, trying to stop ISOSC in stop mode would be invalid
