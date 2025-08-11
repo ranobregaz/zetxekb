@@ -48,7 +48,7 @@ void SYSCONIntHandler(void)
 	volatile uint32_t wSysIntSta; 
 	wSysIntSta = csp_syscon_get_int_st(SYSCON);
 	
-	if(wSysIntSta & (0x01ul << IWDT_INT))
+	if(wSysIntSta & (IWDT_INT))
 	{
 		nop;
 		csp_syscon_int_clr(SYSCON, IWDT_INT);

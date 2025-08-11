@@ -20,9 +20,6 @@
 //extern system_clk_config_t g_tSystemClkConfig[];
 extern csi_clk_config_t tClkConfig;
 
-/// This is the default clck freq of the chip
-uint32_t g_wSystemClk = 5556000;
-uint32_t g_wSystemPclk = 5556000 >> 1;
 
 
 ///to match the real div to reg setting
@@ -294,12 +291,12 @@ uint32_t soc_get_coret_freq(void)
 {
 	switch (CK801CORET->CTRL & 0x4 >>2)
 	{
-		case 0: return g_wSystemClk/8;
+		case 0: return tClkConfig.eSdiv/8;
 			break;
-		case 1: return g_wSystemClk;
+		case 1: return tClkConfig.eSdiv;
 			break;
 		default:
-			return g_wSystemClk;
+			return tClkConfig.eSdiv;
 			break;
 	}
 	
