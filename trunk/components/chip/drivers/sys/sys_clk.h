@@ -24,8 +24,6 @@
 
 
 
-
-
 typedef enum {
     SRC_IMOSC = 0,
     SRC_EMOSC,
@@ -92,6 +90,7 @@ typedef struct {
 	uint32_t		wPclk;
 }csi_clk_config_t;
 
+extern csi_clk_config_t tClkConfig;
 
 //typedef struct {
 //    cclk_src_e	eSysClkSrc;      /* select sysclk source clock */
