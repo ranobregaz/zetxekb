@@ -18,7 +18,7 @@
 
 
 //extern system_clk_config_t g_tSystemClkConfig[];
-extern csi_clk_config_t tClkConfig;
+
 
 
 
