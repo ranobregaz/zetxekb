@@ -18,7 +18,7 @@
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
-extern csi_clk_config_t tClkConfig;
+
 /* Private variablesr-------------------------------------------------*/
 static uint32_t s_wWwdtTimeout = 0; 
 static uint8_t  s_byWwdtCntMax = 0xff;
