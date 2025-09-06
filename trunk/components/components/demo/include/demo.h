@@ -61,4 +61,5 @@ extern int iwdt_irq_demo(void);
 extern void lvd_demo(void);
 extern void lvr_demo(void);
 extern void memorycheck_demo(void);
+extern void emcm_demo(void);
 #endif
