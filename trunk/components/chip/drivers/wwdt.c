@@ -18,7 +18,6 @@
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
-
 /* Private variablesr-------------------------------------------------*/
 static uint32_t s_wWwdtTimeout = 0; 
 static uint8_t  s_byWwdtCntMax = 0xff;
