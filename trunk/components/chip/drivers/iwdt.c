@@ -10,9 +10,10 @@
  * *********************************************************************
 */
 
-#include "drv/iwdt.h"
-#include "drv/irq.h"
-#include "sys_clk.h"
+#include <sys_clk.h>
+#include <drv/iwdt.h>
+#include <drv/irq.h>
+
 #include "math.h"
 
 /* Private macro------------------------------------------------------*/
