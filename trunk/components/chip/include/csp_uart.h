@@ -25,6 +25,7 @@ typedef struct
     __IOM  uint32_t  CTRL;      //0x0008 	Control Register              
     __IOM  uint32_t  ISR;       //0x000C 	Interrupt Status Register     
     __IOM  uint32_t  BRDIV;     //0x0010 	Baud Rate Generator Register  
+    __IOM  uint32_t  DMACR;		//0x0014	DMA Control Register
 } csp_uart_t; 
 
 /*****************************************************************************
@@ -44,7 +45,7 @@ typedef enum{
 	UART_RX_FULL		= (0x01ul << 1),		// Receiver full           
 	UART_TX_OVER     	= (0x01ul << 2),		// Transmitter buff over   
 	UART_RX_OVER     	= (0x01ul << 3), 		// Receiver buff over      
-	UART_PARITY     	= (0x01ul << 4), 
+	UART_PAR_ERR     	= (0x01ul << 4), 
 	UART_TFE			= (0x01ul << 5),	
 	UART_TNF			= (0x01ul << 6),	
 	UART_RNE			= (0x01ul << 7),	
@@ -69,32 +70,6 @@ typedef enum{
 	UART_RX_EN
 }rx_ctrl_e;
 
-typedef enum{
-	UART_TXEN         	=(0x01ul << 0),  /**< Transmitter Enable/disable        */
-	UART_RXEN         	=(0x01ul << 1),  /**< Receiver Enable/disable           */
-	UART_TX_INTEN     	=(0x01ul << 2),  /**< Transmitter INT Enable/disable    */
-	UART_RX_INTEN     	=(0x01ul << 3),  /**< Receiver INT Enable/disable       */
-	UART_TX_IOVEN     	=(0x01ul << 4),  /**< Transmitter INTOver Enable/disable*/
-	UART_RX_IOVEN    	=(0x01ul << 5),  /**< Receiver INTOver Enable/disable   */
-	INT_PARITY      	=(0x01ul << 7),  /**<   */
-	UART_PARI_NONE  	=(0x00ul << 8),  /**<   */
-	UART_PARI_EVEN     	=(0x04ul << 8),  /**<   */
-	UART_PARI_ODD      	=(0x05ul << 8),  /**<   */
-	UART_PARI_ZERO     	=(0x06ul << 8),  /**<   */
-	UART_PARI_ONE      	=(0x07ul << 8),  /**<   */
-	UART_FIFO_EN    	=(0x01ul << 11),  /**<   */
-	UART_INT_TXFIFO 	=(0x01ul << 12),  /**<   */
-	UART_INT_RXFIFO 	=(0x01ul << 13),  /**<   */
-	RXIFLSEL_1_8    	=(0x01ul << 14),  /**<   */
-	RXIFLSEL_1_4    	=(0x02ul << 14),  /**<   */
-	RXIFLSEL_1_2    	=(0x04ul << 14),  /**<   */
-	INT_OVER_FIFO   	=(0x01ul << 18),  /**<   */
-	INT_TX_DONE_EN  	=(0x01ul << 19),  /**<   */
-	UART_DBGEN      	=(0x01ul << 31),  /**<   */
-}uart_ctrl_e;
-
-
-
 #define	UART_PARITY_POS		(8)			// Uart Parity select			       
 #define	UART_PARITY_MSK		(0x07ul << UART_PARITY_POS)
 typedef enum{
@@ -107,10 +82,10 @@ typedef enum{
 
 #define	UART_FIFO_POS		(11)		// Receiver FIFO level            
 #define	UART_FIFO_MSK		(0x01ul << UART_FIFO_POS)		
-//typedef enum{
-//	UART_FIFO_DIS		= 0,
-//	UART_FIFO_EN
-//}uart_fifo_e;
+typedef enum{
+	UART_FIFO_DIS		= 0,
+	UART_FIFO_EN
+}uart_fifo_e;
 
 #define	UART_RXFIFO_POS		(14)		// Receiver FIFO level            
 #define	UART_RXFIFO_MSK		(0x07ul << UART_RXFIFO_POS)		
@@ -128,16 +103,15 @@ typedef enum{
 }uart_dbug_e;
 
 typedef enum{
-	UART_NO_INT     	= (0x00ul << 0),
 	UART_TX_INT     	= (0x01ul << 2),
 	UART_RX_INT     	= (0x01ul << 3),
-	UART_TX_IOV     	= (0x01ul << 4),
-	UART_RX_IOV     	= (0x01ul << 5),
-	UART_PARITY_ERR     = (0x01ul << 7),
+	UART_TX_OV_INT    	= (0x01ul << 4),
+	UART_RX_OV_INT     	= (0x01ul << 5),
+	UART_PAR_ERR_INT 	= (0x01ul << 7),
 	UART_TXFIFO_INT     = (0x01ul << 12),
 	UART_RXFIFO_INT     = (0x01ul << 13),
-	UART_RXFIFO_OVER	= (0x01ul << 18),
-	UART_TX_DONE 		= (0x01ul << 19),
+	UART_RXFIFO_OV_INT	= (0x01ul << 18),
+	UART_TXDONE_INT 	= (0x01ul << 19),
 }uart_int_e;
 
 /******************************************************************************
@@ -145,15 +119,15 @@ typedef enum{
 ******************************************************************************/
 // ISR : UART Interrupt Status Register									
 typedef enum{
-	UART_TX_INT_S   	= (0x01ul << 0),	//Transmitter INT Status      
-	UART_RX_INT_S		= (0x01ul << 1),	//Receiver INT Status          
-	UART_TX_IOV_S     	= (0x01ul << 2),	//Transmitter Over INT Status  
-	UART_RX_IOV_S     	= (0x01ul << 3),	//Receiver Over INT Status   
-	UART_PAR_ERR_S     	= (0x01ul << 4),	//Parity Error Status  
-	UART_TX_FIFO_S     	= (0x01ul << 5),	//Transmitter FIFO INT Status      
-	UART_RX_FIFO_S     	= (0x01ul << 6),	//Receiver FIFO INT Status 
-	UART_RXFIFO_IOV_S   = (0x01ul << 7),	//Receiver FIFO Over INT Status 
-	UART_TX_DONE_S     	= (0x01ul << 19)	//Transmitter Complete INT Status
+	UART_TX_INT_S   		= (0x01ul << 0),	//Transmitter INT Status      
+	UART_RX_INT_S			= (0x01ul << 1),	//Receiver INT Status          
+	UART_TX_OV_INT_S    	= (0x01ul << 2),	//Transmitter Over INT Status  
+	UART_RX_OV_INT_S   	 	= (0x01ul << 3),	//Receiver Over INT Status   
+	UART_PAR_ERR_S     		= (0x01ul << 4),	//Parity Error Status  
+	UART_TXFIFO_INT_S     	= (0x01ul << 5),	//Transmitter FIFO INT Status      
+	UART_RXFIFO_INT_S     	= (0x01ul << 6),	//Receiver FIFO INT Status 
+	UART_RXFIFO_OV_INT_S	= (0x01ul << 7),	//Receiver FIFO Over INT Status 
+	UART_TXDONE_INT_S     	= (0x01ul << 19)	//Transmitter Complete INT Status
 }uart_isr_e;
 
 /******************************************************************************
@@ -161,16 +135,112 @@ typedef enum{
 ******************************************************************************/
 // BRDIV : BRDIV register 
 #define UART_BRDIV_POS		(0) 
-#define	UART_BRDIV_MSK		(0x000FFFFF << UART_BRDIV_POS)
-
-#define CSP_UART_BAUD_SET(ut,div)   (ut->BRDIV = (div))	
-
+#define	UART_BRDIV_MSK		(0x000FFFFF << UART_BRDIV_POS)	
 
 /******************************************************************************
-* BRDIV : BRDIV register 
+* DMACR : DMA Control register 
 ******************************************************************************/
-#define NUM_OF_UART 3
-#define UART_IDX_MASK (0x3)
+#define	UART_RDMA_EN_POS		(0)		
+#define	UART_RDMA_EN_MSK		(0x01ul << UART_RDMA_EN_POS)	
+typedef enum{
+	UART_RDMA_DIS		= 0,
+	UART_RDMA_EN
+}uart_rdma_en_e;
 
+#define	UART_TDMA_EN_POS		(1)	
+#define	UART_TDMA_EN_MSK		(0x01ul << UART_TDMA_EN_POS)	
+typedef enum{
+	UART_TDMA_DIS		= 0,
+	UART_TDMA_EN
+}uart_tdma_en_e;
 
-#endif /*_CSP_UART_H*/
+#define	UART_RDMA_MD_POS	(2)			 
+#define	UART_RDMA_MD_MSK	(0x01ul << UART_RDMA_MD_POS)	
+typedef enum{
+	UART_RDMA_FIFO_NSPACE = 0,
+	UART_RDMA_FIFO_TRG
+}uart_rdma_md_e;
+
+#define	UART_TDMA_MD_POS	(3)			 
+#define	UART_TDMA_MD_MSK	(0x01ul << UART_TDMA_MD_POS)	
+typedef enum{
+	UART_TDMA_FIFO_NFULL		= 0,
+	UART_TDMA_FIF0_T
+}uart_tdma_md_e;
+
+/******************************************************************************
+********************* ADC12 External Functions Declaration ********************
+******************************************************************************/
+extern void csp_uart_vic_irq_en(csp_uart_t *ptUartBase);
+extern void csp_uart_default_init(csp_uart_t *ptUartBase);
+extern void csp_uart_set_int(csp_uart_t *ptUartBase,uart_int_e eUartInt,bool bEnable);
+extern void csp_uart_set_baudrate(csp_uart_t *ptUartBase,uint32_t wBaud, uint32_t wUartFreq);
+extern void csp_uart_put_char(csp_uart_t *ptUartBase,uint8_t byByte);
+extern void csp_uart_ctrl_init(csp_uart_t *ptUartBase, tx_ctrl_e eTxCtrl, rx_ctrl_e eRxCtrl,uart_parity_e eParity, uart_int_e eUartInt);
+
+extern uint8_t  csp_uart_get_char(csp_uart_t *ptUartBase);
+extern uint8_t  csp_uart_put_ready(csp_uart_t *ptUartBase);
+extern uint8_t  csp_uart_get_ready(csp_uart_t *ptUartBase);
+extern uint8_t  csp_uart_fifo_get_ready(csp_uart_t *ptUartBase);
+extern uint32_t csp_uart_send(csp_uart_t *ptUartBase, uint8_t *byPdata, uint32_t size);
+
+extern void csp_uart_send_dma(csp_uart_t *ptUartBase, void *byPdata, uint32_t size);
+extern void csp_uart_recv_dma(csp_uart_t *ptUartBase, void *byPdata, uint32_t size);
+
+/******************************************************************************
+********************* ADC12 inline Functions Declaration **********************
+******************************************************************************/
+static inline void csp_uart_set_tx(csp_uart_t *ptUartBase, tx_ctrl_e eTxCtrl) 
+{
+	ptUartBase->CTRL = (ptUartBase->CTRL & (~UART_TX_MSK)) | eTxCtrl;
+}
+static inline void csp_uart_set_rx(csp_uart_t *ptUartBase, rx_ctrl_e eRxCtrl) 
+{
+	ptUartBase->CTRL = (ptUartBase->CTRL & (~UART_RX_MSK)) | (eRxCtrl << UART_RX_POS);
+}
+static inline void csp_uart_set_parity(csp_uart_t *ptUartBase, uart_parity_e eParity)
+{
+	ptUartBase->CTRL |= (eParity << UART_PARITY_POS);
+}
+//
+static inline uint8_t csp_uart_get_data(csp_uart_t *ptUartBase)
+{
+	return (uint8_t)ptUartBase->DATA; 
+}
+static inline void csp_uart_set_data(csp_uart_t *ptUartBase, uint8_t byByte)
+{
+	ptUartBase->DATA = byByte;
+}
+//
+static inline uint32_t csp_uart_get_sr(csp_uart_t *ptUartBase)
+{
+	return (uint32_t)(ptUartBase->SR);
+}
+static inline void csp_uart_clr_sr(csp_uart_t *ptUartBase)
+{
+	ptUartBase->SR = 0x01ff;
+}
+static inline uint32_t csp_uart_get_isr(csp_uart_t *ptUartBase)
+{
+	return (uint32_t)(ptUartBase->ISR);
+}
+static inline void csp_uart_clr_isr(csp_uart_t *ptUartBase, uart_isr_e eIstatus)
+{
+	ptUartBase->ISR = eIstatus;
+}
+//
+static inline uint32_t csp_uart_get_ctrl(csp_uart_t *ptUartBase)
+{
+	return ptUartBase->CTRL;
+}
+static inline void csp_uart_set_ctrl(csp_uart_t *ptUartBase, uint32_t wVal)
+{
+	ptUartBase->CTRL = wVal;
+}
+//
+static inline void csp_uart_set_brdiv(csp_uart_t *ptUartBase, uint32_t wVal)
+{
+	ptUartBase->BRDIV = wVal;
+}
+
+#endif
