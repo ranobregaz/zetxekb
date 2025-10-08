@@ -25,8 +25,8 @@
 /******************************************************************************
 * Main code
 ******************************************************************************/
-#define LDCC_DATA_P 0xe001105c /* LDCC Register. */
-#define LDCC_BIT_STATUS 0x80000000 /* LDCC Status bit. */
+#define LDCC_DATA_P 		0xe001105c /* LDCC Register. */
+#define LDCC_BIT_STATUS 	0x80000000 /* LDCC Status bit. */
 /*
 int fputc(int ch, FILE *f)
 {
@@ -42,7 +42,7 @@ int fputc(int ch, FILE *f)
 void __putchar__ (char ch) {
 	
 #ifdef DBG_PRINT2PC
-	//select console, uart2,PA00/PA01
+	//select console, uart1, PA013/PB00
 	fputc(ch,(FILE *) -1);			
 	
 #else
