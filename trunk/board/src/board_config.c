@@ -39,8 +39,7 @@ csi_clk_config_t tClkConfig =
  */ 
 __attribute__((weak)) void board_init(void)
 {
-    //init the console according to board_config.h
-	
+    //console config for print
 	console.uart_id = (uint32_t)CONSOLE_IDX;
     console.baudrate = 115200U;
     console.tx.pin = CONSOLE_TXD;   
