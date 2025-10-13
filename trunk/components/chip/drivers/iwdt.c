@@ -19,7 +19,7 @@
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
-/* Private variablesr-------------------------------------------------*/
+/* variablesr---------------------------------------------------------*/
 static uint32_t s_wIwdtTimeout	= 8200;
 
 /** \brief Initialize IWDT Interface. Initializes the resources needed for the WDT interface

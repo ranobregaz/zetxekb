@@ -15,7 +15,7 @@
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
-/* Private variablesr-------------------------------------------------*/
+/* variablesr---------------------------------------------------------*/
 const uint32_t  wExiStateMap[] = 
 {    
 	EXI0_IRQ_MAP, EXI1_IRQ_MAP, EXI2_IRQ_MAP, EXI3_IRQ_MAP, EXI4_IRQ_MAP,
@@ -248,100 +248,6 @@ csi_error_t csi_gpio_port_input_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, 
 
 	return ret;
  }
-/** \brief set gpio interrupt group
- * 
- *  \param[in] ptGpioBase: pointer of gpio register structure
- *  \param[in] byPinNum: pin0~15
- *  \param[in] eExiGrp:	EXI_IGRP0 ~ EXI_IGRP19
- *  \return none
- */ 
-void gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp)
-{
-	uint32_t byMaskShift,byMask;
-	gpio_group_e eIoGroup = GRP_GPIOA0;
-	
-	switch((uint32_t)ptGpioBase)
-	{
-		case APB_GPIOA0_BASE:
-			eIoGroup = GRP_GPIOA0;
-			break;
-		case APB_GPIOB0_BASE:
-			eIoGroup = GRP_GPIOB0;
-			break;
-		default:
-			break;
-	}
-	
-	if(eExiGrp < EXI_IGRP16)
-	{
-		if(byPinNum < 8)
-		{
-			byMaskShift = (byPinNum << 2);
-			byMask = ~(0x0Ful << byMaskShift);
-			GPIOGRP->IGRPL = ((GPIOGRP->IGRPL) & byMask) | (eIoGroup << byMaskShift);
-		}
-		else if(byPinNum < 16)
-		{
-			byMaskShift = ((byPinNum-8) << 2);
-			byMask = ~(0x0Ful << byMaskShift);
-			GPIOGRP->IGRPH = ((GPIOGRP->IGRPH) & byMask) | (eIoGroup << byMaskShift);
-		}
-	}
-	else if(eExiGrp <= EXI_IGRP19)
-	{
-		
-		if(GRP_GPIOA0 == eIoGroup)
-		{
-			if(eExiGrp < EXI_IGRP18)
-			{
-				byMaskShift = (eExiGrp - EXI_IGRP16) << 2;
-				byMask = ~(0x0Ful << byMaskShift);
-				GPIOGRP->IGREX = ((GPIOGRP->IGREX) & byMask) | (byPinNum << byMaskShift);
-			}
-		}
-		else
-		{
-			if(eExiGrp > EXI_IGRP17)
-			{
-				byMaskShift = (eExiGrp - EXI_IGRP16) << 2;
-				byMask = ~(0x0Ful << byMaskShift);
-				GPIOGRP->IGREX = ((GPIOGRP->IGREX) & byMask) | (byPinNum << byMaskShift);
-			}
-		}
-	}	
-}
-/** \brief set gpio exi interrupt trigger 
- * 
- *  \param[in] ptSysconBase: pionter of SYSCON reg structure.
- *  \param[in] eExiGrp: EXI_IGRP0~EXI_IGRP19
- *  \param[in] eGpioTrg: EXI_IRT,EXI_IFT,
- *  \return none
- */ 
-void exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg)
-{
-	uint32_t wPinMsak = (0x01ul << eExiGrp);
-	
-	ptSysconBase->EXIRT &= (~wPinMsak);					//trig edg
-	ptSysconBase->EXIFT &= (~wPinMsak);
-	
-	switch(eGpioTrg)
-	{
-		case EXI_EDGE_IRT:
-			ptSysconBase->EXIRT |= wPinMsak;
-			ptSysconBase->EXIFT &= ~wPinMsak;
-			break;
-		case EXI_EDGE_IFT:
-			ptSysconBase->EXIFT |= wPinMsak;
-			ptSysconBase->EXIRT &= ~wPinMsak;
-			break;
-		case EXI_EDGE_BOTH:
-			ptSysconBase->EXIRT |= wPinMsak;
-			ptSysconBase->EXIFT |= wPinMsak;
-			break;
-		default:
-			break;
-	}
-}
 /** \brief config gpio irq mode
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
@@ -487,10 +393,8 @@ void  csi_gpio_port_write(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pi
  */ 
 csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd)
 {
-	//csi_error_t	ret = CSI_OK;
 	
 	byTrgPrd &= 0xf;
-	
 	//set evtrg source 
 	if (byTrgOut < 4 && eExiTrgSrc < 16)	
 	{
@@ -517,14 +421,3 @@ csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uin
 	return CSI_OK;
 }
 
-/** \brief Set debounce of gpio when gpio configed as input
- *  
- *  \param[in] ptGpioBase: GPIO port handle
- *  \param[in] wPinMask:Pin mask need to be set
- *  \param[in] bEnable: 0: disable   1:enable
- *  \return Error code
-*/
-//csi_error_t csi_gpio_debounce(csp_gpio_t *ptGpioBase, uint32_t wPinMask, bool bEnable)
-//{
-//	return CSI_UNSUPPORTED;
-//}

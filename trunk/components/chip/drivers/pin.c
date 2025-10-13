@@ -15,18 +15,15 @@
 
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
-extern void gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp);
-extern void exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg);
-
 /* externs variablesr-------------------------------------------------*/
-/* Private variablesr-------------------------------------------------*/
+/* variablesr---------------------------------------------------------*/
 
 /** \brief set gpio mux function
  * 
  *  \param[in] ePinName: gpio pin name
  *  \return pointer of pin infor
  */ 
-static unsigned int *get_pin_name_addr(pin_name_e ePinName)
+static unsigned int *apt_get_pin_name_addr(pin_name_e ePinName)
 {
 	static unsigned int pin_infor[2];
 	if(ePinName > PA015)
@@ -41,6 +38,101 @@ static unsigned int *get_pin_name_addr(pin_name_e ePinName)
 	}	
 	
 	return pin_infor;
+}
+
+/** \brief set gpio interrupt group
+ * 
+ *  \param[in] ptGpioBase: pointer of gpio register structure
+ *  \param[in] byPinNum: pin0~15
+ *  \param[in] eExiGrp:	EXI_IGRP0 ~ EXI_IGRP19
+ *  \return none
+ */ 
+void apt_gpio_intgroup_set(csp_gpio_t *ptGpioBase, uint8_t byPinNum, gpio_igrp_e eExiGrp)
+{
+	uint32_t byMaskShift,byMask;
+	gpio_group_e eIoGroup = GRP_GPIOA0;
+	
+	switch((uint32_t)ptGpioBase)
+	{
+		case APB_GPIOA0_BASE:
+			eIoGroup = GRP_GPIOA0;
+			break;
+		case APB_GPIOB0_BASE:
+			eIoGroup = GRP_GPIOB0;
+			break;
+		default:
+			break;
+	}
+	
+	if(eExiGrp < EXI_IGRP16)
+	{
+		if(byPinNum < 8)
+		{
+			byMaskShift = (byPinNum << 2);
+			byMask = ~(0x0Ful << byMaskShift);
+			GPIOGRP->IGRPL = ((GPIOGRP->IGRPL) & byMask) | (eIoGroup << byMaskShift);
+		}
+		else if(byPinNum < 16)
+		{
+			byMaskShift = ((byPinNum-8) << 2);
+			byMask = ~(0x0Ful << byMaskShift);
+			GPIOGRP->IGRPH = ((GPIOGRP->IGRPH) & byMask) | (eIoGroup << byMaskShift);
+		}
+	}
+	else if(eExiGrp <= EXI_IGRP19)
+	{
+		
+		if(GRP_GPIOA0 == eIoGroup)
+		{
+			if(eExiGrp < EXI_IGRP18)
+			{
+				byMaskShift = (eExiGrp - EXI_IGRP16) << 2;
+				byMask = ~(0x0Ful << byMaskShift);
+				GPIOGRP->IGREX = ((GPIOGRP->IGREX) & byMask) | (byPinNum << byMaskShift);
+			}
+		}
+		else
+		{
+			if(eExiGrp > EXI_IGRP17)
+			{
+				byMaskShift = (eExiGrp - EXI_IGRP16) << 2;
+				byMask = ~(0x0Ful << byMaskShift);
+				GPIOGRP->IGREX = ((GPIOGRP->IGREX) & byMask) | (byPinNum << byMaskShift);
+			}
+		}
+	}	
+}
+/** \brief set gpio exi interrupt trigger 
+ * 
+ *  \param[in] ptSysconBase: pionter of SYSCON reg structure.
+ *  \param[in] eExiGrp: EXI_IGRP0~EXI_IGRP19
+ *  \param[in] eGpioTrg: EXI_IRT,EXI_IFT,
+ *  \return none
+ */ 
+void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_trigger_e eGpioTrg)
+{
+	uint32_t wPinMsak = (0x01ul << eExiGrp);
+	
+	ptSysconBase->EXIRT &= (~wPinMsak);					//trig edg
+	ptSysconBase->EXIFT &= (~wPinMsak);
+	
+	switch(eGpioTrg)
+	{
+		case EXI_EDGE_IRT:
+			ptSysconBase->EXIRT |= wPinMsak;
+			ptSysconBase->EXIFT &= ~wPinMsak;
+			break;
+		case EXI_EDGE_IFT:
+			ptSysconBase->EXIFT |= wPinMsak;
+			ptSysconBase->EXIRT &= ~wPinMsak;
+			break;
+		case EXI_EDGE_BOTH:
+			ptSysconBase->EXIRT |= wPinMsak;
+			ptSysconBase->EXIFT |= wPinMsak;
+			break;
+		default:
+			break;
+	}
 }
 
 /** \brief set gpio mux function
@@ -279,7 +371,7 @@ uint8_t csi_pin_get_num(pin_name_e ePinName)
     uint8_t ret = 44;
 	unsigned int *pin_mess = NULL;
 	
-	pin_mess = get_pin_name_addr(ePinName);
+	pin_mess = apt_get_pin_name_addr(ePinName);
 	ret = (uint8_t)pin_mess[1];					//gpio pin number
 						
     return ret;
@@ -323,12 +415,12 @@ csi_error_t csi_pin_irq_mode(pin_name_e ePinName, csi_exi_grp_e eExiGrp, csi_gpi
 		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;				
 		
 	csp_gpio_irq_en(ptGpioBase, ePinName);							//enable gpio interrupt 
-	gpio_intgroup_set(ptGpioBase,ePinName,eExiGrp);					//interrupt group
+	apt_gpio_intgroup_set(ptGpioBase,ePinName,eExiGrp);					//interrupt group
 	
 	if(eTrgEdge >  GPIO_IRQ_BOTH_EDGE)
 		ret = CSI_ERROR;
 	else
-		exi_trg_edge_set(SYSCON,eExiGrp, eTrgEdge);					//interrupt edge
+		apt_exi_trg_edge_set(SYSCON,eExiGrp, eTrgEdge);					//interrupt edge
 		
 	return ret;
 }
