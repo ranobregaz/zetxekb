@@ -19,7 +19,7 @@
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
-/* Private variablesr-------------------------------------------------*/
+/* variablesr---------------------------------------------------------*/
 static uint32_t s_wWwdtTimeout = 0; 
 static uint8_t  s_byWwdtCntMax = 0xff;
 
@@ -124,7 +124,7 @@ csi_error_t csi_wwdt_feed(void)
  */
 csi_error_t csi_wwdt_irq_enable(bool bEnable)
 {
-	csp_wwdt_int_enable(WWDT,true);					//enable wwdt int
+	csp_wwdt_int_enable(WWDT,ENABLE);				//enable wwdt int
 	
 	if(bEnable)
 		csi_vic_enable_irq(WWDT_IRQn);				//enable iwdt irq
