@@ -86,7 +86,7 @@ typedef struct {
 	uint32_t		wFreq;		//clock frequency
 	hclk_div_e		eSdiv;		//SDIV
 	pclk_div_e		ePdiv;		//PDIV
-	uint32_t		wSclk;	//SCLK
+	uint32_t		wSclk;		//SCLK
 	uint32_t		wPclk;
 }csi_clk_config_t;
 
