@@ -37,6 +37,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <drv/uart.h>
+#include <sys_console.h>
 
 
 // define this globally (e.g. gcc -DPRINTF_INCLUDE_CONFIG_H ...) to include the
@@ -120,7 +121,8 @@
 #include <float.h>
 #endif
 
-extern csi_uart_t console_uart;
+//extern csi_uart_t console_uart;
+extern sys_console_t console;
 
 int putc(int c, FILE *stream)
 {
@@ -141,10 +143,10 @@ int puts(const char *s)
 void _putchar(char character)
 {
     if (character == '\n') {
-        csi_uart_putc(&console_uart, '\r');
+        csi_uart_putc(console.uart, '\r');
     }
 
-    csi_uart_putc(&console_uart, character);
+    csi_uart_putc(console.uart, character);
 
 }
 
