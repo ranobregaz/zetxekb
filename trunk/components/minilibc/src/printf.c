@@ -122,7 +122,6 @@
 #endif
 
 //extern csi_uart_t console_uart;
-extern sys_console_t console;
 
 int putc(int c, FILE *stream)
 {
