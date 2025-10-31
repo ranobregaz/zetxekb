@@ -14,12 +14,10 @@
 #include "sys_console.h"
 
 /* Private macro------------------------------------------------------*/
-
 /* externs function---------------------------------------------------*/
 extern int32_t console_init(sys_console_t *handle);
 
 /* externs variablesr-------------------------------------------------*/
-
 /* variablesr---------------------------------------------------------*/
 sys_console_t console;
 
