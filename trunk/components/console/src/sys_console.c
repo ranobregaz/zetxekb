@@ -15,11 +15,8 @@
 #include <stdint.h>
 #include <drv/pin.h>
 #include <drv/uart.h>
-
 #include "sys_console.h"
 
-
-extern sys_console_t console;
 
 int32_t console_init(sys_console_t *handle)
 {
