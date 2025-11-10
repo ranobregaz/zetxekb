@@ -30,8 +30,10 @@ typedef struct {
     console_port_t rx;
     uint32_t uart_id;
     uint32_t baudrate;
-    csi_uart_t *uart;
+    csp_uart_t *uart;
 } sys_console_t;
+
+extern sys_console_t console;
 
 int32_t console_init(sys_console_t *handle);
 
