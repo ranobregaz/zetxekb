@@ -16,8 +16,8 @@
 #include <drv/common.h>
 #include <drv/dma.h>
 #include <drv/ringbuffer.h>
-#include "csp_common.h"
-#include "csp_uart.h"
+
+#include "csp.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -71,11 +71,11 @@ typedef enum {
 
 
 typedef enum {
-   UART_STOP=0,				///< uart dev stoped.
-   UART_IDLE,				///< uart dev idle.
-   UART_W,					///< uart dev send enable only.
-   UART_R,					///< uart dev receive enable only.
-   UART_RW,					///< uart dev both send and receive enabled.
+   UART_STATE_STOP=0,		///< uart dev stoped.
+   UART_STATE_IDLE,			///< uart dev idle.
+   UART_STATE_WR,			///< uart dev send enable only.
+   UART_STATE_RD,			///< uart dev receive enable only.
+   UART_STATE_RW,			///< uart dev both send and receive enabled.
    UART_ERR,				///< uart dev error occurred.
 } csi_uart_state_t;
 
@@ -91,40 +91,62 @@ typedef enum {
 	CSI_UART_ERR_UARTRXEMPTY  	= -8,
 } csi_uart_error_t;
 
+/**
+ * \enum     csi_uart_intsrc_e
+ * \brief    UART interrupt source 
+ */
+typedef enum
+{
+	UART_INTSRC_NONE 		= (0x00ul << 0),		//UART none interrupt
+	UART_INTSRC_TX   		= (0x01ul << 2), 		//TX interrupt
+	UART_INTSRC_RX  		= (0x01ul << 3),		//RX interrupt
+	UART_INTSRC_TX_OV   	= (0x01ul << 4),		//TX OVER interrupt
+	UART_INTSRC_RX_OV   	= (0x01ul << 5),		//RX OVER interrupt
+	UART_INTSRC_PAR_ERR		= (0x01ul << 7),		//PARITY ERROR interrupt
+	UART_INTSRC_TXFIFO  	= (0x01ul << 12),		//TX FIFO interrupt
+	UART_INTSRC_RXFIFO  	= (0x01ul << 13),		//RX FIFO interrupt
+	UART_INTSRC_RXFIFO_OV	= (0x01ul << 18),		//RX FIFO OVER interrupt   
+	UART_INTSRC_TXDONE   	= (0x01ul << 19) 		//TX DONE interrupt
+}csi_uart_intsrc_e;
+
+
+/// definition for uart.
 typedef struct csi_uart csi_uart_t;
 
 struct csi_uart {
-	csp_uart_t *		utbase;					///< baseaddr of uart peripheral.
-	uint8_t				utNo;					///< the suffix number of uart peripheral.
-	uint8_t				DataBits;               ///< databits setting .
-	uint8_t				Parity;                 ///< parity setting .
-	uint8_t				Stopbits;				///< stopbits setting .
-	uint32_t			flowctrl;				///< flow control setting .
-	uint32_t    		BaudRate;				///< baudrate setting .
-	uint32_t			Interrupt;				///< Interrupt flag buffer.
-	uint32_t			Event;					///< event flag buffer.	
-	csp_uart_wkmode_t   wkmode;					///< wkmode setting for performance optimization in customer's cases.
-    csi_uart_state_t	state;					///< dev current state flag.
-	csi_uart_error_t 	errcode;				///< error flag buffer .
-	const int   		manufacturerUID;		///< UID of this moudle driving code.
-	ringbuffer_t *      ringbuf;				///< ringbuffer used in uart async transfer.    
-	uint32_t    		readbacklen;			///< read back length 	
-	void     			(*EventGen_callback)(csi_uart_t *uart);  ///< uart transfer event generation function.
-	void     			(*Event_callback)(csi_uart_t *uart);     ///< handler of event.
-	void *              eventArg;				
-	void *				extparam;               ///< extparam control function .
-	void *				extctrol;			    ///< extctrol function.
+    csi_dev_t             dev;
+    void                  (*callback)(csi_uart_t *uart, csi_uart_event_t event, void *arg);
+    void                  *arg;
+    uint8_t               *tx_data;
+    uint32_t              tx_size;
+    uint8_t               *rx_data;
+    uint32_t              rx_size;
+    csi_dma_ch_t          *tx_dma;
+    csi_dma_ch_t          *rx_dma;
+    csi_error_t           (*send)(csi_uart_t *uart, const void *data, uint32_t size);
+    csi_error_t           (*receive)(csi_uart_t *uart, void *data, uint32_t size);
+    csi_state_t           state;
+    void                  *priv;
 };
 
-typedef struct csi_uart_devlist {
-	csi_uart_t *ut[NUM_OF_UART];
-}csi_uart_devlist_t;
+typedef struct csi_uart_config csi_uart_config_t;
 
-
-
-
-
-extern csi_uart_devlist_t uartDevlist;
+struct csi_uart_config {
+	uint8_t				byDataBits;         //databits setting 
+	uint8_t				byParity;           //parity type 
+	uint8_t				byStopBits;			//stopbits setting 	
+	uint8_t				byRecvState;		//receive state	
+	uint32_t            wBaudRate;			//baud rate	
+	uint32_t            wInter;				//interrupt
+    uint8_t				*pTxData;			//pointer of send buf 
+    uint32_t            wTxSize;			//send size
+	uint8_t				*pRxData;			//pointer of send buf 
+	uint32_t            wRxSize;			//send size
+	csp_uart_wkmode_t   wkmode;				//wkmode setting for performance optimization in customer's cases.
+    csi_uart_state_t	state;				//dev current state flag.
+	ringbuffer_t		*ringbuf;			//ringbuf
+    void                *priv;
+};
 
 /**
   \brief       Initializes the resources needed for the UART interface.
@@ -132,21 +154,63 @@ extern csi_uart_devlist_t uartDevlist;
   \param[in]   idx       the device idx.
   \return      error code.
 */
-csi_error_t csi_uart_init(csi_uart_t *uart, uint32_t idx);
-/**
-  \brief       Open UART.
-  \param[in]   uart       operate handle..
-  \return      error code.
-*/
-csi_error_t        csi_uart_open(csi_uart_t *uart);
+csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg);
+
+/** 
+  \brief start(enable) uart rx/tx
+  \param[in] ptUartBase: pointer of uart register structure
+  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_uart_start(csp_uart_t *ptUartBase);
+
+/** 
+  \brief stop(disable) uart rx/tx
+  \param[in] ptUartBase: pointer of uart register structure
+  \return error code \ref csi_error_t
+ */ 
+csi_error_t csi_uart_stop(csp_uart_t *ptUartBase);
 
 /**
-  \brief       Close UART.
+  \brief       Attach the callback handler to UART.
   \param[in]   uart       operate handle.
+  \param[in]   callback   callback function.
+  \param[in]   arg        user can define it by himself as callback's param.
   \return      error code.
 */
-csi_error_t        csi_uart_close(csi_uart_t *uart);
+csi_error_t csi_uart_attach_callback(csi_uart_t *uart, void *callback, void *arg);
 
+/**
+  \brief       Detach the callback handler.
+  \param[in]   uart  operate handle.
+*/
+void        csi_uart_detach_callback(csi_uart_t *uart);
+
+/**
+  \brief       Config the baudrate.
+  \param[in]   uart  uart handle to operate.
+  \param[in]   baud  uart baudrate.
+  \return      error code.
+*/
+//csi_error_t csi_uart_baud(csi_uart_t *uart, uint32_t baud);
+
+/**
+  \brief       Config the uart format.
+  \param[in]   uart      uart handle to operate.
+  \param[in]   data_bit  uart data bits.
+  \param[in]   parity    uart data parity.
+  \param[in]   stop_bit  uart stop bits.
+  \return      error code.
+*/
+//csi_error_t csi_uart_format(csi_uart_t *uart,  csi_uart_data_bits_t data_bits,
+//                            csi_uart_parity_t parity, csi_uart_stop_bits_t stop_bits);
+
+/**
+  \brief       Config the uart flow control.
+  \param[in]   uart      uart handle to operate.
+  \param[in]   flowctrl  uart flow control.
+  \return      error code.
+*/
+//csi_error_t csi_uart_flowctrl(csi_uart_t *uart,  csi_uart_flowctrl_t flowctrl);
 
 /**
   \brief       Start send data to UART transmitter, this function is blocking.
@@ -156,7 +220,7 @@ csi_error_t        csi_uart_close(csi_uart_t *uart);
   \param[in]   timeout  the timeout between bytes(ms).
   \return      the num of data which is sent successfully or CSI_ERROR.
 */
-int32_t csi_uart_send(csi_uart_t *uart, const void *data, uint32_t size, uint32_t timeout);
+int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize, uint32_t wTimeOut);
 
 /**
   \brief       Start send data to UART transmitter, this function is non-blocking.
@@ -186,38 +250,28 @@ int32_t csi_uart_receive(csi_uart_t *uart, void *data, uint32_t size, uint32_t t
 */
 csi_error_t csi_uart_receive_async(csi_uart_t *uart, void *data, uint32_t size);
 
-/** \brief uart get character
- * 
- *  \param[in] uart: UART handle to operate
- *  \param[in] blocking: blocking mode swtich
- *  \return  the character to get
- */
-uint8_t csi_uartmd_getc(csi_uart_t *uart,uint8_t blocking);
-
-/** \brief uart send character
- * 
- *  \param[in] uart: UART handle to operate
- *  \param[in] ch: the character to be send
- *  \param[in] blocking: blocking mode swtich
- *  \return  none
- */
-void csi_uartmd_putc(csi_uart_t *uart, uint8_t ch,uint8_t blocking);
-
 /**
   \brief       Get character in query mode.
   \param[in]   uart  uart handle to operate.
   \return      the character to get.
 */
-uint8_t  csi_uart_getc(csi_uart_t *uart);
+uint8_t csi_uart_getc(csp_uart_t *ptUartBase);
 
 /**
   \brief       Send character in query mode.
   \param[in]   uart uart handle to operate.
   \param[in]   ch   the character to be send.
 */
-void csi_uart_putc(csi_uart_t *uart, uint8_t ch);
+void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData);
 
-
+/**
+  \brief       Link DMA channel to uart device.
+  \param[in]   uart     uart handle to operate.
+  \param[in]   tx_dma   the DMA channel handle for send, when it is NULL means to unlink the channel.
+  \param[in]   rx_dma   the DMA channel handle for receive, when it is NULL means to unlink the channel.
+  \return      error code.
+*/
+csi_error_t csi_uart_link_dma(csi_uart_t *uart, csi_dma_ch_t *tx_dma, csi_dma_ch_t *rx_dma);
 
 /**
   \brief       Get the state of uart device.
@@ -225,89 +279,20 @@ void csi_uart_putc(csi_uart_t *uart, uint8_t ch);
   \param[out]  state  the state of uart device.
   \return      error code.
 */
-csi_error_t csi_uart_get_state(csi_uart_t *uart, csi_uart_state_t *state);
+csi_error_t csi_uart_get_state(csi_uart_t *uart, csi_state_t *state);
 
 /**
   \brief       Enable uart power manage.
   \param[in]   uart   uart handle to operate.
-  \param[in]   param  pointer to param for power management.
   \return      error code.
 */
-csi_error_t csi_uart_pm(csi_uart_t *uart, uint8_t *param);
+csi_error_t csi_uart_enable_pm(csi_uart_t *uart);
 
 /**
-  \brief       Enable uart power manage.
+  \brief       Disable uart power manage.
   \param[in]   uart   uart handle to operate.
-  \param[in]   param  pointer to param for performance control.
-  \return      error code.
 */
-csi_error_t csi_uart_performance_control(csi_uart_t *uart, uint8_t *param);
-
-
-/** \brief get uart interrupt isr value
- * 
- *  \param[in] UART handle to operate
- *  \return uart isr reg value
- */ 
-uint32_t csi_uart_get_isr(csi_uart_t *uart);
-
-/** \brief clr uart interrupt isr flag
- * 
- *  \param[in] UART handle to operate
- *  \param[in] UART isr bits
- *  \return none
- */
- void csi_uart_clr_isr(csi_uart_t *uart,uint32_t value);
-
-/** \brief uart interrupt event genneration
- * 
- *  \param[in] UART handle to operate
- *  \return none
- */ 
-
- void csi_uart_irqhandler(uint8_t devno);
-
-/**
-  \brief       Attach the interrupt callback handler to UART.
-  \param[in]   uart       operate handle.
-  \param[in]   evtcreat   event creat function.
-  \param[in]   evtcallback   event callback function.
-  \param[in]   arg        user can define it by himself as callback's param.
-  \return      error code.
-*/
-csi_error_t csi_uart_attach_int_callback(csi_uart_t *uart, void *evtcreat, void *evtcallback,void *arg);
-
-/**
-  \brief       Attach the callback handler to UART.
-  \param[in]   uart       operate handle.
-  \param[in]   callback   callback function.
-  \param[in]   arg        user can define it by himself as callback's param.
-  \return      error code.
-*/
-
-/** \brief uart interrupt event generation 
- * 
- *  \param[in] UART handle to operate
- *  \return none
- */ 
-void csi_uart_creat_event_default(csi_uart_t *uart);
-
-
-/** \brief uart interrupt event handler default
- * 
- *  \param[in] UART handle to operate
- *  \return none
- */ 
-void csi_uart_handle_event_default(csi_uart_t *uart, csi_uart_event_t event);
-
-
-/** \brief de-initialize uart interface
- * 
- *  \param[in] uart: UART handle to operate
- *  \return error code \ref csi_error_t
- */
-csi_error_t csi_uart_uninit(csi_uart_t *uart);
-
+void csi_uart_disable_pm(csi_uart_t *uart);
 
 #ifdef __cplusplus
 }
