@@ -13,7 +13,7 @@
 #include "sys_clk.h"
 #include <drv/gpio.h>
 #include <drv/pin.h>
-
+#include <iostring.h>
 #include "demo.h"
 /* externs function--------------------------------------------------------*/
 /* externs variablesr------------------------------------------------------*/
@@ -64,6 +64,8 @@ int gpio_port_ouput_demo(void)
 	mdelay(100);
 	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//输出高
 	mdelay(100);
+	
+	my_printf("GPIO PINMASK: %d \n", wPinMask);
 	
 	return iRet;
 }
