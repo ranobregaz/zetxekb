@@ -35,12 +35,10 @@ extern int iwdt_irq_demo(void);
 //etcb demo
 int etcb_one_trg_one_demo(void);
 
-<<<<<<< .mine
 //uart demo
 int uart_char_demo(void);
 
-||||||| .r42
-=======
+
 //lpt demo
 extern int lpt_timer_demo(void);
 extern int lpt_pwm_demo(void);
@@ -68,5 +66,5 @@ extern void lvd_demo(void);
 extern void lvr_demo(void);
 extern void memorycheck_demo(void);
 extern void emcm_demo(void);
->>>>>>> .r89
+
 #endif
