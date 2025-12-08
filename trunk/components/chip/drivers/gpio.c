@@ -15,7 +15,7 @@
 /* Private macro------------------------------------------------------*/
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
-/* variablesr---------------------------------------------------------*/
+/* Private variablesr-------------------------------------------------*/
 const uint32_t  wExiStateMap[] = 
 {    
 	EXI0_IRQ_MAP, EXI1_IRQ_MAP, EXI2_IRQ_MAP, EXI3_IRQ_MAP, EXI4_IRQ_MAP,
@@ -25,6 +25,7 @@ const uint8_t  byExiNumMap[] =
 {    
 	EXI0_IRQn, EXI1_IRQn, EXI2_IRQn, EXI3_IRQn, EXI4_IRQn,
 };
+
 
 /** \brief config gpio direction
  * 
