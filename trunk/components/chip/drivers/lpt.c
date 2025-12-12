@@ -32,7 +32,7 @@ uint32_t wLptPrd = 0;
  *  \param[in] eClk: clk source selection
  *  \return lpt clk
  */ 
-static uint32_t get_lpt_clk(csi_lpt_clksrc_t eClk)
+static uint32_t apt_get_lpt_clk(csi_lpt_clksrc_t eClk)
 {
 	uint32_t wLptClk =0;
 	switch (eClk)
@@ -69,7 +69,7 @@ static uint32_t get_lpt_clk(csi_lpt_clksrc_t eClk)
  *  \param[in] wMult_t: converted wMult value 
  *  \return lpt prd
  */ 
-static uint32_t get_lpt_prd(csp_lpt_t *ptLptBase,csi_lpt_clksrc_t eClk,uint32_t wMult_t)
+static uint32_t apt_get_lpt_prd(csp_lpt_t *ptLptBase,csi_lpt_clksrc_t eClk,uint32_t wMult_t)
 {
 	uint32_t hwLptPrd,wDiv = 0;
 	lpt_pscdiv_e ePscDiv;
@@ -140,10 +140,10 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_t eClk, uint3
 	csp_lpt_soft_rst(ptLptBase);
 	csp_lpt_clk_enable(ptLptBase, ENABLE);
 	
-	wLptClk = get_lpt_clk(eClk);	
+	wLptClk = apt_get_lpt_clk(eClk);	
 	wMult = wLptClk/1000*wTimeOut;
 		
-	wLptPrd = get_lpt_prd(ptLptBase,eClk,wMult);
+	wLptPrd = apt_get_lpt_prd(ptLptBase,eClk,wMult);
 	if(wLptPrd == ERR_LPT_CLK)
 	{
 		tRet = CSI_UNSUPPORTED;
@@ -312,10 +312,10 @@ csi_error_t csi_lpt_set_fre(csp_lpt_t *ptLptBase, csi_lpt_clksrc_t eClk, uint16_
 	uint32_t wLptClk =0, wMult = 0;
 	csi_error_t tRet = CSI_OK;
 	
-	wLptClk = get_lpt_clk(eClk);
+	wLptClk = apt_get_lpt_clk(eClk);
 	wMult = wLptClk/wHz;
 	
-	wLptPrd = get_lpt_prd(ptLptBase,eClk,wMult);	
+	wLptPrd = apt_get_lpt_prd(ptLptBase,eClk,wMult);	
 
 	if(wLptPrd == ERR_LPT_CLK)
 	{
@@ -356,12 +356,12 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 	if(ptLptPara->wFreq== 0 )
 		return CSI_ERROR;
 		
-	wLptClk = get_lpt_clk(ptLptPara->eClksrc);
+	wLptClk = apt_get_lpt_clk(ptLptPara->eClksrc);
 	
 
 	wMult = wLptClk/ptLptPara->wFreq;
 	
-	wLptPrd = get_lpt_prd(ptLptBase,ptLptPara->eClksrc,wMult);	
+	wLptPrd = apt_get_lpt_prd(ptLptBase,ptLptPara->eClksrc,wMult);	
 	
 	if(wLptPrd == ERR_LPT_CLK)
 	{
@@ -395,9 +395,9 @@ csi_error_t csi_lpt_pwm_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_t eClk, 
 	if(freq == 0 )
 		return CSI_ERROR;
 		
-	wLptClk = get_lpt_clk(eClk);
+	wLptClk = apt_get_lpt_clk(eClk);
 	wMult = wLptClk/freq;
-	wLptPrd = get_lpt_prd(ptLptBase,eClk,wMult);	
+	wLptPrd = apt_get_lpt_prd(ptLptBase,eClk,wMult);	
 	if(wLptPrd == ERR_LPT_CLK)
 	{
 		tRet = CSI_UNSUPPORTED;
@@ -459,10 +459,10 @@ csi_error_t csi_lpt_start_sync(csp_lpt_t *ptLptBase, csi_lpt_clksrc_t eClk, uint
 	uint32_t wLptClk =0, wMult = 0;
 	csi_error_t tRet = CSI_OK;
 	
-	wLptClk = get_lpt_clk(eClk);
+	wLptClk = apt_get_lpt_clk(eClk);
 	wMult = wLptClk/1000*wms;
 
-	wLptPrd = get_lpt_prd(ptLptBase,eClk,wMult);	
+	wLptPrd = apt_get_lpt_prd(ptLptBase,eClk,wMult);	
 
 	if(wLptPrd == ERR_LPT_CLK)
 	{
