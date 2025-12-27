@@ -539,6 +539,16 @@ static inline void csp_pder1_clk_dis(csp_syscon_t *ptSysconBase, uint32_t wIdx)
 	ptSysconBase->PCDR1 = (0x01ul << wIdx);
 }
 
+
+static inline void csp_clk_pm_enable(csp_syscon_t *ptSysconBase, clk_pm_e eClk, bool bEnable)
+{
+	if (bEnable)
+		ptSysconBase->GCER = 0x1 << eClk;
+	else
+		ptSysconBase->GCDR = 0x1 << eClk;
+}
+
+
 static inline void csp_set_em_lfmd(csp_syscon_t *ptSysconBase, bool bMode)
 {
 	if (bMode)
