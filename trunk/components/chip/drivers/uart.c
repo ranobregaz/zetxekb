@@ -354,7 +354,6 @@ int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize,
 		}
 	}
 	
-	
 	return i;
 	
 }
