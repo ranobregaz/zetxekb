@@ -48,4 +48,7 @@ extern void lvr_demo(void);
 extern void memorycheck_demo(void);
 extern void emcm_demo(void);
 
+//ifc demo
+void ifc_read(void);
+void ifc_program(void);
 #endif

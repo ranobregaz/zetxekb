@@ -157,7 +157,7 @@ static inline uint32_t csp_ifc_get_dflash_paramode(csp_ifc_t *ptIfcBase)
 {
 	return ((ptIfcBase -> MR & DFLASH_PMODE)>> DFLASH_PMODE_POS);
 }
-void csp_ifc_set_speed(csp_ifc_t *, uint32_t);
+
 
 csp_error_t csp_ifc_wr_1word(csp_ifc_t * ptIfcBase, uint8_t bFlashType, uint32_t wAddr, uint32_t wData);
 csp_error_t csp_ifc_swd_remap(csp_ifc_t * ptIfcBase, uint8_t bGrp);
