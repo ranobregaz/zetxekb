@@ -291,12 +291,12 @@ uint32_t soc_get_coret_freq(void)
 {
 	switch (CK801CORET->CTRL & 0x4 >>2)
 	{
-		case 0: return tClkConfig.eSdiv/8;
+		case 0: return tClkConfig.wSclk/8;
 			break;
-		case 1: return tClkConfig.eSdiv;
+		case 1: return tClkConfig.wSclk;
 			break;
 		default:
-			return tClkConfig.eSdiv;
+			return tClkConfig.wSclk;
 			break;
 	}
 	
