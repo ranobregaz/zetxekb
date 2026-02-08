@@ -23,39 +23,41 @@
 extern "C" {
 #endif
 
-//apt user
+#define UART_IDX_NUM   			3
+#define UART_RECV_MAX_LEN		256
+
 //#define UART_RECV_DYNAMIC  			//uart receive dynamic length 
 
 /*----- UART Control Codes: Mode Parameters: Data Bits -----*/
 typedef enum {
-    UART_DATA_BITS_5               = 0,    ///< 5 Data bits
-    UART_DATA_BITS_6,                      ///< 6 Data bit
-    UART_DATA_BITS_7,                      ///< 7 Data bits
-    UART_DATA_BITS_8,                      ///< 8 Data bits (default)
-    UART_DATA_BITS_9                       ///< 9 Data bits
-} csi_uart_data_bits_t;
+    UART_DATA_BITS_5	= 0,			///< 5 Data bits
+    UART_DATA_BITS_6,                   ///< 6 Data bit
+    UART_DATA_BITS_7,                   ///< 7 Data bits
+    UART_DATA_BITS_8,                   ///< 8 Data bits (default)
+    UART_DATA_BITS_9                    ///< 9 Data bits
+} csi_uart_data_bits_e;
 
 /*----- UART Control Codes: Mode Parameters: Parity -----*/
 typedef enum {
-    UART_PARITY_NONE               = 0,    ///< No Parity (default)
-    UART_PARITY_EVEN,                      ///< Even Parity
-    UART_PARITY_ODD,                       ///< Odd Parity
-} csi_uart_parity_t;
+    UART_PARITY_NONE	= 0,    		///< No Parity (default)
+    UART_PARITY_EVEN,                   ///< Even Parity
+    UART_PARITY_ODD,                    ///< Odd Parity
+} csi_uart_parity_e;
 
 /*----- UART Control Codes: Mode Parameters: Stop Bits -----*/
 typedef enum {
-    UART_STOP_BITS_1               = 0,    ///< 1 Stop bit (default)
-    UART_STOP_BITS_2,                      ///< 2 Stop bits
-    UART_STOP_BITS_1_5,                    ///< 1.5 Stop bits
-} csi_uart_stop_bits_t;
+    UART_STOP_BITS_1	= 0,    		///< 1 Stop bit (default)
+    UART_STOP_BITS_2,                   ///< 2 Stop bits
+    UART_STOP_BITS_1_5,                 ///< 1.5 Stop bits
+} csi_uart_stop_bits_e;
 
 /*----- UART Control Codes: Mode Parameters: Flow Control -----*/
 typedef enum {
-    UART_FLOWCTRL_NONE             = 0,    ///< none flowctrl
-    UART_FLOWCTRL_RTS,                     ///< RTS
-    UART_FLOWCTRL_CTS,                     ///< CTS
-    UART_FLOWCTRL_RTS_CTS                  ///< RTS & CTS
-} csi_uart_flowctrl_t;
+    UART_FLOWCTRL_NONE	= 0,    		///< none flowctrl
+    UART_FLOWCTRL_RTS,                  ///< RTS
+    UART_FLOWCTRL_CTS,                  ///< CTS
+    UART_FLOWCTRL_RTS_CTS               ///< RTS & CTS
+} csi_uart_flowctrl_e;
 
 /****** UART Event *****/
 typedef enum {
@@ -71,25 +73,24 @@ typedef enum {
 
 
 typedef enum {
-   UART_STATE_STOP=0,		///< uart dev stoped.
-   UART_STATE_IDLE,			///< uart dev idle.
-   UART_STATE_WR,			///< uart dev send enable only.
-   UART_STATE_RD,			///< uart dev receive enable only.
-   UART_STATE_RW,			///< uart dev both send and receive enabled.
-   UART_ERR,				///< uart dev error occurred.
+	UART_STATE_IDLE		= 0,			///< uart idle(rx/tx)
+	UART_STATE_RECV,					///< uart receiving 
+	UART_STATE_SEND,					///< uart sending 
+	UART_STATE_FULL,					///< uart receive complete(full)
+	UART_STATE_DONE						///< uart send complete
 } csi_uart_state_t;
 
-typedef enum {
-	CSI_UART_OK          =  0,
-    CSI_UART_ERROR       = -1,
-    CSI_UART_BUSY        = -2,
-    CSI_UART_TIMEOUT     = -3,
-    CSI_UART_UNSUPPORTED = -4,
-	CSI_UART_ERR_UART_UARTNO  	= -5,
-	CSI_UART_ERR_UART_UARTBASE  = -6,
-	CSI_UART_ERR_UART_UARTPARAM = -7,
-	CSI_UART_ERR_UARTRXEMPTY  	= -8,
-} csi_uart_error_t;
+//typedef enum {
+//	CSI_UART_OK          =  0,
+//    CSI_UART_ERROR       = -1,
+//    CSI_UART_BUSY        = -2,
+//    CSI_UART_TIMEOUT     = -3,
+//    CSI_UART_UNSUPPORTED = -4,
+//	CSI_UART_ERR_UART_UARTNO  	= -5,
+//	CSI_UART_ERR_UART_UARTBASE  = -6,
+//	CSI_UART_ERR_UART_UARTPARAM = -7,
+//	CSI_UART_ERR_UARTRXEMPTY  	= -8,
+//} csi_uart_error_t;
 
 /**
  * \enum     csi_uart_intsrc_e
@@ -133,20 +134,24 @@ typedef struct csi_uart_config csi_uart_config_t;
 
 struct csi_uart_config {
 	uint8_t				byDataBits;         //databits setting 
-	uint8_t				byParity;           //parity type 
 	uint8_t				byStopBits;			//stopbits setting 	
-	uint8_t				byRecvState;		//receive state	
+	uint8_t				byFlowCtrl;			//flowctrl
+	uint8_t				byParity;           //parity type 
 	uint32_t            wBaudRate;			//baud rate	
 	uint32_t            wInter;				//interrupt
-    uint8_t				*pTxData;			//pointer of send buf 
-    uint32_t            wTxSize;			//send size
-	uint8_t				*pRxData;			//pointer of send buf 
-	uint32_t            wRxSize;			//send size
-	csp_uart_wkmode_t   wkmode;				//wkmode setting for performance optimization in customer's cases.
-    csi_uart_state_t	state;				//dev current state flag.
 	ringbuffer_t		*ringbuf;			//ringbuf
     void                *priv;
 };
+
+typedef struct {
+	uint8_t				*pRxData;			//pointer of receive buf 
+    uint8_t				*pTxData;			//pointer of send buf 
+    uint16_t            hwRxPos;			//rx buf pos
+	uint16_t            hwTxSize;			//tx send data size
+	csi_state_t			tState;
+} csi_uart_transfer_t;
+
+extern csi_uart_transfer_t g_tUartTran[UART_IDX_NUM];	
 
 /**
   \brief       Initializes the resources needed for the UART interface.
@@ -222,6 +227,16 @@ void        csi_uart_detach_callback(csi_uart_t *uart);
 */
 int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize, uint32_t wTimeOut);
 
+
+/** 
+  \brief send data to uart transmitter, this function is interrupt mode(async mode)
+  \param[in] ptUartBase: pointer of uart register structure
+  \param[in] pData: pointer to buffer with data to send to uart transmitter.
+  \param[in] wSize: number of data to send (byte).
+  \return  error code \ref csi_error_t
+ */
+csi_error_t csi_uart_send_intr(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize);
+
 /**
   \brief       Start send data to UART transmitter, this function is non-blocking.
   \param[in]   uart     uart handle to operate.
@@ -229,7 +244,7 @@ int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize,
   \param[in]   size     number of data to send (byte).
   \return      error code.
 */
-csi_error_t csi_uart_send_async(csi_uart_t *uart, const void *data, uint32_t size);
+//csi_error_t csi_uart_send_async(csi_uart_t *uart, const void *data, uint32_t size);
 
 /**
   \brief       Query data from UART receiver FIFO, this function is blocking.
@@ -274,12 +289,32 @@ void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData);
 csi_error_t csi_uart_link_dma(csi_uart_t *uart, csi_dma_ch_t *tx_dma, csi_dma_ch_t *rx_dma);
 
 /**
-  \brief       Get the state of uart device.
+  \brief       get the state of uart receive.
   \param[in]   uart   uart handle to operate.
-  \param[out]  state  the state of uart device.
   \return      error code.
 */
-csi_error_t csi_uart_get_state(csi_uart_t *uart, csi_state_t *state);
+csi_uart_state_t csi_uart_get_recv_state(csp_uart_t *ptUartBase);
+
+/**
+  \brief       get the state of uart send.
+  \param[in]   uart   uart handle to operate.
+  \return      error code.
+*/
+csi_uart_state_t csi_uart_get_send_state(csp_uart_t *ptUartBase);
+
+/**
+  \brief       clr the state of uart receive.
+  \param[in]   uart   uart handle to operate.
+  \return      error code.
+*/
+void csi_uart_clr_recv_state(csp_uart_t *ptUartBase);
+
+/**
+  \brief       clr the state of uart send.
+  \param[in]   uart   uart handle to operate.
+  \return      error code.
+*/
+void csi_uart_clr_send_state(csp_uart_t *ptUartBase);
 
 /**
   \brief       Enable uart power manage.
@@ -293,6 +328,7 @@ csi_error_t csi_uart_enable_pm(csi_uart_t *uart);
   \param[in]   uart   uart handle to operate.
 */
 void csi_uart_disable_pm(csi_uart_t *uart);
+
 
 #ifdef __cplusplus
 }
