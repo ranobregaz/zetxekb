@@ -37,6 +37,8 @@ int etcb_one_trg_one_demo(void);
 
 //uart demo
 int uart_char_demo(void);
+int uart_send_demo(void);
+int uart_send_intr_demo(void);
 
 //lpt demo
 extern int lpt_timer_demo(void);
