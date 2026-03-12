@@ -14,155 +14,21 @@
 #include <drv/gpio.h>
 #include <drv/pin.h>
 #include <drv/porting.h>
+#include <drv/ringbuffer.h>
 #include <drv/tick.h>
 
-#include "csp_uart.h"
-
 /* Private macro------------------------------------------------------*/
-#define UART_TIMEOUT    	0x10000000U
-
-
 /* externs function---------------------------------------------------*/
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
 csi_uart_transfer_t g_tUartTran[UART_IDX_NUM];	
-
 static uint32_t s_wCtrlRegBack = 0;	
 
-/** \brief uart trends receive scan,asynchronism mode
- * 
- *  \param[in] uart: UART handle to operate
- *  \return none
- */ 
-//void csi_uart_recv_dynamic_scan(csi_uart_t *uart)
-//{
-//	uint8_t byIdx = uart->dev.idx;
-//	
-//	if(s_wRecvLen[byIdx] > 0)								//receive data len > 0
-//	{
-//		if(s_wPreRecvLen[byIdx] == s_wRecvLen[byIdx])		//receive data end 		 
-//		{
-//			uart->arg = (void *)s_wPreRecvLen[byIdx];
-//			uart->state.readable = 1U;
-//			s_wRecvLen[byIdx] = 0;
-//			s_wPreRecvLen[byIdx] = 0;
-//			
-//			if(uart->callback) 
-//				uart->callback(uart, UART_EVENT_RECEIVE_DYNAMIC_COMPLETE, uart->arg);
-//			else
-//				uart->state.readable = 0U;
-//		}
-//		else
-//			s_wPreRecvLen[byIdx] = s_wRecvLen[byIdx];				//receive go on
-//	}
-//}
-/** \brief uart rx disable
- * 
- *  \param[in] UART handle to operate
- *  \return none
- */ 
-//static void apt_uart_rx_dis(csi_uart_t *uart)
-//{
-//    csp_uart_t *uart_base  = (csp_uart_t *)HANDLE_REG_BASE(uart); 
-//	csp_uart_set_ctrl(uart_base,((uint32_t)(uart->priv)) & (~UART_RX_MSK));	
-//}
 
-/** \brief uart rx ensable
- * 
- *  \param[in] UART handle to operate
- *  \return none
- */ 
-//static void apt_uart_rx_en(csi_uart_t *uart)
-//{
-//    csp_uart_t *uart_base  = (csp_uart_t *)HANDLE_REG_BASE(uart);
-//	csp_uart_set_ctrl(uart_base,((uint32_t)(uart->priv)) | (UART_RX_MSK));	
-//}
-/** \brief uart send data,interrupt mode
- * 
- *  \param[in] uart: UART handle to operate
- *  \return none
- */ 
-//static void uart_intr_send_data(csi_uart_t *uart)
-//{
-//    csp_uart_t *uart_base  = (csp_uart_t *)HANDLE_REG_BASE(uart); 
-//	
-//	uart->tx_size--;
-//	uart->tx_data++;
-//	
-//    if (uart->tx_size == 0U) 
-//	{
-//		uint32_t wCtrlBackup = (((uint32_t)(uart->priv)) & (~UART_TXDONE_INT)) | UART_RX_MSK;		//disable tx_done int
-//		uart->priv = (void *)wCtrlBackup;
-//		csp_uart_set_ctrl(uart_base,(uint32_t)(uart->priv));
-//	
-//        uart->state.writeable = 1U;
-//       
-//		if(uart->callback)
-//            uart->callback(uart, UART_EVENT_SEND_COMPLETE, uart->arg);
-//    }
-//	else
-//	{
-//		csp_uart_set_data(uart_base, *uart->tx_data);
-//	}
-//}
-/** \brief uart receive data,interrupt mode
- * 
- *  \param[in] uart: UART handle to operate
- *  \return none
- */ 
-//static void uart_intr_recv_data(csi_uart_t *uart)
-//{
-//	csp_uart_t *uart_base  = (csp_uart_t *)HANDLE_REG_BASE(uart); 
-//	
-//	uint8_t byIdx = uart->dev.idx;
-//	
-//	if ((uart->rx_data == NULL) || (uart->rx_size == 0U))
-//	{
-//		#if defined(CONFIG_UART_DYNAMIC)	//uart dynamic length receive
-//			if(uart->rx_data)
-//			{
-//				if(s_wRecvLen[byIdx] < UART_RECV_MAX_LEN)
-//					uart->rx_data[s_wRecvLen[byIdx] ++] = csp_uart_get_data(uart_base);
-//				else
-//					csp_uart_get_data(uart_base);
-//			}
-//			else
-//			{
-//				if (uart->callback) 
-//					uart->callback(uart, UART_EVENT_RECEIVE_FIFO_READABLE, uart->arg);
-//				else
-//					csp_uart_get_data(uart_base);
-//			}
-//		#else
-//			if(uart->callback) 
-//				uart->callback(uart, UART_EVENT_RECEIVE_FIFO_READABLE, uart->arg);
-//			else
-//				csp_uart_get_data(uart_base);
-//		#endif
-//	}
-//	else
-//	{
-//		*uart->rx_data = csp_uart_get_data(uart_base);
-//		uart->rx_size--;
-//		uart->rx_data++;
-//		
-//		if(uart->rx_size == 0)
-//		{
-//			uart->state.readable = 1U;
-//			uart->rx_data = NULL;
-//			//uart->rx_data = uart->rx_data - (uint32_t)uart->arg;
-//			s_wRecvLen[byIdx] = 0x00;									
-//			s_wPreRecvLen[byIdx] = 0x00;	
-//			
-//			if(uart->callback) 
-//				uart->callback(uart, UART_EVENT_RECEIVE_COMPLETE, uart->arg);
-//		}
-//	}
-//}
-/** \brief uart idx get 
+/** \brief get uart idx 
  * 
  *  \param[in] ptUartBase: pointer of uart register structure
- *  \return uart id num
+ *  \return uart id number(0~3)
  */ 
 static uint8_t apt_get_uart_idx(csp_uart_t *ptUartBase)
 {
@@ -189,26 +55,26 @@ void apt_uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx)
 {
 	volatile uint32_t wIntState = csp_uart_get_isr(ptUartBase);
 	
-	switch(wIntState & 0x080060)			//get RXFIFO/TXFIFO/TXDONE interrupt
+	switch(wIntState & 0x080040)			//get RXFIFO/TXDONE interrupt
 	{
 		case UART_RXFIFO_INT_S:				//rx fifo interrupt; recommended use RXFIFO interrupt
+		
 			if(csp_uart_get_sr(ptUartBase) & UART_RNE)
 			{
-				if(g_tUartTran[byIdx].hwRxPos < UART_RECV_MAX_LEN)
-					g_tUartTran[byIdx].pRxData[g_tUartTran[byIdx].hwRxPos ++] = csp_uart_get_data(ptUartBase);
+				uint8_t byData = csp_uart_get_data(ptUartBase);
+				ringbuffer_byte_in(g_tUartTran[byIdx].ptRingBuf, byData);
 			}
 			break;
-		case UART_TXFIFO_INT_S:				//tx fifo intterrupt
-			break;
 		case UART_TXDONE_INT_S:				//tx send complete; recommended use TXDONE interrupt
+		
 			csp_uart_clr_isr(ptUartBase,UART_TXDONE_INT_S);						//clear interrupt status
 			g_tUartTran[byIdx].hwTxSize --;
-			g_tUartTran[byIdx].pTxData ++;
+			g_tUartTran[byIdx].pbyTxData ++;
 			
 			if(g_tUartTran[byIdx].hwTxSize == 0)		
-				g_tUartTran[byIdx].tState.byWrite = UART_STATE_DONE;		//send complete
+				g_tUartTran[byIdx].bySendStat = UART_STATE_DONE;				//send complete
 			else
-				csp_uart_set_data(ptUartBase, *g_tUartTran[byIdx].pTxData);	//send data
+				csp_uart_set_data(ptUartBase, *g_tUartTran[byIdx].pbyTxData);	//send data
 				
 			break;
 		default:
@@ -361,158 +227,101 @@ csi_error_t csi_uart_send_intr(csp_uart_t *ptUartBase, const void *pData, uint32
 	if(wSize == 0 || byIdx >= UART_IDX_NUM) 
 		return CSI_ERROR;
 	
-	g_tUartTran[byIdx].pTxData =(uint8_t *)pData;
+	g_tUartTran[byIdx].pbyTxData =(uint8_t *)pData;
 	g_tUartTran[byIdx].hwTxSize = wSize;
 	
-	if(g_tUartTran[byIdx].tState.byWrite == UART_STATE_SEND)				//uart sending?
+	if(g_tUartTran[byIdx].bySendStat == UART_STATE_SEND)					//uart sending?
 		ret = CSI_ERROR;
 	else
 	{
-		g_tUartTran[byIdx].tState.byWrite = UART_STATE_SEND;
-		csp_uart_set_data(ptUartBase, *g_tUartTran[byIdx].pTxData);			//start uart tx,send first byte
+		g_tUartTran[byIdx].bySendStat = UART_STATE_SEND;					//set uart send status, sending
+		csp_uart_set_data(ptUartBase, *g_tUartTran[byIdx].pbyTxData);		//start uart tx,send first byte
 	}
 	
 	return ret;
 }
-	
-//csi_error_t apt_uart_send_intr(csi_uart_t *uart, const void *data, uint32_t size)
-//{
-//	csp_uart_t *uart_base = (csp_uart_t *)HANDLE_REG_BASE(uart);
-//	uint32_t wCtrlBackup;
-//	
-//    uart->tx_data = (uint8_t *)data;
-//    uart->tx_size = size;
-//	//uart->arg = (void *)size;		//return len
-//	
-//	wCtrlBackup = (((uint32_t)(uart->priv)) | UART_TXDONE_INT) & (~UART_RX_MSK);				//enable tx int, disable rx
-//	uart->priv = (void *)wCtrlBackup;
-//	csp_uart_set_ctrl(uart_base,(uint32_t)(uart->priv));	
-	
-//    return CSI_OK;
-//}
-/** \brief send data to uart transmitter, asynchronism mode
+/** \brief receive data to uart transmitter, this function is polling(sync).
  * 
- *  \param[in] uart: UART handle to operate
- *  \param[in] data: pointer to buffer with data to send to UART transmitter.
- *  \param[in] size: number of data to send (byte).
- *  \return  error code \ref csi_error_t
+ *  \param[in] ptUartBase: UART handle to operate
+ *  \param[in] pData: pointer to buffer with data to be received.
+ *  \param[in] wSize: number of data to receive (byte).
+ *  \param[in] wTimeOut: the timeout between bytes(ms). 
+ *  \return  the num of data which is send successfully
  */
-//csi_error_t csi_uart_send_async(csi_uart_t *uart, const void *data, uint32_t size)
-//{
-//	csi_error_t ret;
-//    CSI_PARAM_CHK(uart, CSI_ERROR);
-//    CSI_PARAM_CHK(data, CSI_ERROR);
-//    CSI_PARAM_CHK(uart->callback, CSI_ERROR);
-//    CSI_PARAM_CHK(uart->send, CSI_ERROR);
-//
-//    csi_error_t ret;
-//	csp_uart_t *uart_base = (csp_uart_t *)HANDLE_REG_BASE(uart);
-//	
-//	if(size == 0)				
-//		return CSI_ERROR;
-//	
-//    ret = uart->send(uart, data, size);
-//
-//    if (ret == CSI_OK) {
-//        uart->state.writeable = 0U;
-//		
-//		csp_uart_set_data(uart_base, *uart->tx_data);			//start uart tx,send first byte
-//    }
+int32_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint32_t wSize, uint32_t wTimeOut)
+{
+	uint8_t  *pbyRecv = (uint8_t *)pData;
+	int32_t  wRecvNum = 0;
 	
-//    return ret;
-//}
-/** \brief receive data to uart transmitter, this function is blocking.
+	if(wTimeOut)
+	{
+		uint32_t wRecvStart = csi_tick_get_ms();	
+		while(wRecvNum < wSize)
+		{
+			while(!(csp_uart_get_sr(ptUartBase) & UART_RNE))			//fifo empty? wait	
+			{
+				if((csi_tick_get_ms() - wRecvStart) >= wTimeOut) 
+					return wRecvNum;
+			}
+			pbyRecv[wRecvNum ++] = csp_uart_get_data(ptUartBase);
+			wRecvStart = csi_tick_get_ms();	
+		}
+	}
+	else
+	{
+		while(wRecvNum < wSize)
+		{
+			pbyRecv[wRecvNum ++] = csi_uart_getc(ptUartBase);
+		}
+	}
+	
+	return wRecvNum;
+}
+/** \brief receive data to uart transmitter, assign length; this function is interrupt mode(async),
  * 
- *  \param[in] uart: UART handle to operate
- *  \param[in] data: pointer to buffer with data to be received.
- *  \param[in] size: number of data to receive (byte).
- *  \param[in] timeout: the timeout between bytes(ms). DO NOT support now
- *  \return  the num of data which is sent successfully or CSI_ERROR
+ *  \param[in] ptUartBase: UART handle to operate
+ *  \param[in] pData: pointer to buffer with data to be received.
+ *  \param[in] wSize: number of data to receive (byte).
+ *  \param[in] wTimeOut: the timeout between bytes(ms). 
+ *  \return  the num of data which is send successfully
  */
-// int32_t csi_uart_receive(csi_uart_t *uart, void *data, uint32_t size, uint32_t timeout)
-// {
-//	CSI_PARAM_CHK(uart, CSI_ERROR);
-//    CSI_PARAM_CHK(data, CSI_ERROR);
-//	
-//	csp_uart_t *uart_base = (csp_uart_t *)HANDLE_REG_BASE(uart);
-//	
-//	uint8_t  *pbyRecv = (uint8_t *)data;
-//	int32_t  wRecvNum = 0;
-//	
-//	
-//	//disable rx_fifo int	
-//	if((uint32_t)(uart->priv) & UART_RXFIFO_INT)							
-// 		csp_uart_set_ctrl(uart_base,((uint32_t)(uart->priv)) & (~UART_RXFIFO_INT));	
+int32_t csi_uart_recv_intr(csp_uart_t *ptUartBase, void *pData, uint32_t wSize)
+{
 	
-//	if(timeout == 0)
-//	{
-//		uint32_t wTimeOver = 500;
-//		uint32_t wRecvStart = wTimeOver; 
-//		while(wRecvNum < size)
-//		{
-//			while(!csp_uart_fifo_get_ready(uart_base) && wRecvStart --)		//fifo empty? wait
-//			{
-//				if(wRecvStart == 0) 
-//				{
-//					//enable rx_fifo int	
-//					if((uint32_t)(uart->priv) & UART_RXFIFO_INT)							
-//						csp_uart_set_ctrl(uart_base,(uint32_t)(uart->priv));
-//						
-//					return wRecvNum;
-//				}
-//			}
-//			pbyRecv[wRecvNum ++] = csp_uart_get_data(uart_base);
-//			wRecvStart = wTimeOver;
-//		}
-//	}
-//	else
-//	{
-//		uint32_t wRecvStart = csi_tick_get_ms();	
-//		while(wRecvNum < size)
-//		{
-//			while(!csp_uart_fifo_get_ready(uart_base))				//fifo empty? wait	
-//			{
-//				if((csi_tick_get_ms() - wRecvStart) >= timeout) 
-//				{
-//					//enable rx_fifo int	
-//					if((uint32_t)(uart->priv) & UART_RXFIFO_INT)							
-//						csp_uart_set_ctrl(uart_base,(uint32_t)(uart->priv));
-//
-//					return wRecvNum;
-//				}
-//			}
-//			pbyRecv[wRecvNum ++] = csp_uart_get_data(uart_base);
-//			wRecvStart = csi_tick_get_ms();	
-//		}
-//	}
-//	
-////	while(csp_uart_fifo_get_ready(uart_base))			//clear fifo
-////	{
-////		csp_uart_get_data(uart_base);
-////	}
-//
-//	//enable rx_fifo int	
-//	if((uint32_t)(uart->priv) & UART_RXFIFO_INT)							
-//		csp_uart_set_ctrl(uart_base,(uint32_t)(uart->priv));
-//	
-//	return wRecvNum;
-// }
- 
-//csi_error_t apt_uart_receive_intr(csi_uart_t *uart, void *data, uint32_t num)
-//{
-//	uint32_t wCtrlBackup;
-//	csp_uart_t *uart_base = (csp_uart_t *)HANDLE_REG_BASE(uart);
-//	
-//    uart->rx_data = (uint8_t *)data;
-//    uart->rx_size = num;
-//	//uart->arg = (void *)num;		//return len
-//	
-//	wCtrlBackup = ((uint32_t)(uart->priv)) | UART_RXFIFO_INT;				//enable rx int
-//	uart->priv = (void *)wCtrlBackup;
-//	csp_uart_set_ctrl(uart_base,(uint32_t)(uart->priv));	
+	uint8_t  byIdx = apt_get_uart_idx(ptUartBase);
+	uint16_t hwRecvLen = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
 	
-//    return CSI_OK;
-//}
+	hwRecvLen = (hwRecvLen > wSize)? wSize: hwRecvLen;
+	if(hwRecvLen)
+		ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvLen);
+		
+	return hwRecvLen;
+}
+
+/** \brief receive data to uart transmitter, dynamic receive(string); this function is interrupt mode(async).
+ * 
+ *  \param[in] ptUartBase: UART handle to operate
+ *  \param[in] pData: pointer to buffer with data to be received.
+ *  \param[in] wTimeOut: the timeout between bytes(ms). 
+ *  \return  the num of data which is send successfully
+ */
+int32_t csi_uart_recv_dynamic(csp_uart_t *ptUartBase, void *pData)
+{
+	
+	uint8_t  byIdx = apt_get_uart_idx(ptUartBase);
+	uint16_t hwRecvLen = ringbuffer_len(g_tUartTran[byIdx].ptRingBuf);
+	
+	if(hwRecvLen)
+	{
+		memcpy(pData, (void *)g_tUartTran[byIdx].ptRingBuf->pbyBuf, hwRecvLen);		//read receive data
+		//ringbuffer_out(g_tUartTran[byIdx].ptRingBuf, pData, hwRecvLen);		
+		ringbuffer_reset(g_tUartTran[byIdx].ptRingBuf);								//reset ringbuffer					
+	}
+		
+	return hwRecvLen;
+}
+
+
 /** \brief receive data to uart transmitter, asynchronism mode
  * 
  *  \param[in] uart: UART handle to operate
@@ -541,82 +350,29 @@ csi_error_t csi_uart_send_intr(csp_uart_t *ptUartBase, const void *pData, uint32
 
 //    return ret;
 //}
-/** \brief  register uart interrupt callback function
- * 
- *  \param[in] uart: UART handle to operate
- *  \param[in] callback: uart interrupt handle function
- *  \param[in] arg: para
- *  \return error code \ref csi_error_t
- */ 
-//csi_error_t csi_uart_attach_callback(csi_uart_t *uart, void  *callback, void *arg)
-//{
-//	CSI_PARAM_CHK(uart, CSI_ERROR);
-	
-//	uint32_t wCtrlBackup;
-//	csp_uart_t *uart_base = (csp_uart_t *)HANDLE_REG_BASE(uart);
-//	
-//    uart->callback = callback;
-//    uart->arg = arg;
-//    uart->send = apt_uart_send_intr;
-//    uart->receive = apt_uart_receive_intr;
-//	
-//    csi_irq_attach((uint32_t)(uart->dev.irq_num), &apt_uart_irqhandler, &uart->dev);
-//    csi_irq_enable((uint32_t)(uart->dev.irq_num));
-//
-//	wCtrlBackup = ((uint32_t)(uart->priv)) | UART_RXFIFO_INT | UART_RXFIFO_OV_INT | UART_PAR_ERR_INT;		//enable rx int
-//	uart->priv = (void *)wCtrlBackup;
-//	csp_uart_set_ctrl(uart_base,(uint32_t)(uart->priv));	
-	
-//    return CSI_OK;
-//}
-/** \brief cancel uart callback function
- * 
- *  \param[in] uart: UART handle to operate
- *  \return none
- */ 
-//void csi_uart_detach_callback(csi_uart_t *uart)
-//{
-//    CSI_PARAM_CHK_NORETVAL(uart);
-
-//    csp_uart_t *uart_base;
-//    uart_base = (csp_uart_t *)HANDLE_REG_BASE(uart);
-//
-//    uart->callback  = NULL;
-//    uart->arg = NULL;
-//    uart->send = NULL;
-//    uart->receive = NULL;
-//	
-//	//disable tx rx int
-//    csp_uart_set_ctrl(uart_base,(((uint32_t)(uart->priv)) & (~UART_RXFIFO_INT) & (~UART_TXDONE_INT)));	
-//	
-//    csi_irq_disable((uint32_t)(uart->dev.irq_num));
-//    csi_irq_detach((uint32_t)(uart->dev.irq_num));
-//}
-
 /** \brief get the state of uart receive state
  * 
  *  \param[in] uart: UART handle to operate
  *  \param[in] state: the state of uart device
  *  \return none
  */ 
-csi_uart_state_t csi_uart_get_recv_state(csp_uart_t *ptUartBase)
+csi_uart_state_e csi_uart_get_send_status(csp_uart_t *ptUartBase)
 {
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
     
-	return g_tUartTran[byIdx].tState.byRead;
+	return g_tUartTran[byIdx].bySendStat;
 }
-
 /** \brief get the state of uart receive state
  * 
  *  \param[in] uart: UART handle to operate
  *  \param[in] state: the state of uart device
  *  \return none
  */ 
-csi_uart_state_t csi_uart_get_send_state(csp_uart_t *ptUartBase)
+void csi_uart_clr_send_status(csp_uart_t *ptUartBase)
 {
 	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
     
-	return g_tUartTran[byIdx].tState.byWrite;
+	g_tUartTran[byIdx].bySendStat = UART_STATE_IDLE;
 }
 /** \brief get the state of uart receive state
  * 
@@ -624,34 +380,22 @@ csi_uart_state_t csi_uart_get_send_state(csp_uart_t *ptUartBase)
  *  \param[in] state: the state of uart device
  *  \return none
  */ 
-void csi_uart_clr_recv_state(csp_uart_t *ptUartBase)
-{
-	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
-	g_tUartTran[byIdx].tState.byRead = UART_STATE_IDLE;
-}
-
-/** \brief get the state of uart receive state
- * 
- *  \param[in] uart: UART handle to operate
- *  \param[in] state: the state of uart device
- *  \return none
- */ 
-void csi_uart_clr_send_state(csp_uart_t *ptUartBase)
-{
-	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
-    
-	g_tUartTran[byIdx].tState.byWrite = UART_STATE_IDLE;
-}
-/** \brief       Link DMA channel to uart device.
- * 
- *  \param[in]   uart     uart handle to operate.
- *  \param[in]   tx_dma   the DMA channel handle for send, when it is NULL means to unlink the channel.
- *  \param[in]   rx_dma   the DMA channel handle for receive, when it is NULL means to unlink the channel.
- *  \return      error code.
-*/
-//csi_error_t csi_uart_link_dma(csi_uart_t *uart, csi_dma_ch_t *tx_dma, csi_dma_ch_t *rx_dma)
+//csi_uart_state_e csi_uart_get_recv_status(csp_uart_t *ptUartBase)
 //{
-//	CSI_PARAM_CHK_NORETVAL(uart);
-//	
-//	return CSI_UNSUPPORTED;
+//	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+//    
+//	return g_tUartTran[byIdx].byRecvStat;
 //}
+/** \brief clr the state of uart receive state
+ * 
+ *  \param[in] uart: UART handle to operate
+ *  \param[in] state: the state of uart device
+ *  \return none
+ */ 
+//void csi_uart_clr_recv_status(csp_uart_t *ptUartBase)
+//{
+//	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+//	g_tUartTran[byIdx].bySendStat= UART_STATE_IDLE;
+//}
+
+
