@@ -13,16 +13,20 @@
 #include <sys_clk.h>
 #include <drv/tick.h>
 #include <drv/pin.h>
+#include <drv/uart.h>
 
+/* Private macro------------------------------------------------------*/
 #define __WEAK	__attribute__((weak))
 
-//static csi_dev_t tick_dev;
+/* externs function---------------------------------------------------*/
+extern void ringbuffer_in_dynamic_scan(ringbuffer_t *ptFifo);
+
+/* externs variablesr-------------------------------------------------*/
+/* Private variablesr-------------------------------------------------*/
 
 static volatile uint32_t csi_tick = 0U;
 static volatile uint32_t last_time_ms = 0U;
 static volatile uint64_t last_time_us = 0U;
-
-
 
 
 void csi_tick_increase(void)
@@ -36,6 +40,19 @@ void tick_irq_handler(void *arg)
     //csi_coret_clear_irq();
 	csi_tick++;
 	CORET->CTRL;
+	
+#if defined(CONFIG_UART0_DYNAMIC)
+	ringbuffer_in_dynamic_scan(g_tUartTran[0].ptRingBuf);		//uart0
+#endif
+
+#if defined(CONFIG_UART1_DYNAMIC)
+	ringbuffer_in_dynamic_scan(g_tUartTran[1].ptRingBuf);		//uart1
+#endif
+
+#if defined(CONFIG_UART2_DYNAMIC)
+	ringbuffer_in_dynamic_scan(g_tUartTran[2].ptRingBuf);		//uart2
+#endif
+
 }
 
 csi_error_t csi_tick_init(void)
