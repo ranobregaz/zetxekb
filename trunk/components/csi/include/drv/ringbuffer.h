@@ -18,25 +18,126 @@ extern "C" {
 #include "stdint.h"
 #include <stdbool.h>
 
+
 typedef struct ringbuffer {
-    uint8_t *buffer;
-    uint32_t size;
-    uint32_t write;
-    uint32_t read;
-    uint32_t data_len;
+    uint8_t *pbyBuf;
+    uint16_t hwSize;
+    uint16_t hwWrite;
+    uint16_t hwRead;
+    uint16_t hwDataLen;
+	uint16_t hwPreDataLen;				//dynamic scan use, receive data length
+	uint8_t  byRecvFlg;					//dynamic scan use, receive string complete status flag
+	uint8_t  byReserve;					//reserve, 
 } ringbuffer_t;
 
-void ringbuffer_reset(ringbuffer_t *fifo);
-uint32_t ringbuffer_len(ringbuffer_t *fifo);
-uint32_t ringbuffer_avail(ringbuffer_t *fifo);
-bool ringbuffer_is_empty(ringbuffer_t *fifo);
-bool ringbuffer_is_full(ringbuffer_t *fifo);
+/** 
+  \brief  Removes the entire FIFO contents.
+  \param  [in] ptFifo: The fifo to be emptied.
+  \return None.
+  */
+void ringbuffer_reset(ringbuffer_t *ptFifo);
 
-/*write to ringbuffer*/
-uint32_t ringbuffer_in(ringbuffer_t *fifo, const void *in, uint32_t len);
+/** 
+  \brief  Puts some data into the FIFO.
+  \param  [in] ptFifo: The fifo to be used.
+  \param  [in] pDataIn: The data to be added.
+  \param  [in] hwLen: The length of the data to be added.
+  \return The number of bytes copied.
+  \note   This function copies at most @len bytes from the @in into
+  *         the FIFO depending on the free space, and returns the number
+  *         of bytes copied.
+  */
+uint32_t ringbuffer_in(ringbuffer_t *ptFifo, const void *in, uint16_t len);
 
-/*read to ringbuffer*/
-uint32_t ringbuffer_out(ringbuffer_t *fifo, void *out, uint32_t len);
+/** 
+  \brief  Gets some data from the FIFO.
+  \param  [in] ptFifo: The fifo to be used.
+  \param  [in] pOutBuf: Where the data must be copied.
+  \param  [in] hwLen: The size of the destination buffer.
+  \return The number of copied bytes.
+  \note   This function copies at most @len bytes from the FIFO into
+  *         the @out and returns the number of copied bytes.
+  */
+uint32_t ringbuffer_out(ringbuffer_t *ptFifo, void *out, uint16_t len);
+
+/** 
+  \brief  Puts one byte data into the FIFO.
+  \param  [in] ptFifo: The fifo to be used.
+  \param  [in] pDataIn: The data to be added.
+  \param  [in] hwLen: The length of the data to be added.
+  \return The number of bytes copied.
+  \note   This function copies at most @len bytes from the @in into
+  *         the FIFO depending on the free space, and returns the number
+  *         of bytes copied.
+  */
+void ringbuffer_byte_in(ringbuffer_t *ptFifo, uint8_t in);
+
+/** 
+  \brief ringbuffer in  receive a bunch of data; dynamic scan
+  \param[in] [in] ptFifo: The fifo to be used.
+  \return none
+ */ 
+void ringbuffer_in_dynamic_scan(ringbuffer_t *ptFifo);
+
+/** 
+  \brief  Is the FIFO full?
+  \param  [in] ptFifo: The fifo to be used.
+  \retval true:      Yes.
+  \retval false:     No.
+  */
+static inline bool ringbuffer_in_dynamic_status(ringbuffer_t *ptFifo);
+
+/** 
+  \brief  Returns the size of the FIFO in bytes.
+  \param  [in] ptFifo: The fifo to be used.
+  \return The size of the FIFO.
+  */
+static inline uint32_t ringbuffer_size(ringbuffer_t *ptFifo)
+{
+    return ptFifo->hwSize;
+}
+
+/** 
+  \brief  Returns the number of used bytes in the FIFO.
+  \param  [in] ptFifo: The fifo to be used.
+  \return The number of used bytes.
+  */
+static inline uint16_t ringbuffer_len(ringbuffer_t *ptFifo)
+{
+    return ptFifo->hwDataLen;
+}
+
+
+/** 
+  \brief  Returns the number of bytes available in the FIFO.
+  \param  [in] ptFifo: The fifo to be used.
+  \return The number of bytes available.
+  */
+static inline uint16_t ringbuffer_avail(ringbuffer_t *ptFifo)
+{
+    return (ptFifo->hwSize - ptFifo->hwDataLen);
+}
+
+/** 
+  \brief  Is the FIFO empty?
+  \param  [in] ptFifo: The fifo to be used.
+  \retval true: Yes.
+   \retval false: No.
+  */
+static inline bool ringbuffer_is_empty(ringbuffer_t *ptFifo)
+{
+    return (ringbuffer_len(ptFifo) == 0U);
+}
+/** 
+  \brief  Is the FIFO full?
+  \param  [in] ptFifo: The fifo to be used.
+  \retval true:      Yes.
+  \retval false:     No.
+  */
+static inline bool ringbuffer_is_full(ringbuffer_t *ptFifo)
+{
+    return (ringbuffer_avail(ptFifo) == 0U);
+}
 
 #ifdef __cplusplus
 }
