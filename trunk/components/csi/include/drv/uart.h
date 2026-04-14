@@ -78,7 +78,7 @@ typedef enum {
 	UART_STATE_SEND,					///< uart sending 
 	UART_STATE_FULL,					///< uart receive complete(full)
 	UART_STATE_DONE						///< uart send complete
-} csi_uart_state_t;
+} csi_uart_state_e;
 
 //typedef enum {
 //	CSI_UART_OK          =  0,
@@ -139,16 +139,14 @@ struct csi_uart_config {
 	uint8_t				byParity;           //parity type 
 	uint32_t            wBaudRate;			//baud rate	
 	uint32_t            wInter;				//interrupt
-	ringbuffer_t		*ringbuf;			//ringbuf
-    void                *priv;
 };
 
 typedef struct {
-	uint8_t				*pRxData;			//pointer of receive buf 
-    uint8_t				*pTxData;			//pointer of send buf 
-    uint16_t            hwRxPos;			//rx buf pos
+    uint8_t				*pbyTxData;			//pointer of send buf 
 	uint16_t            hwTxSize;			//tx send data size
-	csi_state_t			tState;
+	uint8_t				bySendStat;
+	uint8_t				byRecvStat;
+	ringbuffer_t		*ptRingBuf;			
 } csi_uart_transfer_t;
 
 extern csi_uart_transfer_t g_tUartTran[UART_IDX_NUM];	
@@ -254,7 +252,7 @@ csi_error_t csi_uart_send_intr(csp_uart_t *ptUartBase, const void *pData, uint32
   \param[in]   timeout  the timeout between bytes(ms).
   \return      the num of data witch is received successfully or CSI_ERROR.
 */
-int32_t csi_uart_receive(csi_uart_t *uart, void *data, uint32_t size, uint32_t timeout);
+int32_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint32_t wSize, uint32_t wTimeOut);
 
 /**
   \brief       Start receiving data from UART receiver, this function is non-blocking.
@@ -293,28 +291,28 @@ csi_error_t csi_uart_link_dma(csi_uart_t *uart, csi_dma_ch_t *tx_dma, csi_dma_ch
   \param[in]   uart   uart handle to operate.
   \return      error code.
 */
-csi_uart_state_t csi_uart_get_recv_state(csp_uart_t *ptUartBase);
+csi_uart_state_e csi_uart_get_recv_status(csp_uart_t *ptUartBase);
 
 /**
   \brief       get the state of uart send.
   \param[in]   uart   uart handle to operate.
   \return      error code.
 */
-csi_uart_state_t csi_uart_get_send_state(csp_uart_t *ptUartBase);
+csi_uart_state_e csi_uart_get_send_status(csp_uart_t *ptUartBase);
 
 /**
   \brief       clr the state of uart receive.
   \param[in]   uart   uart handle to operate.
   \return      error code.
 */
-void csi_uart_clr_recv_state(csp_uart_t *ptUartBase);
+//void csi_uart_clr_recv_status(csp_uart_t *ptUartBase);
 
 /**
   \brief       clr the state of uart send.
   \param[in]   uart   uart handle to operate.
   \return      error code.
 */
-void csi_uart_clr_send_state(csp_uart_t *ptUartBase);
+void csi_uart_clr_send_status(csp_uart_t *ptUartBase);
 
 /**
   \brief       Enable uart power manage.
