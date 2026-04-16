@@ -85,7 +85,10 @@ void ringbuffer_in_dynamic_scan(ringbuffer_t *ptFifo);
   \retval true:      Yes.
   \retval false:     No.
   */
-static inline bool ringbuffer_in_dynamic_status(ringbuffer_t *ptFifo);
+static inline bool ringbuffer_in_recv_flag(ringbuffer_t *ptFifo)
+{
+	 return (ptFifo->byRecvFlg  > 0);
+}
 
 /** 
   \brief  Returns the size of the FIFO in bytes.
@@ -106,7 +109,6 @@ static inline uint16_t ringbuffer_len(ringbuffer_t *ptFifo)
 {
     return ptFifo->hwDataLen;
 }
-
 
 /** 
   \brief  Returns the number of bytes available in the FIFO.
