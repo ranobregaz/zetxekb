@@ -16,14 +16,16 @@
 #include <drv/uart.h>
 #include <drv/adc.h>
 #include <drv/pin.h>
-
 #include "board_config.h"
 #include "csp.h"
+
 /* externs function--------------------------------------------------------*/
 extern void tick_irq_handler(void *arg);		//system coret 
+extern void apt_uart_irqhandler(csp_uart_t *ptUartBase,uint8_t byIdx);
+
 /* private function--------------------------------------------------------*/
 
-/* extern variablesr------------------------------------------------------*/
+/* extern variablesr-------------------------------------------------------*/
 
 /* Private variablesr------------------------------------------------------*/
 
@@ -38,7 +40,7 @@ uint8_t g_byAdcDone;
 void CORETHandler(void) 
 {
     // ISR content ...
-	//CK801->CORET_CVR = 0x0;		// Clear counter and flag
+	//CK801->CORET_CVR = 0x0;			// Clear counter and flag
 	tick_irq_handler(NULL);
 }
 
@@ -46,9 +48,9 @@ void SYSCONIntHandler(void)
 {
     // ISR content ...
 	volatile uint32_t wSysIntSta; 
-	wSysIntSta = csp_syscon_get_int_st(SYSCON);
+	wSysIntSta = csp_syscon_get_int_st(SYSCON);		
 	
-	if(wSysIntSta & (IWDT_INT))
+	if(wSysIntSta & (IWDT_INT))			//iwdt 
 	{
 		nop;
 		csp_syscon_int_clr(SYSCON, IWDT_INT);
@@ -80,8 +82,6 @@ void ADCIntHandler(void)
 		
 }
 
-
-
 void EPT0IntHandler(void) 
 {	
     csp_ept_clr_int(EPT0, 0xffffffff);
@@ -104,18 +104,18 @@ void RTCIntHandler(void)
 }
 void UART0IntHandler(void) 
 {
-    // ISR content ...
-	//csi_uart_irqhandler(0);
+	// ISR content ...
+	apt_uart_irqhandler(UART0, 0);
 }
 void UART1IntHandler(void) 
 {
     // ISR content ...
-	//csi_uart_irqhandler(1);
+	apt_uart_irqhandler(UART1, 1);
 }
 void UART2IntHandler(void) 
 {
     // ISR content ...
-	//csi_uart_irqhandler(2);
+	apt_uart_irqhandler(UART2, 2);
 }
 void I2CIntHandler(void) 
 {
