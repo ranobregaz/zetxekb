@@ -14,7 +14,6 @@
 #include <drv/gpio.h>
 #include <drv/pin.h>
 #include <drv/porting.h>
-#include <drv/ringbuffer.h>
 #include <drv/tick.h>
 
 /* Private macro------------------------------------------------------*/
@@ -178,26 +177,36 @@ uint8_t csi_uart_getc(csp_uart_t *ptUartBase)
  *  \param[in] ptUartBase: pointer of uart register structure
  *  \param[in] pData: pointer to buffer with data to send to uart transmitter.
  *  \param[in] wSize: number of data to send (byte).
- *  \param[in] wTimeOut: (wTimeOut = 0: send with timeout hangdle); (wTimeOut > 0: send without timeout hangdle).
+ *  \param[in] wTimeOut: the timeout between bytes(ms), unit: ms 
  *  \return  the num of data which is sent successfully or CSI_ERROR
  */
 int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize, uint32_t wTimeOut)
 {
 	uint8_t  *pbySend = (uint8_t *)pData;
-	int32_t  i, wCount = wTimeOut;
+	int32_t  i; 
 		
 	if(wTimeOut)			//send with timeout 
 	{
+		uint32_t wSendStart = csi_tick_get_ms();
 		for(i = 0; i < wSize; i++)
 		{
-			while((csp_uart_get_sr(ptUartBase) & UART_TX_FULL) && wCount--);
+			while((csp_uart_get_sr(ptUartBase) & UART_TX_FULL))
+			{
+				if((csi_tick_get_ms() - wSendStart) >= wTimeOut) 
+					return i;
+			}
 			
-			if(wCount)
-				csp_uart_set_data(ptUartBase, *(pbySend+i));
-			else
-				return i;
-				
-			wCount = wTimeOut;
+			csp_uart_set_data(ptUartBase, *(pbySend+i));
+			wSendStart = csi_tick_get_ms();
+		
+//			while((csp_uart_get_sr(ptUartBase) & UART_TX_FULL) && wCount--);
+//			
+//			if(wCount)
+//				csp_uart_set_data(ptUartBase, *(pbySend+i));
+//			else
+//				return i;
+//				
+//			wCount = wTimeOut;
 		}
 	}
 	else					//send without timeout 
@@ -245,7 +254,7 @@ csi_error_t csi_uart_send_intr(csp_uart_t *ptUartBase, const void *pData, uint32
  *  \param[in] ptUartBase: UART handle to operate
  *  \param[in] pData: pointer to buffer with data to be received.
  *  \param[in] wSize: number of data to receive (byte).
- *  \param[in] wTimeOut: the timeout between bytes(ms). 
+ *  \param[in] wTimeOut: the timeout between bytes(ms), unit: ms 
  *  \return  the num of data which is send successfully
  */
 int32_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint32_t wSize, uint32_t wTimeOut)
@@ -320,36 +329,6 @@ int32_t csi_uart_recv_dynamic(csp_uart_t *ptUartBase, void *pData)
 		
 	return hwRecvLen;
 }
-
-
-/** \brief receive data to uart transmitter, asynchronism mode
- * 
- *  \param[in] uart: UART handle to operate
- *  \param[in] data: pointer to buffer with data to send to UART transmitter.
- *  \param[in] size: number of data to send (byte).
- *  \return  error code \ref csi_error_t
- */
-//csi_error_t csi_uart_receive_async(csi_uart_t *uart, void *data, uint32_t size)
-//{
-//	csi_error_t ret;
-//    CSI_PARAM_CHK(uart, CSI_ERROR);
-//    CSI_PARAM_CHK(data, CSI_ERROR);
-//    CSI_PARAM_CHK(uart->callback, CSI_ERROR);
-//    CSI_PARAM_CHK(uart->receive, CSI_ERROR);
-//
-//    csi_error_t ret;
-//	uint8_t byIdx = uart->dev.idx;
-//	
-//    ret = uart->receive(uart, data, size);
-//
-//    if (ret == CSI_OK) {
-//        uart->state.readable = 0U;
-//		s_wRecvLen[byIdx] = 0x00;
-//		s_wPreRecvLen[byIdx] = 0x00;	
-//    }
-
-//    return ret;
-//}
 /** \brief get the state of uart receive state
  * 
  *  \param[in] uart: UART handle to operate
@@ -380,22 +359,27 @@ void csi_uart_clr_send_status(csp_uart_t *ptUartBase)
  *  \param[in] state: the state of uart device
  *  \return none
  */ 
-//csi_uart_state_e csi_uart_get_recv_status(csp_uart_t *ptUartBase)
-//{
-//	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
-//    
-//	return g_tUartTran[byIdx].byRecvStat;
-//}
+csi_uart_state_e csi_uart_get_recv_status(csp_uart_t *ptUartBase)
+{
+	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	
+	if(ringbuffer_in_recv_flag(g_tUartTran[byIdx].ptRingBuf))
+		g_tUartTran[byIdx].byRecvStat = UART_STATE_DONE;
+	else
+		g_tUartTran[byIdx].byRecvStat = UART_STATE_IDLE;
+    
+	return g_tUartTran[byIdx].byRecvStat;
+}
 /** \brief clr the state of uart receive state
  * 
  *  \param[in] uart: UART handle to operate
  *  \param[in] state: the state of uart device
  *  \return none
  */ 
-//void csi_uart_clr_recv_status(csp_uart_t *ptUartBase)
-//{
-//	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
-//	g_tUartTran[byIdx].bySendStat= UART_STATE_IDLE;
-//}
+void csi_uart_clr_recv_status(csp_uart_t *ptUartBase)
+{
+	uint8_t byIdx = apt_get_uart_idx(ptUartBase);
+	g_tUartTran[byIdx].bySendStat= UART_STATE_IDLE;
+}
 
 

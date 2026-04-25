@@ -30,17 +30,6 @@ void ringbuffer_in_dynamic_scan(ringbuffer_t *ptFifo)
 			ptFifo->hwPreDataLen = ptFifo->hwDataLen;			//receive go on
 	}
 }
-/** \brief  Is the FIFO full?
-  * 
-  * \param  [in] ptFifo: The fifo to be used.
-  * \retval true:      Yes.
-  * \retval false:     No.
-  */
-bool ringbuffer_in_dynamic_status(ringbuffer_t *ptFifo)
-{
-    return (ptFifo->byRecvFlg  > 0);
-}
-
 /** \brief  Removes the entire FIFO contents.
   * 
   * \param  [in] ptFifo: The fifo to be emptied.
