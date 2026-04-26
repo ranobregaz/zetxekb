@@ -36,9 +36,14 @@ extern int iwdt_irq_demo(void);
 int etcb_one_trg_one_demo(void);
 
 //uart demo
+//uart send
 int uart_char_demo(void);
 int uart_send_demo(void);
 int uart_send_intr_demo(void);
+//uart receive
+int uart_receive_demo(void);
+int uart_recv_intr_demo(void);
+int uart_recv_dynamic_demo(void);
 
 //lpt demo
 extern int lpt_timer_demo(void);
