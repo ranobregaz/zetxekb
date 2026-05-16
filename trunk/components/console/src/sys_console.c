@@ -37,7 +37,7 @@ int32_t console_init(sys_console_t *handle)
 	if(ret < 0)
 		return -1;
 	
-	ret = csi_uart_start(handle->uart);
+	csi_uart_start(handle->uart);
 	
     return ret;
 }
