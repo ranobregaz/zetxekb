@@ -240,6 +240,8 @@ void TKEYIntHandler(void)
 void LPTIntHandler(void) 
 {
     // ISR content ...
+	csp_lpt_clr_all_int(LPT);
+	csi_pin_toggle(PA01);
 }
 
 void BT0IntHandler(void) 

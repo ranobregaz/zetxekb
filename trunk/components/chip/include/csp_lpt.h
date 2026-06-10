@@ -265,7 +265,8 @@ typedef enum
 {
     LPT_TRGEV_INT  = 	(0),  	       
 	LPT_MATCH_INT = 	(1),	
-	LPT_PEND_INT  = 	(2) 	       
+	LPT_PEND_INT  = 	(2), 
+	LPT_NONE_INT = 	    (3) 	       
 }lpt_int_e;
 
 /******************************************************************************
