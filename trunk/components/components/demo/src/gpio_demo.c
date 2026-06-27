@@ -42,27 +42,27 @@ int gpio_port_ouput_demo(void)
 	uint32_t wPinMask = PINMASK_PA00 | PINMASK_PA02;				//GPIOA0端口，PA00/PA02
 	
 	csi_gpio_port_dir(GPIOA0, wPinMask, GPIO_DIR_OUTPUT);			//GPIOA0 端口配置为输出
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//输出高
+	csi_gpio_port_set_high(GPIOA0, wPinMask);						//输出高
 	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 0);						//输出低
+	csi_gpio_port_set_low(GPIOA0, wPinMask);						//输出低
 	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//输出高
+	csi_gpio_port_set_high(GPIOA0, wPinMask);						//输出高
 	mdelay(100);
 	
 	csi_gpio_port_output_mode(GPIOA0, wPinMask, GPIO_OPEN_DRAIN);	//GPIOA0 端口配置为开漏输出
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//输出高
+	csi_gpio_port_set_high(GPIOA0, wPinMask);						//输出高
 	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 0);						//输出低
+	csi_gpio_port_set_low(GPIOA0, wPinMask);						//输出低
 	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//输出高
+	csi_gpio_port_set_high(GPIOA0, wPinMask);						//输出高
 	mdelay(100);
 	
 	csi_gpio_port_output_mode(GPIOA0, wPinMask, GPIO_PUSH_PULL);	//GPIOA0 端口配置为推挽输出
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						///输出高
+	csi_gpio_port_set_high(GPIOA0, wPinMask);						//输出高
 	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 0);						//输出低
+	csi_gpio_port_set_low(GPIOA0, wPinMask);						//输出低
 	mdelay(100);
-	csi_gpio_port_write(GPIOA0, wPinMask, 1);						//输出高
+	csi_gpio_port_set_high(GPIOA0, wPinMask);						//输出高
 	mdelay(100);
 	
 	my_printf("GPIO PINMASK: %d \n", wPinMask);
