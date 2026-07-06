@@ -141,9 +141,8 @@ void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_tr
  *  \param[in] ePinFunc: gpio pin function
  *  \return error code \ref csi_error_t
  */  
-csi_error_t csi_pin_set_mux(pin_name_e ePinName, pin_func_e ePinFunc)
+void csi_pin_set_mux(pin_name_e ePinName, pin_func_e ePinFunc)
 {
-    csi_error_t ret = CSI_OK;
 	csp_gpio_t *ptGpioBase = NULL;
 	
 	//IO REMAP
@@ -174,7 +173,6 @@ csi_error_t csi_pin_set_mux(pin_name_e ePinName, pin_func_e ePinFunc)
 	else
 		ptGpioBase->CONHR =(ptGpioBase->CONHR & ~(0xF << 4*(ePinName-8))) | (ePinFunc << 4*(ePinName-8));	
 	
-    return ret;
 }
 /** \brief get gpio mux function
  * 
@@ -244,9 +242,8 @@ csi_error_t csi_pin_pull_mode(pin_name_e ePinName, csi_gpio_pull_mode_e ePullMod
  *  \param[in] eSpeed: gpio pin speed
  *  \return error code \ref csi_error_t
  */  
-csi_error_t csi_pin_speed(pin_name_e ePinName, csi_gpio_speed_e eSpeed)
+void csi_pin_speed(pin_name_e ePinName, csi_gpio_speed_e eSpeed)
 {
-	csi_error_t ret = CSI_OK;
 	csp_gpio_t *ptGpioBase = NULL;
 	
 	if(ePinName > PA015)
@@ -259,7 +256,6 @@ csi_error_t csi_pin_speed(pin_name_e ePinName, csi_gpio_speed_e eSpeed)
 	
 	csp_gpio_speed_set(ptGpioBase, ePinName, (uint8_t)eSpeed);
 	
-	return ret;
 }
 
 /** \brief set gpio pin drive level
@@ -351,7 +347,7 @@ csi_error_t csi_pin_output_mode(pin_name_e ePinName, csi_gpio_output_mode_e eOut
 			csp_gpio_opendrain_dis(ptGpioBase, ePinName);	//push-pull mode
 			break;
 		case GPIO_OPEN_DRAIN:
-			csp_gpio_opendrain_en(ptGpioBase, ePinName);		//open drain mode 
+			csp_gpio_opendrain_en(ptGpioBase, ePinName);	//open drain mode 
 			break;
 		default:
 			ret = CSI_ERROR;
@@ -421,7 +417,7 @@ csi_error_t csi_pin_irq_mode(pin_name_e ePinName, csi_exi_grp_e eExiGrp, csi_gpi
 		ret = CSI_ERROR;
 	else
 		apt_exi_trg_edge_set(SYSCON,eExiGrp, eTrgEdge);					//interrupt edge
-		
+	
 	return ret;
 }
 /** \brief pin irq enable
@@ -469,7 +465,7 @@ csi_error_t csi_pin_irq_enable(pin_name_e ePinName, csi_exi_grp_e eExiGrp, bool 
 			else if(eExiGrp < EXI_GRP16)		//group10->15
 				byIrqNum = EXI4_IRQn;
 			else
-				return CSI_UNSUPPORTED;
+				return CSI_ERROR;
 				
 			break;
 	}
@@ -486,10 +482,10 @@ csi_error_t csi_pin_irq_enable(pin_name_e ePinName, csi_exi_grp_e eExiGrp, bool 
  *  \param[in] ePinName: gpio pin name
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_pin_toggle(pin_name_e ePinName)
+void csi_pin_toggle(pin_name_e ePinName)
 {
-	csp_gpio_t *ptGpioBase = NULL;
 	uint32_t wDat;
+	csp_gpio_t *ptGpioBase = NULL;
 	
 	if(ePinName > PA015)
 	{
@@ -505,7 +501,6 @@ csi_error_t csi_pin_toggle(pin_name_e ePinName)
 	else
 		ptGpioBase->SODR = (1ul << ePinName);
 	
-	return CSI_OK;
 }
 
 /** \brief  gpio pin set high(output = 1)
@@ -513,7 +508,7 @@ csi_error_t csi_pin_toggle(pin_name_e ePinName)
  *  \param[in] ePinName: gpio pin name
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_pin_set_high(pin_name_e ePinName)
+void csi_pin_set_high(pin_name_e ePinName)
 {
 	csp_gpio_t *ptGpioBase = NULL;
 	
@@ -526,8 +521,6 @@ csi_error_t csi_pin_set_high(pin_name_e ePinName)
 		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;			
 	
 	csp_gpio_set_high(ptGpioBase, (uint8_t)ePinName);
-	
-	return CSI_OK;
 }
 
 /** \brief   gpio pin set low(output = 0)
@@ -535,7 +528,7 @@ csi_error_t csi_pin_set_high(pin_name_e ePinName)
  *  \param[in] ePinName: gpio pin name
  *  \return error code \ref csi_error_t
  */
-csi_error_t csi_pin_set_low(pin_name_e ePinName)
+void csi_pin_set_low(pin_name_e ePinName)
 {
 	csp_gpio_t *ptGpioBase = NULL;
 	
@@ -548,6 +541,39 @@ csi_error_t csi_pin_set_low(pin_name_e ePinName)
 		ptGpioBase = (csp_gpio_t *)APB_GPIOA0_BASE;				
 	
 	csp_gpio_set_low(ptGpioBase, (uint8_t)ePinName);
+}
+/** \brief  set EXI as trigger Event(EV0~5) 
+ *  \param[in] byTrgOut: output Event select(TRGOUT0~5)
+ *  \param[in] eExiTrgSrc: event source (TRGSRC_EXI0~19)
+ *  \param[in] byTrgPrd: accumulated EXI events to output trigger 
+ *  \return none
+ */ 
+csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd)
+{
+	
+	byTrgPrd &= 0xf;
+	//set evtrg source 
+	if (byTrgOut < 4 && eExiTrgSrc < 16)	
+	{
+		SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(TRG_SRC0_3_MSK(byTrgOut))) | (eExiTrgSrc << TRG_SRC0_3_POS(byTrgOut));
+		
+		if(byTrgPrd)		//set evtrg period
+		{
+			SYSCON -> EVTRG |= TRG_EVCNT_CLR_MSK(byTrgOut);		//clear TRG EVxCNT
+			SYSCON -> EVPS = (SYSCON -> EVPS & ~(TRG_EVPRD_MSK(byTrgOut)))| ((byTrgPrd - 1) << TRG_EVPRD_POS(byTrgOut));
+		}
+	}
+	else if (byTrgOut < 6 && eExiTrgSrc > 15) 
+		SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(TRG_SRC4_5_MSK(byTrgOut)))| ((eExiTrgSrc-16) << TRG_SRC4_5_POS(byTrgOut));
+	else
+		return CSI_ERROR;
+	
+	//evtrg output event enable
+	SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(ENDIS_ESYNC_MSK(byTrgOut))) | (ENABLE << ENDIS_ESYNC_POS(byTrgOut));
+	
+//	csp_syscon_set_evtrg_src(SYSCON, byTrgOut, eExiTrgSrc);
+//	csp_syscon_set_evtrg_prd(SYSCON, byTrgOut, byTrgPrd);
+//	csp_syscon_evtrg_enable(SYSCON, byTrgOut, ENABLE);
 	
 	return CSI_OK;
 }

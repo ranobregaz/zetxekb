@@ -26,7 +26,6 @@ const uint8_t  byExiNumMap[] =
 	EXI0_IRQn, EXI1_IRQn, EXI2_IRQn, EXI3_IRQn, EXI4_IRQn,
 };
 
-
 /** \brief config gpio direction
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
@@ -317,7 +316,7 @@ csi_error_t csi_gpio_port_irq_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, cs
  *  \param[in] bEnable: true or false
  *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, bool bEnable)
+void csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, bool bEnable)
 {
 	uint8_t  i,k = 0;
 	uint8_t  byIrqbuf[5];
@@ -341,8 +340,6 @@ csi_error_t csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, 
 		else
 			csi_vic_disable_irq((uint32_t)byIrqbuf[i]);
 	}
-
-	return CSI_OK;
 }
 /** \brief  set gpio toggle
  * 
@@ -377,8 +374,6 @@ uint32_t csi_gpio_port_read(csp_gpio_t *ptGpioBase, uint32_t wPinMask)
  */ 
 void  csi_gpio_port_write(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pin_state_e ePinVal)
 {
-    CSI_PARAM_CHK_NORETVAL(ptGpioBase);
-
 	uint32_t tmp = csp_gpio_read_output_port(ptGpioBase);
     if (ePinVal == 1) 
         csp_gpio_write_output_port(ptGpioBase, tmp | wPinMask);
@@ -386,39 +381,27 @@ void  csi_gpio_port_write(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pi
         csp_gpio_write_output_port(ptGpioBase, tmp & (~wPinMask));
 }
 
-/** \brief  set EXI as trigger Event(EV0~5) 
- *  \param[in] byTrgOut: output Event select(TRGOUT0~5)
- *  \param[in] eExiTrgSrc: event source (TRGSRC_EXI0~19)
- *  \param[in] byTrgPrd: accumulated EXI events to output trigger 
- *  \return none
+/** \brief  set gpio ouput high
+ * 
+ *  \param[in] ptGpioBase: pointer of gpio register structure
+ *  \param[in] wPinMask: pin mask,0x0001~0xffff
+ *  \return error code \ref csi_error_t
  */ 
-csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd)
+void  csi_gpio_port_set_high(csp_gpio_t *ptGpioBase, uint32_t wPinMask)
 {
-	
-	byTrgPrd &= 0xf;
-	//set evtrg source 
-	if (byTrgOut < 4 && eExiTrgSrc < 16)	
-	{
-		SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(TRG_SRC0_3_MSK(byTrgOut))) | (eExiTrgSrc << TRG_SRC0_3_POS(byTrgOut));
-		
-		if(byTrgPrd)		//set evtrg period
-		{
-			SYSCON -> EVTRG |= TRG_EVCNT_CLR_MSK(byTrgOut);		//clear TRG EVxCNT
-			SYSCON -> EVPS = (SYSCON -> EVPS & ~(TRG_EVPRD_MSK(byTrgOut)))| ((byTrgPrd - 1) << TRG_EVPRD_POS(byTrgOut));
-		}
-	}
-	else if (byTrgOut < 6 && eExiTrgSrc > 15) 
-		SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(TRG_SRC4_5_MSK(byTrgOut)))| ((eExiTrgSrc-16) << TRG_SRC4_5_POS(byTrgOut));
-	else
-		return CSI_ERROR;
-	
-	//evtrg output event enable
-	SYSCON -> EVTRG = (SYSCON -> EVTRG & ~(ENDIS_ESYNC_MSK(byTrgOut))) | (ENABLE << ENDIS_ESYNC_POS(byTrgOut));
-	
-//	csp_syscon_set_evtrg_src(SYSCON, byTrgOut, eExiTrgSrc);
-//	csp_syscon_set_evtrg_prd(SYSCON, byTrgOut, byTrgPrd);
-//	csp_syscon_evtrg_enable(SYSCON, byTrgOut, ENABLE);
-	
-	return CSI_OK;
+	uint32_t tmp = csp_gpio_read_output_port(ptGpioBase);
+	csp_gpio_write_output_port(ptGpioBase, tmp | wPinMask);
 }
+/** \brief  set gpio ouput low
+ * 
+ *  \param[in] ptGpioBase: pointer of gpio register structure
+ *  \param[in] wPinMask: pin mask,0x0001~0xffff
+ *  \return error code \ref csi_error_t
+ */ 
+void  csi_gpio_port_set_low(csp_gpio_t *ptGpioBase, uint32_t wPinMask)
+{
+	uint32_t tmp = csp_gpio_read_output_port(ptGpioBase);
+	csp_gpio_write_output_port(ptGpioBase, tmp & (~wPinMask));
+}
+
 
