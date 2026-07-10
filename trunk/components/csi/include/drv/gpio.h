@@ -234,7 +234,7 @@ csi_error_t csi_gpio_port_irq_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, cs
   \param[in]   bEnable      0:disable  1:enable
   \return      Error code
 */
-csi_error_t csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, bool bEnable);
+void csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, bool bEnable);
 
 //csi_error_t csi_gpio_debonce(csi_gpio_t *gpio, uint32_t pin_mask, bool enable);
 /**
@@ -245,6 +245,22 @@ csi_error_t csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, 
   \return      None
 */
 void  csi_gpio_port_write(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pin_state_e ePinVal);
+
+/**
+  \brief       Set high(1) selected pin mask
+  \param[in]   ptGpioBase	pointer of gpio register structure
+  \param[in]   wPinMask    	Pin mask need to be set
+  \return      None
+*/
+void  csi_gpio_port_set_high(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
+
+/**
+  \brief       Set low(0) selected pin mask
+  \param[in]   ptGpioBase	pointer of gpio register structure
+  \param[in]   wPinMask    	Pin mask need to be set
+  \return      None
+*/
+void  csi_gpio_port_set_low(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
 
 /**
   \brief       Toggle output gpio value,ex.if previous value is 1, then output 0
@@ -262,62 +278,6 @@ void csi_gpio_port_toggle(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
 */
 uint32_t csi_gpio_port_read(csp_gpio_t *ptGpioBase, uint32_t wPinMask);
 
-/**
-  \brief       Attach the interrupt callback to the port
-  \param[in]   gpio        GPIO port handle
-  \param[in]   callback    Callback function
-  \param[in]   arg         User param passed to callback
-  \return      Error code
-*/
-//csi_error_t  csi_gpio_attach_callback(csi_gpio_t *gpio, void *callback, void *arg);
-
-/**
-  \brief       Detach the interrupt callback to the port
-  \param[in]   gpio    GPIO port handle
-  \return      None 
-*/
-//void         csi_gpio_detach_callback(csi_gpio_t *gpio);
-
-/**
-  \brief       Enable gpio power manage
-  \param[in]   gpio    GPIO handle to operate
-  \return      Error code
-*/
-//csi_error_t csi_gpio_enable_pm(csi_gpio_t *gpio);
-
-/**
-  \brief       Disable gpio power manage
-  \param[in]   gpio    GPIO handle to operate
-  \return      None 
-*/
-//void csi_gpio_disable_pm(csi_gpio_t *gpio);
-
-/**
-  \brief       Config gpio evtrg mode
-  \param[in]   gpio     	GPIO handle to operate
-  \param[in]   pin_num  	pin num 0~15
-  \param[in]   exi_trgsrc  	exi trg source
-  \param[in]   mode    		rising edge; falling edge; both edge;
-  \return      None 
-*/
-//csi_error_t csi_gpio_evtrg_mode(csi_gpio_t *gpio, uint32_t pin_num, csi_exi_trgsrc_e exi_trgsrc, csi_gpio_irq_mode_e mode);
-
-/** \brief  set EXI as trigger Event(EV0~5) 
-  \param[in]   byTrgOut		output Event select(TRGOUT0~5)
-  \param[in]   eExiTrgSrc 	event source (TRGSRC_EXI0~19)
-  \param       byTrgPrd 	accumulated EXI events to output trigger 
-  \return 	   Error code
- */ 
-csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd);
-
-/** 
-  \brief Set debounce of gpio when gpio configed as input
-  \param[in]   gpio        GPIO port handle
-  \param[in]   pin_mask    Pin mask need to be set
-  \param[in]   enbale      0: disable   1:enable
-  \return      Error code
-*/
-//csi_error_t csi_gpio_debounce(csp_gpio_t *gpio, uint32_t pin_mask, bool enable);
 
 #ifdef __cplusplus
 

@@ -25,9 +25,6 @@ typedef struct ringbuffer {
     uint16_t hwWrite;
     uint16_t hwRead;
     uint16_t hwDataLen;
-	uint16_t hwPreDataLen;				//dynamic scan use, receive data length
-	uint8_t  byRecvFlg;					//dynamic scan use, receive string complete status flag
-	uint8_t  byReserve;					//reserve, 
 } ringbuffer_t;
 
 /** 
@@ -77,7 +74,7 @@ void ringbuffer_byte_in(ringbuffer_t *ptFifo, uint8_t in);
   \param[in] [in] ptFifo: The fifo to be used.
   \return none
  */ 
-void ringbuffer_in_dynamic_scan(ringbuffer_t *ptFifo);
+//void ringbuffer_in_dynamic_scan(ringbuffer_t *ptFifo);
 
 /** 
   \brief  Is the FIFO full?
@@ -85,10 +82,10 @@ void ringbuffer_in_dynamic_scan(ringbuffer_t *ptFifo);
   \retval true:      Yes.
   \retval false:     No.
   */
-static inline bool ringbuffer_in_recv_flag(ringbuffer_t *ptFifo)
-{
-	 return (ptFifo->byRecvFlg  > 0);
-}
+//static inline bool ringbuffer_in_recv_flag(ringbuffer_t *ptFifo)
+//{
+//	 return (ptFifo->byRecvFlg  > 0);
+//}
 
 /** 
   \brief  Returns the size of the FIFO in bytes.
