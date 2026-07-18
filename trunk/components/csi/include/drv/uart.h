@@ -26,17 +26,16 @@ extern "C" {
 #define UART_IDX_NUM   			3
 #define UART_RECV_MAX_LEN		256
 
-
 /**
  * \enum     csi_uart_data_bits_e
  * \brief    UART Mode Parameters: Data Bits
  */
 typedef enum {
-    UART_DATA_BITS_5	= 0,			///< 5 Data bits
-    UART_DATA_BITS_6,                   ///< 6 Data bit
-    UART_DATA_BITS_7,                   ///< 7 Data bits
-    UART_DATA_BITS_8,                   ///< 8 Data bits (default)
-    UART_DATA_BITS_9                    ///< 9 Data bits
+    UART_DATA_BITS_5	= 0,			//5 Data bits
+    UART_DATA_BITS_6,                   //6 Data bit
+    UART_DATA_BITS_7,                   //7 Data bits
+    UART_DATA_BITS_8,                   //8 Data bits (default)
+    UART_DATA_BITS_9                    //9 Data bits
 } csi_uart_data_bits_e;
 
 /**
@@ -44,9 +43,9 @@ typedef enum {
  * \brief    UART Mode Parameters: Parity
  */
 typedef enum {
-    UART_PARITY_NONE	= 0,    		///< No Parity (default)
-    UART_PARITY_EVEN,                   ///< Even Parity
-    UART_PARITY_ODD,                    ///< Odd Parity
+    UART_PARITY_NONE	= 0,    		//No Parity (default)
+    UART_PARITY_EVEN,                   //Even Parity
+    UART_PARITY_ODD,                    //Odd Parity
 } csi_uart_parity_e;
 
 /**
@@ -54,9 +53,9 @@ typedef enum {
  * \brief    UART Mode Parameters: Stop bits
  */
 typedef enum {
-    UART_STOP_BITS_1	= 0,    		///< 1 Stop bit (default)
-    UART_STOP_BITS_2,                   ///< 2 Stop bits
-    UART_STOP_BITS_1_5,                 ///< 1.5 Stop bits
+    UART_STOP_BITS_1	= 0,    		//1 Stop bit (default)
+    UART_STOP_BITS_2,                   //2 Stop bits
+    UART_STOP_BITS_1_5,                 //1.5 Stop bits
 } csi_uart_stop_bits_e;
 
 /**
@@ -64,10 +63,10 @@ typedef enum {
  * \brief    UART Mode Parameters:  Flow Control
  */
 typedef enum {
-    UART_FLOWCTRL_NONE	= 0,    		///< none flowctrl
-    UART_FLOWCTRL_RTS,                  ///< RTS
-    UART_FLOWCTRL_CTS,                  ///< CTS
-    UART_FLOWCTRL_RTS_CTS               ///< RTS & CTS
+    UART_FLOWCTRL_NONE	= 0,    		//none flowctrl
+    UART_FLOWCTRL_RTS,                  //RTS
+    UART_FLOWCTRL_CTS,                  //CTS
+    UART_FLOWCTRL_RTS_CTS               //RTS & CTS
 } csi_uart_flowctrl_e;
 
 /**
@@ -75,24 +74,12 @@ typedef enum {
  * \brief    UART working status
  */
 typedef enum {
-	UART_STATE_IDLE		= 0,			///< uart idle(rx/tx)
-	UART_STATE_RECV,					///< uart receiving 
-	UART_STATE_SEND,					///< uart sending 
-	UART_STATE_FULL,					///< uart receive complete(full)
-	UART_STATE_DONE						///< uart send complete
+	UART_STATE_IDLE		= 0,			//uart idle(rx/tx)
+	UART_STATE_RECV,					//uart receiving 
+	UART_STATE_SEND,					//uart sending 
+	UART_STATE_FULL,					//uart receive complete(full)
+	UART_STATE_DONE						//uart send complete
 } csi_uart_state_e;
-
-//typedef enum {
-//	CSI_UART_OK          =  0,
-//    CSI_UART_ERROR       = -1,
-//    CSI_UART_BUSY        = -2,
-//    CSI_UART_TIMEOUT     = -3,
-//    CSI_UART_UNSUPPORTED = -4,
-//	CSI_UART_ERR_UART_UARTNO  	= -5,
-//	CSI_UART_ERR_UART_UARTBASE  = -6,
-//	CSI_UART_ERR_UART_UARTPARAM = -7,
-//	CSI_UART_ERR_UARTRXEMPTY  	= -8,
-//} csi_uart_error_t;
 
 /**
  * \enum     csi_uart_intsrc_e
@@ -112,21 +99,37 @@ typedef enum
 	UART_INTSRC_TXDONE   	= (0x01ul << 19) 		//TX DONE interrupt
 }csi_uart_intsrc_e;
 
+/**
+ * \enum     csi_uart_wkmode_e
+ * \brief    UART tx/rx mode
+ */
+typedef enum{
+	//send mode
+	UART_TX_MODE_POLL		=	0,			//polling mode,no interrupt
+	UART_TX_MODE_IRQ		=	1,			//interrupt mode
+	//receive
+	UART_RX_MODE_POLL		=	0,			//polling mode,no interrupt
+	UART_RX_MODE_IRQ0		=	1,			//interrupt mode0, 			
+	UART_RX_MODE_IRQ1		=	2			//interrupt mode1
+}csi_uart_wkmode_e;
+
 
 typedef struct {
-	uint8_t				byDataBits;         //databits setting 
-	uint8_t				byStopBits;			//stopbits setting 	
-	uint8_t				byFlowCtrl;			//flowctrl
-	uint8_t				byParity;           //parity type 
 	uint32_t            wBaudRate;			//baud rate	
 	uint32_t            wInter;				//interrupt
+	uint8_t				byParity;           //parity type 
+	uint8_t				byTxMode;			//send mode: polling/interrupt
+	uint8_t				byRxMode;			//recv mode: polling/interrupt0/interrupt1
 } csi_uart_config_t;
 
 typedef struct {
     uint8_t				*pbyTxData;			//pointer of send buf 
 	uint16_t            hwTxSize;			//tx send data size
+	uint16_t            hwRxSize;			//tx send data size
 	uint8_t				bySendStat;
 	uint8_t				byRecvStat;
+	uint8_t				bySendMode;
+	uint8_t				byRecvMode;
 	ringbuffer_t		*ptRingBuf;			
 } csi_uart_transfer_t;
 
@@ -145,14 +148,14 @@ csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg);
   \param[in] ptUartBase: pointer of uart register structure
   \return error code \ref csi_error_t
  */ 
-csi_error_t csi_uart_start(csp_uart_t *ptUartBase);
+void csi_uart_start(csp_uart_t *ptUartBase);
 
 /** 
   \brief stop(disable) uart rx/tx
   \param[in] ptUartBase: pointer of uart register structure
   \return error code \ref csi_error_t
  */ 
-csi_error_t csi_uart_stop(csp_uart_t *ptUartBase);
+void csi_uart_stop(csp_uart_t *ptUartBase);
 
 /**
   \brief       Start send data to UART transmitter, this function is blocking.
@@ -162,7 +165,7 @@ csi_error_t csi_uart_stop(csp_uart_t *ptUartBase);
   \param[in]   timeout  the timeout between bytes(ms).
   \return      the num of data which is sent successfully or CSI_ERROR.
 */
-int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize, uint32_t wTimeOut);
+int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize);
 
 /** 
   \brief send data to uart transmitter, this function is interrupt mode(async/non-blocking)
@@ -171,8 +174,7 @@ int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize,
   \param[in] wSize: number of data to send (byte).
   \return  error code \ref csi_error_t
  */
-csi_error_t csi_uart_send_intr(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize);
-
+csi_error_t csi_uart_send_async(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize);
 
 /**
   \brief       Query data from UART receiver FIFO, this function is blocking.
@@ -191,16 +193,15 @@ int32_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint32_t wSize, ui
   \param[in] wSize: number of data to receive (byte).
   \return  the num of data which is receive successfully
  */
-int32_t csi_uart_recv_intr(csp_uart_t *ptUartBase, void *pData, uint32_t wSize);
+int32_t csi_uart_recv_async(csp_uart_t *ptUartBase, void *pData, uint32_t wSize);
 
 /** 
   \brief receive data to uart transmitter, dynamic receive; this function is interrupt mode(async).
   \param[in] ptUartBase: UART handle to operate
   \param[in] pData: pointer to buffer with data to be received.
-  \param[in] wTimeOut: the timeout between bytes(ms). 
   \return  the num of data which is send successfully
  */
-int32_t csi_uart_recv_dynamic(csp_uart_t *ptUartBase, void *pData);
+int32_t csi_uart_recv_async_dynamic(csp_uart_t *ptUartBase, void *pData);
 
 /**
   \brief       Get character in query mode.
