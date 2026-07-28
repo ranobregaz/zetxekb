@@ -109,21 +109,30 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, uint32_t wTimeOut);
   \param[in]   eCntMode		bt count mode, one pulse/continuous
   \return 	   error code \ref csi_error_t
  */ 
-csi_error_t csi_bt_count_mode(csp_bt_t *ptBtBase, csi_bt_cntmode_e eCntMode);
+void csi_bt_count_mode(csp_bt_t *ptBtBase, csi_bt_cntmode_e eCntMode);
 
 /** 
   \brief 	   start bt
   \param[in]   ptBtBase		pointer of bt register structure
   \return      error code \ref csi_error_t
  */ 
-csi_error_t csi_bt_start(csp_bt_t *ptBtBase);
+void csi_bt_start(csp_bt_t *ptBtBase);
 
 /** 
   \brief       stop bt
   \param[in]   ptBtBase		pointer of bt register structure
   \return      error code \ref csi_error_t
  */ 
-csi_error_t csi_bt_stop(csp_bt_t *ptBtBase);
+void csi_bt_stop(csp_bt_t *ptBtBase);
+
+/** 
+  \brief 	   enable/disable bt interrupt
+  \param[in]   ptBtBase	 	pointer of bt register structure
+  \param[in]   eIntSrc		bt interrupt source
+  \param[in]   bEnable		enable/disable interrupt
+  \return 	   none
+ */ 
+void csi_bt_int_enable(csp_bt_t *ptBtBase, csi_bt_intsrc_e eIntSrc, bool bEnable);
 
 /**
   \brief       Get bt remaining value
@@ -174,7 +183,7 @@ csi_error_t csi_bt_pwm_init(csp_bt_t *ptBtBase, csi_bt_pwm_config_t *ptBtPwmCfg)
   \param[in]   hwCmp  		bt cmp reg value
   \return      none
  */
-csi_error_t csi_bt_prdr_cmp_updata(csp_bt_t *ptBtBase, uint16_t hwPrdr, uint16_t hwCmp);
+void csi_bt_prdr_cmp_updata(csp_bt_t *ptBtBase, uint16_t hwPrdr, uint16_t hwCmp);
 
 /** 
   \brief  	   updata bt pwm duty cycle
@@ -182,7 +191,7 @@ csi_error_t csi_bt_prdr_cmp_updata(csp_bt_t *ptBtBase, uint16_t hwPrdr, uint16_t
   \param[in]   byDutyCycle	duty cycle(0 -> 100)
   \return none
  */
-csi_error_t csi_bt_pwm_duty_cycle_updata(csp_bt_t *ptBtBase, uint8_t byDutyCycle); 
+void csi_bt_pwm_duty_cycle_updata(csp_bt_t *ptBtBase, uint8_t byDutyCycle); 
 
 /** 
   \brief  	   updata bt pwm freq and duty cycle
@@ -191,7 +200,7 @@ csi_error_t csi_bt_pwm_duty_cycle_updata(csp_bt_t *ptBtBase, uint8_t byDutyCycle
   \param[in]   byDutyCycle	pwm duty cycle(0 -> 100)
   \return 	   none
  */
-csi_error_t csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle); 
+void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle); 
 
 /** 
   \brief 	   bt sync evtrg config  
@@ -201,7 +210,7 @@ csi_error_t csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDuty
   \param[in]   bAutoRearm 	auto rearm, ENABLE/DISABLE(true/false)
   \return      error code \ref csi_error_t
 */
-csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, bool bAutoRearm);
+void csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, bool bAutoRearm);
 
 /** 
   \brief 	   restart bt sync evtrg 
@@ -209,7 +218,7 @@ csi_error_t csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trg
   \param[in]   eTrgin		bt evtrg input channel(0~1)
   \return      error code \ref csi_error_t
  */
-csi_error_t csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin);
+void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin);
 
 /** 
   \brief 	   bt evtrg output config
@@ -227,7 +236,7 @@ csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byEvtrg, csi_bt_trgsrc_
   \param[in]   wTimeOut 	the timeout for bt, unit: us
   \return      error code \ref csi_error_t
  */ 
-csi_error_t csi_bt_start_sync(csp_bt_t *ptBtBase, uint32_t wTimeOut);
+void csi_bt_start_sync(csp_bt_t *ptBtBase, uint32_t wTimeOut);
 
 #ifdef __cplusplus
 }
