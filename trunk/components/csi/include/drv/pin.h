@@ -57,7 +57,7 @@
   \brief       Set pin mux function
   \param[in]   ePinName    pin name, defined in soc.h
   \param[in]   ePinFunc    pin function, defined in soc.h
-  \return      \ref  csi_error_t
+  \return      none
 */
 void csi_pin_set_mux(pin_name_e ePinName, pin_func_e ePinFunc);
 
@@ -80,7 +80,7 @@ csi_error_t csi_pin_pull_mode(pin_name_e ePinName, csi_gpio_pull_mode_e ePullMod
   \brief       Set pin speed
   \param[in]   ePinName    pin name, defined in soc.h
   \param[in]   eSpeed      io speed
-  \return      \ref  csi_error_t
+  \return      none
 */
 void csi_pin_speed(pin_name_e ePinName, csi_gpio_speed_e eSpeed);
 
@@ -142,31 +142,33 @@ csi_error_t csi_pin_irq_enable(pin_name_e ePinName, csi_exi_grp_e eExiGrp, bool 
 /** 
   \brief  	   gpio toggle
   \param[in]   pin_name		gpio pin name
-  \return      error code \ref csi_error_t
+  \return      none
  */
 void csi_pin_toggle(pin_name_e ePinName);
 
 /** 
   \brief  	   gpio pin set high(output = 1)
   \param[in]   ePinName		gpio pin name
-  \return error code \ref csi_error_t
+  \return      none
  */
 void csi_pin_set_high(pin_name_e ePinName);
 
 /** 
   \brief   	   gpio pin set low(output = 0)
   \param[in]   ePinName		gpio pin name
-  \return error code \ref csi_error_t
+  \return      none
  */
 void csi_pin_set_low(pin_name_e ePinName);
 
-/** \brief  set EXI as trigger Event(EV0~5) 
+/** \brief  set exi as trigger Event(EV0~5) 
   \param[in]   byTrgOut		output Event select(TRGOUT0~5)
   \param[in]   eExiTrgSrc 	event source (TRGSRC_EXI0~19)
   \param       byTrgPrd 	accumulated EXI events to output trigger 
-  \return 	   Error code
+  \return 	   error code \ref csi_error_t
  */ 
 csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd);
+
+
 
 //__ALWAYS_STATIC_INLINE uint32_t csi_pin_get_gpio_devidx(pin_name_e pin_name)
 //{
