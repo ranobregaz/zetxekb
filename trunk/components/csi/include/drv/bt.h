@@ -107,21 +107,21 @@ csi_error_t csi_bt_timer_init(csp_bt_t *ptBtBase, uint32_t wTimeOut);
   \brief 	   set work mode
   \param[in]   ptBtBase		pointer of bt register structure
   \param[in]   eCntMode		bt count mode, one pulse/continuous
-  \return 	   error code \ref csi_error_t
+  \return 	   none
  */ 
 void csi_bt_count_mode(csp_bt_t *ptBtBase, csi_bt_cntmode_e eCntMode);
 
 /** 
   \brief 	   start bt
   \param[in]   ptBtBase		pointer of bt register structure
-  \return      error code \ref csi_error_t
+  \return      none
  */ 
 void csi_bt_start(csp_bt_t *ptBtBase);
 
 /** 
   \brief       stop bt
   \param[in]   ptBtBase		pointer of bt register structure
-  \return      error code \ref csi_error_t
+  \return      none
  */ 
 void csi_bt_stop(csp_bt_t *ptBtBase);
 
@@ -189,7 +189,7 @@ void csi_bt_prdr_cmp_updata(csp_bt_t *ptBtBase, uint16_t hwPrdr, uint16_t hwCmp)
   \brief  	   updata bt pwm duty cycle
   \param[in]   ptBtBase		pointer of bt register structure
   \param[in]   byDutyCycle	duty cycle(0 -> 100)
-  \return none
+  \return 	   none
  */
 void csi_bt_pwm_duty_cycle_updata(csp_bt_t *ptBtBase, uint8_t byDutyCycle); 
 
@@ -208,7 +208,7 @@ void csi_bt_pwm_updata(csp_bt_t *ptBtBase, uint32_t wfreq, uint8_t byDutyCycle);
   \param[in]   eTrgin		bt evtrg input channel(0~1)
   \param[in]   eTrgMode 	bt evtrg mode, continuous/once
   \param[in]   bAutoRearm 	auto rearm, ENABLE/DISABLE(true/false)
-  \return      error code \ref csi_error_t
+  \return      none
 */
 void csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e eTrgMode, bool bAutoRearm);
 
@@ -216,7 +216,7 @@ void csi_bt_set_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin, csi_bt_trgmode_e 
   \brief 	   restart bt sync evtrg 
   \param[in]   ptBtBase		pointer of bt register structure
   \param[in]   eTrgin		bt evtrg input channel(0~1)
-  \return      error code \ref csi_error_t
+  \return      none
  */
 void csi_bt_rearm_sync(csp_bt_t *ptBtBase,csi_bt_trgin_e eTrgin);
 
@@ -234,7 +234,7 @@ csi_error_t csi_bt_set_evtrg(csp_bt_t *ptBtBase, uint8_t byEvtrg, csi_bt_trgsrc_
 /** \brief     start bt by sync event
   \param[in]   ptBtBase		pointer of bt register structure
   \param[in]   wTimeOut 	the timeout for bt, unit: us
-  \return      error code \ref csi_error_t
+  \return      none
  */ 
 void csi_bt_start_sync(csp_bt_t *ptBtBase, uint32_t wTimeOut);
 
