@@ -232,7 +232,7 @@ csi_error_t csi_gpio_port_irq_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, cs
   \param[in]   ptGpioBase	pointer of gpio register structure
   \param[in]   wPinMask    	Pin mask need to be set
   \param[in]   bEnable      0:disable  1:enable
-  \return      Error code
+  \return      none
 */
 void csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, bool bEnable);
 
