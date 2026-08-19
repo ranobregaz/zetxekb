@@ -139,7 +139,7 @@ void apt_exi_trg_edge_set(csp_syscon_t *ptSysconBase,gpio_igrp_e eExiGrp, exi_tr
  * 
  *  \param[in] ePinName: gpio pin name
  *  \param[in] ePinFunc: gpio pin function
- *  \return error code \ref csi_error_t
+ *  \return enone
  */  
 void csi_pin_set_mux(pin_name_e ePinName, pin_func_e ePinFunc)
 {
@@ -240,7 +240,7 @@ csi_error_t csi_pin_pull_mode(pin_name_e ePinName, csi_gpio_pull_mode_e ePullMod
  * 
  *  \param[in] ePinName: gpio pin name
  *  \param[in] eSpeed: gpio pin speed
- *  \return error code \ref csi_error_t
+ *  \return none
  */  
 void csi_pin_speed(pin_name_e ePinName, csi_gpio_speed_e eSpeed)
 {
@@ -480,7 +480,7 @@ csi_error_t csi_pin_irq_enable(pin_name_e ePinName, csi_exi_grp_e eExiGrp, bool 
 /** \brief  gpio pin toggle
  * 
  *  \param[in] ePinName: gpio pin name
- *  \return error code \ref csi_error_t
+ *  \return none
  */
 void csi_pin_toggle(pin_name_e ePinName)
 {
@@ -506,7 +506,7 @@ void csi_pin_toggle(pin_name_e ePinName)
 /** \brief  gpio pin set high(output = 1)
  * 
  *  \param[in] ePinName: gpio pin name
- *  \return error code \ref csi_error_t
+ *  \return none
  */
 void csi_pin_set_high(pin_name_e ePinName)
 {
@@ -526,7 +526,7 @@ void csi_pin_set_high(pin_name_e ePinName)
 /** \brief   gpio pin set low(output = 0)
  * 
  *  \param[in] ePinName: gpio pin name
- *  \return error code \ref csi_error_t
+ *  \return none
  */
 void csi_pin_set_low(pin_name_e ePinName)
 {
@@ -542,11 +542,11 @@ void csi_pin_set_low(pin_name_e ePinName)
 	
 	csp_gpio_set_low(ptGpioBase, (uint8_t)ePinName);
 }
-/** \brief  set EXI as trigger Event(EV0~5) 
+/** \brief  set exi as trigger Event(EV0~5) 
  *  \param[in] byTrgOut: output Event select(TRGOUT0~5)
  *  \param[in] eExiTrgSrc: event source (TRGSRC_EXI0~19)
  *  \param[in] byTrgPrd: accumulated EXI events to output trigger 
- *  \return none
+ *  \return error code \ref csi_error_t
  */ 
 csi_error_t csi_exi_set_evtrg(uint8_t byTrgOut, csi_exi_trgsrc_e eExiTrgSrc, uint8_t byTrgPrd)
 {

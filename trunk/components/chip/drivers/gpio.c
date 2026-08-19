@@ -314,7 +314,7 @@ csi_error_t csi_gpio_port_irq_mode(csp_gpio_t *ptGpioBase, uint32_t wPinMask, cs
  *  \param[in] ptGpioBase: pointer of gpio register structure
  *  \param[in] wPinMask: pin mask,0x0001~0xffff
  *  \param[in] bEnable: true or false
- *  \return error code \ref csi_error_t
+ *  \return none
  */ 
 void csi_gpio_port_irq_enable(csp_gpio_t *ptGpioBase, uint32_t wPinMask, bool bEnable)
 {
@@ -359,7 +359,7 @@ void csi_gpio_port_toggle(csp_gpio_t *ptGpioBase, uint32_t wPinMask)
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
  *  \param[in] wPinMask: pin mask,0x0001~0xffff
- *  \return error code \ref csi_error_t
+ *  \return value gpio port select wPinMask
  */ 
 uint32_t csi_gpio_port_read(csp_gpio_t *ptGpioBase, uint32_t wPinMask)
 {
@@ -370,7 +370,7 @@ uint32_t csi_gpio_port_read(csp_gpio_t *ptGpioBase, uint32_t wPinMask)
  *  \param[in] ptGpioBase: pointer of gpio register structure
  *  \param[in] wPinMask: pin mask,0x0001~0xffff
  *  \param[in] ePinVal: gpio output value;
- *  \return error code \ref csi_error_t
+ *  \return none
  */ 
 void  csi_gpio_port_write(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pin_state_e ePinVal)
 {
@@ -385,7 +385,7 @@ void  csi_gpio_port_write(csp_gpio_t *ptGpioBase, uint32_t wPinMask, csi_gpio_pi
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
  *  \param[in] wPinMask: pin mask,0x0001~0xffff
- *  \return error code \ref csi_error_t
+ *  \return none
  */ 
 void  csi_gpio_port_set_high(csp_gpio_t *ptGpioBase, uint32_t wPinMask)
 {
@@ -396,7 +396,7 @@ void  csi_gpio_port_set_high(csp_gpio_t *ptGpioBase, uint32_t wPinMask)
  * 
  *  \param[in] ptGpioBase: pointer of gpio register structure
  *  \param[in] wPinMask: pin mask,0x0001~0xffff
- *  \return error code \ref csi_error_t
+ *  \return none
  */ 
 void  csi_gpio_port_set_low(csp_gpio_t *ptGpioBase, uint32_t wPinMask)
 {
