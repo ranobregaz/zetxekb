@@ -40,9 +40,9 @@ int etcb_one_trg_one_demo(void)
 	tEtbConfig.byDstIp2 = 0xff;
 	tEtbConfig.eTrgMode = ETB_HARDWARE_TRG;		//通道触发模式采样硬件触发
 	
-	iRet = csi_etb_init();						//初始化(使能)ETB
+	csi_etb_init();								//初始化(使能)ETB
 	ch = csi_etb_ch_alloc(tEtbConfig.eChType);	//获取ETB空闲通道
-	iRet |= csi_etb_ch_config(ch,&tEtbConfig);	//配置并启动ETB通道
+	iRet = csi_etb_ch_config(ch,&tEtbConfig);	//配置并启动ETB通道
 			
 	return iRet;
 }
