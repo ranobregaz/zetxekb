@@ -154,14 +154,12 @@ static void etb_one_trg_more_set(csp_etb_t *ptEtbBase, uint8_t byChNum, uint8_t 
 /** \brief initialize etb; enable etb and etb clk
  * 
  *  \param[in] none
- *  \return error code \ref csi_error_t
+ *  \return none
  */ 
-csi_error_t csi_etb_init(void)
+void csi_etb_init(void)
 {
 	soc_clk_enable(ETCB_SYS_CLK);			//enable peripheral clk
     csp_etb_enable(ETCB);					//enable etcb module
-
-    return CSI_OK;
 }
 /** \brief alloc an etb channel
  * 
