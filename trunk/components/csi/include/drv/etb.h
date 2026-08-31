@@ -126,9 +126,9 @@ typedef struct {
 
 /**
   \brief       Init the etb device
-  \return      error code
+  \return      none
 */
-csi_error_t csi_etb_init(void);
+void csi_etb_init(void);
 
 /**
   \brief       alloc an etb channel
