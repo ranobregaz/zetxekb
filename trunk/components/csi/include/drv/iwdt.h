@@ -68,23 +68,23 @@ csi_error_t csi_iwdt_init(csi_iwdt_to_e eTimeOut);
 /** 
   \brief 	   open(start) iwdt
   \param[in]   none
-  \return 	   error code \ref csi_error_t
+  \return 	   none
  */ 
-csi_error_t csi_iwdt_open(void);
+void csi_iwdt_open(void);
 
 /** 
   \brief 	   close(stop) iwdt
   \param[in]   none
-  \return 	   error code \ref csi_error_t
+  \return 	   none
  */ 
-csi_error_t csi_iwdt_close(void);
+void csi_iwdt_close(void);
 
 /**
   \brief       feed the iwdt
   \param[in]   none
-  \return      error code \ref csi_error_t
+  \return      none
 */
-csi_error_t csi_iwdt_feed(void);
+void csi_iwdt_feed(void);
 
 /**
   \brief       get the remaining time to timeout
@@ -104,16 +104,16 @@ bool csi_iwdt_is_running(void);
   \brief 	   iwdt irq enable/disable
   \param[in]   eIntTv		iwdt interrupt timer length(timer over), 1/2/3/4/5/6/7_8
   \param[in]   bEnable		enable/disable irq
-  \return 	   error code \ref csi_error_t
+  \return 	   none
  */
-csi_error_t csi_iwdt_irq_enable(csi_iwdt_into_e eIntTo, bool bEnable);
+void csi_iwdt_irq_enable(csi_iwdt_into_e eIntTo, bool bEnable);
 
 /**
   \brief       enable or disable iwdt when stop in debug mode
   \param[in]   bEnable 
   \return      none
 */
-csi_error_t csi_iwdt_debug_enable(bool bEnable);
+void csi_iwdt_debug_enable(bool bEnable);
 
 
 #ifdef __cplusplus

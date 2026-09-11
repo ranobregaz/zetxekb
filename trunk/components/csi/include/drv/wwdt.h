@@ -39,9 +39,9 @@ csi_error_t csi_wwdt_init(uint32_t eTimeOut);
 /** 
   \brief 	   open(start) wwdt
   \param[in]   none
-  \return 	   error code \ref csi_error_t
+  \return 	   none
  */ 
-csi_error_t csi_wwdt_open(void);
+void csi_wwdt_open(void);
 
 /** 
   \brief 	   close(stop) wwdt
@@ -53,9 +53,16 @@ csi_error_t csi_wwdt_close(void);
 /**
   \brief       feed the wwdt
   \param[in]   none
-  \return      error code \ref csi_error_t
+  \return      none
 */
-csi_error_t csi_wwdt_feed(void);
+void csi_wwdt_feed(void);
+
+/**
+  \brief	   set window time for wwdt
+  \param[in]   wTimeOut		the timeout value of window time
+  \return 	   error code \ref csi_error_t
+*/
+csi_error_t csi_wwdt_set_window_time(uint32_t wTimeOut);
 
 /**
   \brief       get the remaining time to timeout
@@ -74,16 +81,16 @@ bool csi_wwdt_is_running(void);
 /** 
   \brief 	   wwdt irq enable/disable
   \param[in]   bEnable		enable/disable irq
-  \return 	   error code \ref csi_error_t
+  \return 	   none
  */
-csi_error_t csi_wwdt_irq_enable(bool bEnable);
+void csi_wwdt_irq_enable(bool bEnable);
 
 /**
   \brief       enable or disable wwdt when stop in debug mode
   \param	   bEnable 
   \return      none
 */
-csi_error_t csi_wwdt_debug_enable(bool bEnable);
+void csi_wwdt_debug_enable(bool bEnable);
 
 
 #ifdef __cplusplus
