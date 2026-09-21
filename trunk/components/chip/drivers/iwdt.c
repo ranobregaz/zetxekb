@@ -66,47 +66,43 @@ csi_error_t csi_iwdt_init(csi_iwdt_to_e eTimeOut)
 /** \brief open(start) iwdt
  * 
  *  \param[in] none
- *  \return error code \ref csi_error_t
+ *  \return none
  */ 
-csi_error_t csi_iwdt_open(void)
+void csi_iwdt_open(void)
 {
 	SYSCON -> IWDEDR = EN_IWDT | IWDTE_KEY;
 	while((SYSCON->IWDCR & IWDT_ST) != IWDT_BUSY);
 	SYSCON -> IWDCNT = (SYSCON -> IWDCNT & (~IWDT_CLR_MSK)) | IWDT_CLR << IWDT_CLR_POS;
 	while((SYSCON->IWDCNT & IWDT_CLR_BUSY) == 1);
-	
-	return CSI_OK;
 }
 
 /** \brief close(stop) iwdt
  * 
  *  \param[in] none
- *  \return error code \ref csi_error_t
+ *  \return none
  */ 
-csi_error_t csi_iwdt_close(void)
+void csi_iwdt_close(void)
 {
 	csp_iwdt_disable(SYSCON);
-	return CSI_OK;
 }
 
 /** \brief feed iwdt
  * 
  *  \param[in] none
- *  \return error code \ref csi_error_t
+ *  \return none
  */
-csi_error_t csi_iwdt_feed(void)
+void csi_iwdt_feed(void)
 {
 	csp_iwdt_clr(SYSCON);
-	return CSI_OK;
 }
 
 /** \brief iwdt irq enable/disable
  * 
  *  \param[in] eIntTv: iwdt interrupt timer length(timer over), 1/2/3/4/5/6/7_8
  *  \param[in] bEnable: enable/disable INT
- *  \return error code \ref csi_error_t
+ *  \return none
  */
-csi_error_t csi_iwdt_irq_enable(csi_iwdt_into_e eIntTo, bool bEnable)
+void csi_iwdt_irq_enable(csi_iwdt_into_e eIntTo, bool bEnable)
 {
 	csp_iwdt_set_intt(SYSCON, eIntTo);					//iwdt interrupt timer, 1/2/3/4/5/6/7_8
 	csp_syscon_int_enable(SYSCON, IWDT_INT, bEnable);	//enable iwdt interrupt
@@ -115,8 +111,6 @@ csi_error_t csi_iwdt_irq_enable(csi_iwdt_into_e eIntTo, bool bEnable)
 		csi_vic_enable_irq(SYSCON_IRQn);				//enable iwdt irq
 	else
 		csi_vic_disable_irq(SYSCON_IRQn);				//disable iwdt irq
-
-	return CSI_OK;
 }
 /** \brief check if wdt is running
  * 
@@ -167,8 +161,7 @@ uint32_t csi_iwdt_get_remaining_time(void)
  *  \param[in] bEnable: enable/disable 
  *  \return  none
 */
-csi_error_t csi_iwdt_debug_enable(bool bEnable)
+void csi_iwdt_debug_enable(bool bEnable)
 {
 	csp_iwdt_debug_enable(SYSCON, bEnable);
-	return CSI_OK;
 }
