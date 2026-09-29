@@ -67,6 +67,7 @@ csi_error_t csi_wwdt_init(uint32_t wTimeOut)
     return ret;
 }
 /** \brief set window time for wwdt
+ * 
  *  \param[in] wTimeOut: the timeout value of window time
  *  \return error code \ref csi_error_t
 */
@@ -86,13 +87,11 @@ csi_error_t csi_wwdt_set_window_time(uint32_t wTimeOut)
 /** \brief open(start) wwdt
  * 
  *  \param[in] none
- *  \return error code \ref csi_error_t
+ *  \return none
  */ 
-csi_error_t csi_wwdt_open(void)
+void csi_wwdt_open(void)
 {
 	csp_wwdt_enable(WWDT);
-	
-	return CSI_OK;
 }
 
 /** \brief close(stop) wwdt
@@ -109,20 +108,20 @@ csi_error_t csi_wwdt_close(void)
 /** \brief feed wwdt
  * 
  *  \param[in] none
- *  \return error code \ref csi_error_t
+ *  \return none
  */
-csi_error_t csi_wwdt_feed(void)
+void csi_wwdt_feed(void)
 {
 	csp_wwdt_set_cnt(WWDT, s_byWwdtCntMax);
-	return CSI_OK;
+
 }
 
 /** \brief iwdt INT enable/disable
  * 
  *  \param[in] bEnable: enable/disable INT
- *  \return error code \ref csi_error_t
+ *  \return none
  */
-csi_error_t csi_wwdt_irq_enable(bool bEnable)
+void csi_wwdt_irq_enable(bool bEnable)
 {
 	csp_wwdt_int_enable(WWDT,ENABLE);				//enable wwdt int
 	
@@ -130,8 +129,6 @@ csi_error_t csi_wwdt_irq_enable(bool bEnable)
 		csi_vic_enable_irq(WWDT_IRQn);				//enable iwdt irq
 	else
 		csi_vic_disable_irq(WWDT_IRQn);				//disable iwdt irq
-
-	return CSI_OK;
 }
 /** \brief check if wwdt is running
  * 
@@ -162,8 +159,7 @@ uint32_t csi_wwdt_get_remaining_time(void)
  *  \param[in] bEnable: enable/disable 
  *  \return  none
 */
-csi_error_t csi_wwdt_debug_enable(bool bEnable)
+void csi_wwdt_debug_enable(bool bEnable)
 {
 	csp_wwdt_debug_enable(WWDT, bEnable);
-	return CSI_OK;
 }
