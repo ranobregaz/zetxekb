@@ -70,24 +70,6 @@ uint32_t ringbuffer_out(ringbuffer_t *ptFifo, void *out, uint16_t len);
 void ringbuffer_byte_in(ringbuffer_t *ptFifo, uint8_t in);
 
 /** 
-  \brief ringbuffer in  receive a bunch of data; dynamic scan
-  \param[in] [in] ptFifo: The fifo to be used.
-  \return none
- */ 
-//void ringbuffer_in_dynamic_scan(ringbuffer_t *ptFifo);
-
-/** 
-  \brief  Is the FIFO full?
-  \param  [in] ptFifo: The fifo to be used.
-  \retval true:      Yes.
-  \retval false:     No.
-  */
-//static inline bool ringbuffer_in_recv_flag(ringbuffer_t *ptFifo)
-//{
-//	 return (ptFifo->byRecvFlg  > 0);
-//}
-
-/** 
   \brief  Returns the size of the FIFO in bytes.
   \param  [in] ptFifo: The fifo to be used.
   \return The size of the FIFO.
