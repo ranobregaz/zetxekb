@@ -12,24 +12,6 @@
 /* Private variablesr-------------------------------------------------*/
 
 
-/** \brief ringbuffer in  receive a bunch of data; dynamic scan
- * 
- *  \param[in] [in] ptFifo: The fifo to be used.
- *  \return none
- */ 
-void ringbuffer_in_dynamic_scan(ringbuffer_t *ptFifo)
-{
-	if(ptFifo->hwDataLen > 0)
-	{
-		if(ptFifo->hwPreDataLen  == ptFifo->hwDataLen)			//receive a bunch of data complete
-		{
-			ptFifo->hwPreDataLen = 0;
-			ptFifo->byRecvFlg = 1;								//receive a bunch of data complete, set status flag
-		}
-		else
-			ptFifo->hwPreDataLen = ptFifo->hwDataLen;			//receive go on
-	}
-}
 /** \brief  Removes the entire FIFO contents.
   * 
   * \param  [in] ptFifo: The fifo to be emptied.
@@ -40,7 +22,6 @@ void ringbuffer_reset(ringbuffer_t *ptFifo)
     ptFifo->hwWrite = 0U;
     ptFifo->hwRead  = 0U;
     ptFifo->hwDataLen = 0U;
-	ptFifo->byRecvFlg = 0U;
 }
 
 /** \brief  Puts onebyte data into the FIFO.
@@ -134,29 +115,5 @@ uint32_t ringbuffer_out(ringbuffer_t *ptFifo, void *pOutBuf, uint16_t hwLen)
 	ptFifo->hwDataLen -= readlen;
 	
 	return readlen;
-	
-//    uint32_t readlen = 0U, tmplen = 0U;
-//
-//    if (ringbuffer_is_empty(fifo)) {
-//        readlen = 0U;
-//    } 
-//	else {
-//        readlen = (len > fifo->data_len) ? fifo->data_len : len;
-//        tmplen = fifo->size - fifo->read;
-//
-//        if (NULL != outbuf) {
-//            if (readlen <= tmplen) {
-//                memcpy((void *)outbuf, (void *)&fifo->buffer[fifo->read], readlen);
-//            } else {
-//                memcpy((void *)outbuf, (void *)&fifo->buffer[fifo->read], tmplen);
-//                memcpy((uint8_t *)outbuf + tmplen, (void *)fifo->buffer, readlen - tmplen);
-//            }
-//        }
-//
-//        fifo->read = (fifo->read + readlen) % fifo->size;
-//        fifo->data_len -= readlen;
-//    }
-//
-//    return readlen;
 }
 
