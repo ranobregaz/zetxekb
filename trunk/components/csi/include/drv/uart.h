@@ -136,84 +136,85 @@ typedef struct {
 extern csi_uart_transfer_t g_tUartTran[UART_IDX_NUM];	
 
 /**
-  \brief       Initializes the resources needed for the UART interface.
-  \param[in]   uart      operate handle.
-  \param[in]   idx       the device idx.
+  \brief       initializes the resources needed for the UART interface.
+  \param[in]   uart      	operate handle.
+  \param[in]   idx       	the device idx.
   \return      error code.
 */
 csi_error_t csi_uart_init(csp_uart_t *ptUartBase, csi_uart_config_t *ptUartCfg);
 
 /** 
-  \brief start(enable) uart rx/tx
-  \param[in] ptUartBase: pointer of uart register structure
-  \return error code \ref csi_error_t
+  \brief 	   start(enable) uart rx/tx
+  \param[in]   ptUartBase	pointer of uart register structure
+  \return      none
  */ 
 void csi_uart_start(csp_uart_t *ptUartBase);
 
 /** 
-  \brief stop(disable) uart rx/tx
-  \param[in] ptUartBase: pointer of uart register structure
-  \return error code \ref csi_error_t
+  \brief 	   stop(disable) uart rx/tx
+  \param[in]   ptUartBase	pointer of uart register structure
+  \return      none
  */ 
 void csi_uart_stop(csp_uart_t *ptUartBase);
 
 /**
   \brief       Start send data to UART transmitter, this function is blocking.
-  \param[in]   uart     uart handle to operate.
-  \param[in]   data     pointer to buffer with data to send to UART transmitter.
-  \param[in]   size     number of data to send (byte).
-  \param[in]   timeout  the timeout between bytes(ms).
+  \param[in]   uart     	uart handle to operate.
+  \param[in]   data     	pointer to buffer with data to send to UART transmitter.
+  \param[in]   size     	number of data to send (byte).
+  \param[in]   timeout  	the timeout between bytes(ms).
   \return      the num of data which is sent successfully or CSI_ERROR.
 */
 int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize);
 
 /** 
-  \brief send data to uart transmitter, this function is interrupt mode(async/non-blocking)
-  \param[in] ptUartBase: pointer of uart register structure
-  \param[in] pData: pointer to buffer with data to send to uart transmitter.
-  \param[in] wSize: number of data to send (byte).
-  \return  error code \ref csi_error_t
+  \brief 	   send data to uart transmitter, this function is interrupt mode(async/non-blocking)
+  \param[in]   ptUartBase	pointer of uart register structure
+  \param[in]   pData		pointer to buffer with data to send to uart transmitter.
+  \param[in]   wSize		number of data to send (byte).
+  \return      error code \ref csi_error_t
  */
 csi_error_t csi_uart_send_async(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize);
 
 /**
   \brief       Query data from UART receiver FIFO, this function is blocking.
-  \param[in]   uart     uart handle to operate.
-  \param[out]  data     pointer to buffer for data to receive from UART receiver.
-  \param[in]   size     number of data to receive.
-  \param[in]   timeout  the timeout between bytes(ms).
+  \param[in]   ptUartBase   pointer of uart register structure
+  \param[out]  data     	pointer to buffer for data to receive from UART receiver.
+  \param[in]   size     	number of data to receive(byte).
+  \param[in]   timeout  	the timeout between bytes(ms).
   \return      the num of data witch is received successfully or CSI_ERROR.
 */
 int32_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint32_t wSize, uint32_t wTimeOut);
 
 /** 
-  \brief receive data to uart transmitter; this function is interrupt mode(async/no-blocking),
-  \param[in] ptUartBase: UART handle to operate
-  \param[in] pData: pointer to buffer with data to be received.
-  \param[in] wSize: number of data to receive (byte).
-  \return  the num of data which is receive successfully
+  \brief 	   receive data to uart transmitter,assign length ;this function is interrupt mode(async/no-blocking),
+  \param[in]   ptUartBase   pointer of uart register structure
+  \param[in]   pData		pointer to buffer with data to be received.
+  \param[in]   wSize		number of data to receive (byte).
+  \return      the num of data which is receive successfully
  */
 int32_t csi_uart_recv_async(csp_uart_t *ptUartBase, void *pData, uint32_t wSize);
 
 /** 
-  \brief receive data to uart transmitter, dynamic receive; this function is interrupt mode(async).
-  \param[in] ptUartBase: UART handle to operate
-  \param[in] pData: pointer to buffer with data to be received.
-  \return  the num of data which is send successfully
+  \brief 	   receive data to uart transmitter, dynamic receive; this function is interrupt mode(async).
+  \param[in]   ptUartBase	UART handle to operate
+  \param[in]   pData		pointer to buffer with data to be received.
+  \return      the num of data which is send successfully
  */
 int32_t csi_uart_recv_async_dynamic(csp_uart_t *ptUartBase, void *pData);
 
 /**
   \brief       Get character in query mode.
-  \param[in]   uart  uart handle to operate.
+  \param[in]   ptUartBase   pointer of uart register structure
   \return      the character to get.
 */
 uint8_t csi_uart_getc(csp_uart_t *ptUartBase);
 
 /**
   \brief       Send character in query mode.
-  \param[in]   uart uart handle to operate.
-  \param[in]   ch   the character to be send.
+  \param[in]   ptUartBase   pointer of uart register structure
+  \param[in]   byData   	the character to be send.
+  \return      none
 */
 void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData);
 
@@ -228,35 +229,35 @@ void csi_uart_putc(csp_uart_t *ptUartBase, uint8_t byData);
 
 /**
   \brief       get the state of uart receive.
-  \param[in]   uart   uart handle to operate.
+  \param[in]   ptUartBase   pointer of uart register structure
   \return      error code.
 */
 csi_uart_state_e csi_uart_get_recv_status(csp_uart_t *ptUartBase);
 
 /**
   \brief       get the state of uart send.
-  \param[in]   uart   uart handle to operate.
+  \param[in]   ptUartBase   pointer of uart register structure
   \return      error code.
 */
 csi_uart_state_e csi_uart_get_send_status(csp_uart_t *ptUartBase);
 
 /**
   \brief       clr the state of uart receive.
-  \param[in]   uart   uart handle to operate.
-  \return      error code.
+  \param[in]   ptUartBase   pointer of uart register structure
+  \return      none
 */
 void csi_uart_clr_recv_status(csp_uart_t *ptUartBase);
 
 /**
   \brief       clr the state of uart send.
-  \param[in]   uart   uart handle to operate.
-  \return      error code.
+  \param[in]   ptUartBase   pointer of uart register structure
+  \return      none
 */
 void csi_uart_clr_send_status(csp_uart_t *ptUartBase);
 
 /**
   \brief       Enable uart power manage.
-  \param[in]   uart   uart handle to operate.
+  \param[in]   ptUartBase   pointer of uart register structure
   \return      error code.
 */
 //csi_error_t csi_uart_enable_pm(csi_uart_t *uart);
