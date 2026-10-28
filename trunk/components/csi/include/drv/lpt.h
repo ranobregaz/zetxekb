@@ -143,7 +143,7 @@ bool csi_lpt_is_running(csp_lpt_t *ptLptBase);
   \param[in]   eLptInt:irq mode
   \param[in]   bEnable:lpt irq enable or disable
 */
-void csi_lpt_irq_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable);
+void csi_lpt_int_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable);
 
 /**
   \brief       Enable lpt power manage

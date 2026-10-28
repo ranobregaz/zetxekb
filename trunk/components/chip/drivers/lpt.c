@@ -152,7 +152,7 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk, uint3
 	{
 		csp_lpt_set_prdr(ptLptBase, (uint16_t)wLptPrd);
 	}
-	csi_lpt_irq_enable(ptLptBase,LPT_PEND_INT,ENABLE);	 //选用MATCH中断 
+	csi_lpt_int_enable(ptLptBase,LPT_PEND_INT,ENABLE);	 //选用MATCH中断 
 	csi_irq_enable((uint32_t*)ptLptBase);	
 	return tRet;	
 }
@@ -163,7 +163,7 @@ csi_error_t csi_lpt_timer_init(csp_lpt_t *ptLptBase,csi_lpt_clksrc_e eClk, uint3
   \param[in]   eLptInt:irq mode
   \param[in]   bEnable:lpt irq enable or disable
 */
-void csi_lpt_irq_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable)
+void csi_lpt_int_enable(csp_lpt_t *ptLptBase, lpt_int_e eLptInt,bool bEnable)
 {
 	csp_lpt_int_enable(ptLptBase, eLptInt, bEnable);
 }
@@ -366,7 +366,7 @@ csi_error_t csi_lpt_pwm_init(csp_lpt_t *ptLptBase, csi_lpt_pwm_config_t *ptLptPa
 		
 		if(ptLptPara->byInter != LPT_NONE_INT)
 		{
-			csi_lpt_irq_enable(ptLptBase,ptLptPara->byInter,ENABLE);	 //选用MATCH中断 
+			csi_lpt_int_enable(ptLptBase,ptLptPara->byInter,ENABLE);	 //选用MATCH中断 
 			csi_irq_enable((uint32_t*)ptLptBase);	
 		}
 	}
