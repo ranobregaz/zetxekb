@@ -63,7 +63,11 @@ extern "C" {
 #define HFOSC_6M_VALUE          6000000U
 #endif
 
-		
+//UARTx id number
+#define UART_IDX_NUM   			3
+#define UART_RECV_MAX_LEN		256
+
+//FLASH
 #define PFLASH_PAGES	256
 #define DFLASH_PAGES	32
 
@@ -130,6 +134,11 @@ typedef enum {
 
 
 typedef enum {
+	
+	PA00_GPD				=  0U,
+	PA00_INPUT				=  1U,		//input
+	PA00_OUTPUT				=  2U,		//output
+	PA00_OUTPUT_MONI		=  3U,		//output with monitor
     PA00_UART0_TX			=  4U,
     PA00_I2C_SDA            =  5U,
     PA00_BT0_OUT            =  6U,
@@ -139,6 +148,10 @@ typedef enum {
 	PA00_GROUP0_I2C_SCL     =  10U,
     PA00_ADC_AIN1           =  11U,
 	
+	PA01_GPD				=  0U,
+	PA01_INPUT				=  1U,		//input
+	PA01_OUTPUT				=  2U,		//output
+	PA01_OUTPUT_MONI		=  3U,		//output with monitor
 	PA01_UART0_RX			=  4U,
     PA01_I2C_SCL            =  5U,
     PA01_BT1_OUT            =  6U,
@@ -148,6 +161,10 @@ typedef enum {
 	PA01_GROUP0_I2C_SDA     =  10U,
     PA01_ADC_AIN2           =  11U,
 	
+	PA02_GPD				=  0U,
+	PA02_INPUT				=  1U,		//input
+	PA02_OUTPUT				=  2U,		//output
+	PA02_OUTPUT_MONI		=  3U,		//output with monitor
     PA02_SIO				=  4U,
     PA02_RTC_ALM            =  5U,
     PA02_BT0_OUT            =  6U,
@@ -156,6 +173,10 @@ typedef enum {
     PA02_TKEY_CH3           =  9U,
 	PA02_GROUP0_GPT_CHA     =  10U,
 
+	PA03_GPD				=  0U,
+	PA03_INPUT				=  1U,		//input
+	PA03_OUTPUT				=  2U,		//output
+	PA03_OUTPUT_MONI		=  3U,		//output with monitor
 	PA03_OSC_XI				=  4U,
     PA03_EPT_CHCX           =  5U,
     PA03_I2C_SDA            =  6U,
@@ -165,6 +186,10 @@ typedef enum {
 	PA03_GROUP0_GPT_CHB     =  10U,
 	PA03_ADC_AIN3           =  11U,
 	
+	PA04_GPD				=  0U,
+	PA04_INPUT				=  1U,		//input
+	PA04_OUTPUT				=  2U,		//output
+	PA04_OUTPUT_MONI		=  3U,		//output with monitor
 	PA04_OSC_XO				=  4U,
     PA04_EPT_CHCY           =  5U,
     PA04_I2C_SCL            =  6U,
@@ -173,6 +198,10 @@ typedef enum {
     PA04_TKEY_CH5           =  9U,
 	PA04_GROUP0_SPI_MOSI    =  10U,
 	
+	PA05_GPD				=  0U,
+	PA05_INPUT				=  1U,		//input
+	PA05_OUTPUT				=  2U,		//output
+	PA05_OUTPUT_MONI		=  3U,		//output with monitor
 	PA05_DBUG_SWCLK			=  4U,
     PA05_BT0_OUT            =  5U,
     PA05_CNTA_BUZ           =  6U,
@@ -182,6 +211,10 @@ typedef enum {
 	PA05_GROUP0_SPI_MISO    =  10U,
 	PA05_ADC_AIN4           =  11U,
 	
+	PA06_GPD				=  0U,
+	PA06_INPUT				=  1U,		//input
+	PA06_OUTPUT				=  2U,		//output
+	PA06_OUTPUT_MONI		=  3U,		//output with monitor
 	PA06_BT1_OUT			=  4U,
     PA06_SPI_NSS            =  5U,
     PA06_I2C_SCL            =  6U,
@@ -190,6 +223,10 @@ typedef enum {
 	PA06_GROUP0_SPI_SCK     =  10U,
 	PA06_ADC_AIN5           =  11U,
 	
+	PA07_GPD				=  0U,
+	PA07_INPUT				=  1U,		//input
+	PA07_OUTPUT				=  2U,		//output
+	PA07_OUTPUT_MONI		=  3U,		//output with monitor
 	PA07_I2C_SDA			=  4U,
     PA07_EPI0            	=  5U,
     PA07_EPT_CHAX           =  6U,
@@ -198,6 +235,10 @@ typedef enum {
 	PA07_GROUP0_SPI_NSS     =  10U,
 	PA07_ADC_AIN6           =  11U,
 	
+	PB02_GPD				=  0U,
+	PB02_INPUT				=  1U,		//input
+	PB02_OUTPUT				=  2U,		//output
+	PB02_OUTPUT_MONI		=  3U,		//output with monitor
 	PB02_I2C_SCL			=  4U,
     PB02_BT0_OUT           	=  5U,
     PB02_EPT_CHBX           =  6U,
@@ -207,6 +248,10 @@ typedef enum {
 	PB02_GROUP1_UART0_RX    =  10U,
 	PB02_ADC_AIN7           =  11U,
 	
+	PB03_GPD				=  0U,
+	PB03_INPUT				=  1U,		//input
+	PB03_OUTPUT				=  2U,		//output
+	PB03_OUTPUT_MONI		=  3U,		//output with monitor
 	PB03_EPT_CHCX			=  4U,
     PB03_EPT_CHAY           =  5U,
     PB03_EPT_CHD            =  6U,
@@ -216,6 +261,10 @@ typedef enum {
 	PB03_GROUP1_UART0_TX    =  10U,
 	PB03_ADC_AIN8           =  11U,
 	
+	PA08_GPD				=  0U,
+	PA08_INPUT				=  1U,		//input
+	PA08_OUTPUT				=  2U,		//output
+	PA08_OUTPUT_MONI		=  3U,		//output with monitor
 	PA08_EPT_CHD			=  4U,
     PA08_EPT_CHBY           =  5U,
     PA08_BT1_OUT            =  6U,
@@ -225,6 +274,10 @@ typedef enum {
 	PA08_GROUP1_EPT_CHAX    =  10U,
 	PA08_ADC_AIN9           =  11U,
 	
+	PA09_GPD				=  0U,
+	PA09_INPUT				=  1U,		//input
+	PA09_OUTPUT				=  2U,		//output
+	PA09_OUTPUT_MONI		=  3U,		//output with monitor
 	PA09_SPI_SCK			=  4U,
     PA09_GPT_CHA            =  5U,
     PA09_CLO                =  6U,
@@ -234,6 +287,10 @@ typedef enum {
 	PA09_GROUP1_EPT_CHBX    =  10U,
 	PA09_ADC_AIN10          =  11U,
 	
+	PA010_GPD				=  0U,
+	PA010_INPUT				=  1U,		//input
+	PA010_OUTPUT			=  2U,		//output
+	PA010_OUTPUT_MONI		=  3U,		//output with monitor
 	PA010_SPI_MOSI			=  4U,
     PA010_EPT_CHAX          =  5U,
     PA010_GPT_CHA           =  6U,
@@ -243,6 +300,10 @@ typedef enum {
 	PA010_GROUP1_EPT_CHCX   =  10U,
 	PA010_ADC_AIN11         =  11U,
 
+	PA011_GPD				=  0U,
+	PA011_INPUT				=  1U,		//input
+	PA011_OUTPUT			=  2U,		//output
+	PA011_OUTPUT_MONI		=  3U,		//output with monitor
 	PA011_SPI_MISO			=  4U,
     PA011_EPT_CHBX          =  5U,
     PA011_GPT_CHB           =  6U,
@@ -252,6 +313,10 @@ typedef enum {
 	PA011_GROUP1_EPT_CHAY   =  10U,
 	PA011_ADC_AIN12         =  11U,
 
+	PA012_GPD				=  0U,
+	PA012_INPUT				=  1U,		//input
+	PA012_OUTPUT			=  2U,		//output
+	PA012_OUTPUT_MONI		=  3U,		//output with monitor
 	PA012_DBUG_SWDIO		=  4U,
     PA012_EPT_CHAY          =  5U,
     PA012_BT1_OUT           =  6U,
@@ -261,6 +326,10 @@ typedef enum {
 	PA012_GROUP1_EPT_CHBY   =  10U,
 	PA012_ADC_AIN13         =  11U,
 	
+	PA013_GPD				=  0U,
+	PA013_INPUT				=  1U,		//input
+	PA013_OUTPUT			=  2U,		//output
+	PA013_OUTPUT_MONI		=  3U,		//output with monitor
 	PA013_EPI1				=  4U,
     PA013_EPT_CHCY          =  5U,
     PA013_I2C_SDA           =  6U,
@@ -270,6 +339,10 @@ typedef enum {
 	PA013_GROUP1_EPT_CHCY   =  10U,
 	PA013_ADC_AIN14         =  11U,
 	
+	PB00_GPD				=  0U,
+	PB00_INPUT				=  1U,		//input
+	PB00_OUTPUT				=  2U,		//output
+	PB00_OUTPUT_MONI		=  3U,		//output with monitor
 	PB00_GPT_CHB			=  4U,
     PB00_EPT_CHCX          	=  5U,
     PB00_I2C_SCL            =  6U,
@@ -278,6 +351,10 @@ typedef enum {
 	PB00_TKEY_CH14          =  9U,
 	PB00_ADC_AIN15          =  11U,
 	
+	PB01_GPD				=  0U,
+	PB01_INPUT				=  1U,		//input
+	PB01_OUTPUT				=  2U,		//output
+	PB01_OUTPUT_MONI		=  3U,		//output with monitor
 	PB01_CNTA_BUZ			=  4U,
     PB01_GPT_CHA          	=  5U,
     PB01_GPT_CHB            =  6U,
@@ -286,6 +363,10 @@ typedef enum {
 	PB01_TKEY_CH0           =  9U,
 	PB01_ADC_AIN0           =  11U,
 	
+	PB04_GPD				=  0U,
+	PB04_INPUT				=  1U,		//input
+	PB04_OUTPUT				=  2U,		//output
+	PB04_OUTPUT_MONI		=  3U,		//output with monitor
 	PB04_EPT_CHCY			=  4U,
     PB04_EPT_CHBY          	=  5U,
     PB04_UART2_TX           =  6U,
@@ -293,6 +374,10 @@ typedef enum {
 	PB04_SPI_SCK			=  8U,
 	PB04_TKEY_CH15          =  9U,
 	
+	PB05_GPD				=  0U,
+	PB05_INPUT				=  1U,		//input
+	PB05_OUTPUT				=  2U,		//output
+	PB05_OUTPUT_MONI		=  3U,		//output with monitor
 	PB05_EPT_CHCX			=  4U,
     PB05_EPT_CHAY          	=  5U,
     PB05_UART2_RX           =  6U,
@@ -300,22 +385,30 @@ typedef enum {
 	PB05_SPI_NSS			=  8U,
 	PB05_TKEY_CH16          =  9U,
 	
+	PA014_GPD				=  0U,
+	PA014_INPUT				=  1U,		//input
+	PA014_OUTPUT			=  2U,		//output
+	PA014_OUTPUT_MONI		=  3U,		//output with monitor
 	PA014_EPT_CHBX			=  4U,
     PA014_BT1_OUT          	=  5U,
     PA014_I2C_SDA           =  6U,
     PA014_UART1_TX		  	=  7U,
 	PA014_SPI_MOSI			=  8U,
 	
+	PA015_GPD				=  0U,
+	PA015_INPUT				=  1U,		//input
+	PA015_OUTPUT			=  2U,		//output
+	PA015_OUTPUT_MONI		=  3U,		//output with monitor
 	PA015_EPT_CHAX			=  4U,
     PA015_BT0_OUT          	=  5U,
     PA015_I2C_SCL           =  6U,
     PA015_UART1_RX		  	=  7U,
 	PA015_SPI_MISO			=  8U,
 	
-	PIN_GPD					=  0U,
-	PIN_INPUT				=  1U,		//input
-	PIN_OUTPUT				=  2U,		//output
-	PIN_OUTPUT_MONI			=  3U,		//output with monitor
+//	PIN_GPD					=  0U,
+//	PIN_INPUT				=  1U,		//input
+//	PIN_OUTPUT				=  2U,		//output
+//	PIN_OUTPUT_MONI			=  3U,		//output with monitor
 	
 	IOMAP					=  10U
 	
