@@ -19,7 +19,7 @@
 #define __WEAK	__attribute__((weak))
 
 /* externs function---------------------------------------------------*/
-extern void ringbuffer_in_dynamic_scan(ringbuffer_t *ptFifo);
+extern void csi_uart_recv_dynamic_scan(uint8_t byIdx);
 
 /* externs variablesr-------------------------------------------------*/
 /* Private variablesr-------------------------------------------------*/
@@ -41,17 +41,27 @@ void tick_irq_handler(void *arg)
 	csi_tick++;
 	CORET->CTRL;
 	
-#if defined(CONFIG_UART0_DYNAMIC)
-	ringbuffer_in_dynamic_scan(g_tUartTran[0].ptRingBuf);		//uart0
-#endif
-
-#if defined(CONFIG_UART1_DYNAMIC)
-	ringbuffer_in_dynamic_scan(g_tUartTran[1].ptRingBuf);		//uart1
-#endif
-
-#if defined(CONFIG_UART2_DYNAMIC)
-	ringbuffer_in_dynamic_scan(g_tUartTran[2].ptRingBuf);		//uart2
-#endif
+	//uart receive timeout scan
+	if(g_tUartTran[0].byRecvMode == UART_RX_MODE_INT_DYN)
+		csi_uart_recv_dynamic_scan(0);		//uart0
+		
+	if(g_tUartTran[1].byRecvMode == UART_RX_MODE_INT_DYN)
+		csi_uart_recv_dynamic_scan(1);		//uart1
+	
+	if(g_tUartTran[2].byRecvMode == UART_RX_MODE_INT_DYN)
+		csi_uart_recv_dynamic_scan(2);		//uart1
+	
+//#if defined(CONFIG_UART0_DYNAMIC)
+//	csi_uart_recv_dynamic_scan(0);		//uart0
+//#endif
+//
+//#if defined(CONFIG_UART1_DYNAMIC)
+//	csi_uart_recv_dynamic_scan(1);		//uart1
+//#endif
+//
+//#if defined(CONFIG_UART2_DYNAMIC)
+//	csi_uart_recv_dynamic_scan(2);		//uart2
+//#endif
 
 }
 
