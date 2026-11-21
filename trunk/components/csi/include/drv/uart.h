@@ -23,9 +23,6 @@
 extern "C" {
 #endif
 
-#define UART_IDX_NUM   			3
-#define UART_RECV_MAX_LEN		256
-
 /**
  * \enum     csi_uart_data_bits_e
  * \brief    UART Mode Parameters: Data Bits
@@ -105,12 +102,12 @@ typedef enum
  */
 typedef enum{
 	//send mode
-	UART_TX_MODE_POLL		=	0,			//polling mode,no interrupt
-	UART_TX_MODE_IRQ		=	1,			//interrupt mode
+	UART_TX_MODE_POLL		=	0,			//polling mode, no interrupt
+	UART_TX_MODE_INT		=	1,			//tx use interrupt mode(TXDONE)
 	//receive
-	UART_RX_MODE_POLL		=	0,			//polling mode,no interrupt
-	UART_RX_MODE_IRQ0		=	1,			//interrupt mode0, 			
-	UART_RX_MODE_IRQ1		=	2			//interrupt mode1
+	UART_RX_MODE_POLL		=	0,			//polling mode, no interrupt
+	UART_RX_MODE_INT_FIX	=	1,			//rx use interrupt mode(RXFIFO), receive assign(fixed) length data		
+	UART_RX_MODE_INT_DYN	=	2			//rx use interrupt mode(RXFIFO), receive a bunch of data(dynamic length data)
 }csi_uart_wkmode_e;
 
 
@@ -165,7 +162,7 @@ void csi_uart_stop(csp_uart_t *ptUartBase);
   \param[in]   timeout  	the timeout between bytes(ms).
   \return      the num of data which is sent successfully or CSI_ERROR.
 */
-int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize);
+int16_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize);
 
 /** 
   \brief 	   send data to uart transmitter, this function is interrupt mode(async/non-blocking)
@@ -174,7 +171,7 @@ int32_t csi_uart_send(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize)
   \param[in]   wSize		number of data to send (byte).
   \return      error code \ref csi_error_t
  */
-csi_error_t csi_uart_send_async(csp_uart_t *ptUartBase, const void *pData, uint32_t wSize);
+csi_error_t csi_uart_send_async(csp_uart_t *ptUartBase, const void *pData, uint16_t hwSize);
 
 /**
   \brief       Query data from UART receiver FIFO, this function is blocking.
@@ -184,7 +181,7 @@ csi_error_t csi_uart_send_async(csp_uart_t *ptUartBase, const void *pData, uint3
   \param[in]   timeout  	the timeout between bytes(ms).
   \return      the num of data witch is received successfully or CSI_ERROR.
 */
-int32_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint32_t wSize, uint32_t wTimeOut);
+int16_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize, uint32_t wTimeOut);
 
 /** 
   \brief 	   receive data to uart transmitter,assign length ;this function is interrupt mode(async/no-blocking),
@@ -193,15 +190,15 @@ int32_t csi_uart_receive(csp_uart_t *ptUartBase, void *pData, uint32_t wSize, ui
   \param[in]   wSize		number of data to receive (byte).
   \return      the num of data which is receive successfully
  */
-int32_t csi_uart_recv_async(csp_uart_t *ptUartBase, void *pData, uint32_t wSize);
+int16_t csi_uart_recv_async(csp_uart_t *ptUartBase, void *pData, uint16_t hwSize);
 
 /** 
-  \brief 	   receive data to uart transmitter, dynamic receive; this function is interrupt mode(async).
+  \brief 	   receive data to uart transmitter, dynamic receive; this function is interrupt mode(async/no-blocking).
   \param[in]   ptUartBase	UART handle to operate
   \param[in]   pData		pointer to buffer with data to be received.
   \return      the num of data which is send successfully
  */
-int32_t csi_uart_recv_async_dynamic(csp_uart_t *ptUartBase, void *pData);
+int16_t csi_uart_recv_dynamic(csp_uart_t *ptUartBase, void *pData);
 
 /**
   \brief       Get character in query mode.
